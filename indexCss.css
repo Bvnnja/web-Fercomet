@@ -1,0 +1,134 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar-brand i {
+    font-size: 1.3rem;
+    color: #ffc107; 
+  }
+  
+  .navbar-nav .nav-link {
+    
+    font-weight: 500;
+  }
+  
+  .btn-outline-light:hover {
+    
+    background-color: #ffc107;
+    color: #000;
+    border-color: #ffc107;
+  }
+  
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.452);
+}
+
+.card-title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 1em;
+    color: #555;
+}
+
+.card-body {
+    background-color: #fff;
+}
+
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+
+#carouselFerreteria {
+    max-width: 100%;
+    height: 720px;
+    overflow: hidden;
+}
+
+#carouselFerreteria .carousel-inner,
+#carouselFerreteria .carousel-item {
+    
+    height: 100%;
+}
+
+.imagen-carrusel {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    
+}
+.carousel-control-prev{
+    background-color: rgba(1, 1, 1, 0.103);
+}
+.carousel-control-next{
+    background-color: rgba(1, 1, 1, 0.103);
+
+}
+
+
+.carousel-overlay-wrapper {
+    position: relative;
+    height: 100%;
+  }
+  
+  .carousel-overlay-wrapper img {
+    width: 100%;
+    height: 900px; 
+    object-fit: cover;
+  }
+  
+  .carousel-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(1, 1, 1, 0.658); 
+    z-index: 1;
+  }
+  
+  .carousel-caption {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+    max-width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    z-index: 2;
+  }
+  
+.contador_carrito{
+  position: absolute;
+  top: 0;
+  left: 100%;
+  transform: translate(-100%, -50%);
+  background-color: #dc3545; 
+  padding: 0.25em 0.4em;
+  border-radius: 50rem;
+  color: white;
+  font-size: 1rem;
+
+}
+
+
+.logo-navbar {
+    width: 100px;   
+    height: auto;  
+    object-fit: contain; 
+    margin-left: 10px; 
+}
+
+
+
+  
