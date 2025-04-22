@@ -1,17 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
-// Configuración de Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyA50EDq4nAaqNx3HICdZJPAnGNMdOsyb1k",
-  authDomain: "fercomet-32e92.firebaseapp.com",
-  projectId: "fercomet-32e92",
-  storageBucket: "fercomet-32e92.appspot.com", // Corregido el dominio del storage
-  messagingSenderId: "995994877980",
-  appId: "1:995994877980:web:1239c3e358b596e562dfd9",
-  measurementId: "G-J00DPD8T8X"
-};
+import firebaseConfig from "../../Servicios/firebaseConfig.js";
 
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);

@@ -1,0 +1,85 @@
+.recuperar {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #F2F2F2;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+  
+  .recuperar .container {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .recuperar .logo-container {
+    margin-bottom: 2rem;
+  }
+  
+  .recuperar .logo {
+    width: 300px;
+    height: auto;
+    border-radius: 30px;
+    box-shadow: 0 20px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .recuperar h2 {
+    font-size: 1.75rem;
+    color: #32735B;
+    margin-bottom: 1rem;
+    font-weight: 400;
+  }
+  
+  .recuperar p {
+    color: #666666;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+  
+  .recuperar input[type="email"] {
+    padding: 0.9rem;
+    width: 100%;
+    border: 1.5px solid #CCCCCC;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .recuperar input[type="email"]:focus {
+    border-color: #32735B;
+    box-shadow: 0 0 0 3px rgba(50, 115, 91, 0.2);
+    outline: none;
+  }
+  
+  .recuperar button {
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+    background-color: #32735B;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 500;
+  }
+  
+  .recuperar button:hover {
+    background-color: #286E4D;
+    transform: scale(1.03);
+  }
+  
+  .recuperar #mensaje {
+    font-size: 0.95rem;
+    color: #FF4C4C;
+    margin-top: 1.2rem;
+  }
+  

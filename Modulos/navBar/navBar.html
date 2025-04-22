@@ -41,7 +41,7 @@
         </li>
         <!-- Carrito de compras -->
         <li class="nav-item position-relative me-3">
-          <a class="nav-link text-dark" href="#">
+          <a class="nav-link text-dark" href="#" data-bs-toggle="modal" data-bs-target="#modalCarrito">
             <i class="bi bi-cart-fill me-1"></i>Carrito
             <span class="contador_carrito position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
               0
@@ -52,6 +52,8 @@
     </div>
   </div>
 </nav>
+
+
 
 
 <!-- Navbar Inferior: Categorías -->
@@ -76,12 +78,98 @@
           </ul>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/productos.html">Ver Todos los Productos</a>
+          <a class="nav-link" href="/Compra/comprar.html">Ver Todos los Productos</a>
         </li>
       </ul>
     </div>
   </div>
 </nav>
+<!-- Modal Carrito -->
+<div class="modal fade" id="modalCarrito" tabindex="-1" aria-labelledby="modalCarritoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCarritoLabel">Tu Carrito</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="contenido-carrito">
+        <!-- Aquí se insertarán los productos con JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Seguir Comprando</button>
+        <a href="/Paginas/Carrito/checkout.html" class="btn btn-primary">Ir a Pagar</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="module">
+  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+  const renderizarCarrito = () => {
+    const contenedor = document.getElementById("contenido-carrito");
+    const contador = document.querySelector(".contador_carrito");
+
+    if (!contenedor || !contador) return;
+
+    contenedor.innerHTML = "";
+    contador.textContent = carrito.length;
+
+    if (carrito.length === 0) {
+      contenedor.innerHTML = "<p class='text-center'>Tu carrito está vacío 🛒</p>";
+      return;
+    }
+
+    let total = 0;
+    carrito.forEach((producto, index) => {
+      total += parseFloat(producto.precio) || 0;
+
+      const item = document.createElement("div");
+      item.classList.add("d-flex", "justify-content-between", "align-items-center", "mb-3");
+      item.innerHTML = `
+        <div>
+          <h6 class="mb-1">${producto.nombre}</h6>
+          <small>${producto.descripcion || ""}</small>
+        </div>
+        <div>
+          <span class="fw-bold me-3">$${producto.precio}</span>
+          <button class="btn btn-sm btn-danger eliminar-item" data-index="${index}">X</button>
+        </div>
+      `;
+      contenedor.appendChild(item);
+    });
+
+    const totalHTML = document.createElement("div");
+    totalHTML.classList.add("mt-4", "text-end");
+    totalHTML.innerHTML = `<h5>Total: $${total.toFixed(0)}</h5>`;
+    contenedor.appendChild(totalHTML);
+  };
+
+  // Al abrir el modal
+  document.getElementById("modalCarrito")?.addEventListener("show.bs.modal", renderizarCarrito);
+
+  // Eliminar item del carrito
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("eliminar-item")) {
+      const index = e.target.dataset.index;
+      carrito.splice(index, 1);
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+      renderizarCarrito();
+    }
+  });
+
+  // Escucha para otros scripts que agregan productos
+  window.agregarAlCarrito = (producto) => {
+    carrito.push(producto);
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    renderizarCarrito();
+  };
+
+  // Mostrar número de productos al cargar la página
+  document.addEventListener("DOMContentLoaded", renderizarCarrito);
+</script>
+
 
 <script type="module" src="/Servicios/firebase.js"></script>
 <script type="module" src="/Servicios/iniciarSesion.js"></script>

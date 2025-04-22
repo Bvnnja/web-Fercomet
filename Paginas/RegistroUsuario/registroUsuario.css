@@ -1,12 +1,15 @@
 
 
 /* Contenedor principal */
-.container {
-  background-color: #ffffff;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  max-width: 700px;
+
+.center-wrapper {
+/* Ocupa todo el alto de la pantalla */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa; /* fondo opcional igual que el body */
+  padding: 60px 20px; /* espaciado opcional por si hay navbar fijo */
+  box-sizing: border-box;
 }
 
 /* Títulos */
@@ -24,7 +27,7 @@ h2 {
 
 /* Inputs */
 input.form-control {
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid #A6A6A6;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
@@ -72,4 +75,13 @@ button[type="submit"]:hover {
   border: none;
   background-color: #e4e4e4;
   border-radius: 15px;
+}
+
+
+/* Haz que el contenedor principal tenga más ancho */
+.wide-container {
+  width: 100%;
+  max-width: 1000px; /* Puedes ajustar este valor a gusto */
+  margin: 0 auto;
+  padding: 0 20px;
 }

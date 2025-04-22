@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD Productos</title>
+  <!-- Enlazamos el archivo JavaScript -->
+  <script type="module" src="agregarProducto.js" defer></script>
+</head>
+<body>
+
+  <h1>Formulario de Producto</h1>
+  <form id="productForm">
+    <input type="text" id="nombre" placeholder="Nombre del producto" required><br>
+    <input type="number" id="precio" placeholder="Precio" required><br>
+    <input type="text" id="unidad" placeholder="Unidad (kg, unidad, etc.)" required><br>
+    <input type="text" id="descripcion" placeholder="Descripción" required><br>
+    <input type="text" id="imagenUrl" placeholder="URL de la imagen"><br>
+    <input type="number" id="cantidad" placeholder="Cantidad disponible" required><br> <!-- Campo cantidad -->
+
+    <!-- Selector de categoría -->
+    <select id="categoria" required>
+      <option value="">Selecciona una categoría</option>
+      <option value="automotriz">Automotriz</option>
+      <option value="construccion">Construcción</option>
+      <option value="electricidad">Electricidad</option>
+      <option value="gasfiteria">Gasfitería</option>
+      <option value="griferia">Grifería</option>
+      <option value="herramientas">Herramientas</option>
+      <option value="jardineria">Jardinería</option>
+      <option value="pinturas">Pinturas</option>
+      <option value="seguridad">Seguridad</option>
+    </select><br>
+
+    <button type="submit">Agregar Producto</button>
+  </form>
+
+  <ul id="productList"></ul> <!-- Aquí se mostrarán los productos -->
+
+</body>
+</html>

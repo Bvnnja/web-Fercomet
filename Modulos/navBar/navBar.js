@@ -1,5 +1,5 @@
 // Cargar el Navbar
-fetch('../../navBar.html')
+fetch('../../Modulos/navBar/navbar.html')
   .then(response => response.text())
   .then(data => {
     document.getElementById('navbar-placeholder').innerHTML = data;
@@ -58,7 +58,7 @@ fetch('../../navBar.html')
   .catch(error => console.error('Error al cargar el navbar:', error));
 
 // Cargar el Footer
-fetch('../../footer.html')
+fetch('../../Modulos/Footer/footer.html')
   .then(response => response.text())
   .then(data => {
     document.getElementById('footer-placeholder').innerHTML = data;
