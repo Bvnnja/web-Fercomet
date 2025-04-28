@@ -228,11 +228,18 @@
     background-color: white;
     color: #32735B;
     border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
   
-  #paginationContainer button.active,
-  #paginationContainer button:hover {
+  #paginationContainer button.active {
     background-color: #32735B;
+    color: white;
+    font-weight: bold;
+  }
+
+  #paginationContainer button:hover {
+    background-color: #285f4a;
     color: white;
   }
 

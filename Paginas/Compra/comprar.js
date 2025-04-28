@@ -85,13 +85,6 @@ async function loadProductsForPurchase(selectedCategory = null, page = 1) {
   const productContainer = document.getElementById('productContainer');
   productContainer.innerHTML = "";
 
-  if (selectedCategory !== null) {
-    // Filtrar productos por categoría
-    const filteredProducts = allProductsCache.filter(product => product.category === selectedCategory);
-    displayFilteredProducts(filteredProducts);
-    return;
-  }
-
   if (allProductsCache.length === 0) {
     // Cargar todos los productos en caché si aún no están cargados
     const categories = ["automotriz", "construccion", "electricidad", "gasfiteria", "griferia", "herramientas", "jardineria", "pinturas", "seguridad"];
@@ -111,9 +104,24 @@ async function loadProductsForPurchase(selectedCategory = null, page = 1) {
     }
   }
 
+  let filteredProducts = allProductsCache;
+
+  if (selectedCategory && selectedCategory !== "") {
+    // Filtrar productos por categoría si se selecciona una específica
+    filteredProducts = allProductsCache.filter(product => product.category === selectedCategory);
+  }
+
+  if (filteredProducts.length === 0) {
+    productContainer.innerHTML = "<p>No se encontraron productos.</p>";
+    document.getElementById("paginationContainer").innerHTML = ""; // Limpiar paginación
+    return;
+  }
+
   const startIndex = (page - 1) * productsPerPage;
-  const paginatedProducts = allProductsCache.slice(startIndex, startIndex + productsPerPage);
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
   displayFilteredProducts(paginatedProducts);
+
+  updatePagination(filteredProducts.length, selectedCategory); // Actualizar paginación
 }
 
 // Función para mostrar el mensaje de éxito
@@ -185,14 +193,30 @@ function updatePagination(totalProducts, selectedCategory, filteredProducts = nu
     const button = document.createElement("button");
     button.textContent = i;
     button.classList.add("pagination-button");
-    if (i === currentPage) button.classList.add("active");
-    button.addEventListener("click", () => {
+
+    // Resaltar el botón de la página actual
+    if (i === currentPage) {
+      button.classList.add("active");
+    }
+
+    button.addEventListener("click", async () => {
+      // Actualizar la página actual
+      currentPage = i;
+
+      // Eliminar la clase 'active' de todos los botones
+      document.querySelectorAll(".pagination-button").forEach(btn => btn.classList.remove("active"));
+
+      // Agregar la clase 'active' al botón actual
+      button.classList.add("active");
+
+      // Recargar los productos para la página seleccionada
       if (filteredProducts) {
-        displayFilteredProducts(filteredProducts, i); // Mostrar productos filtrados
+        displayFilteredProducts(filteredProducts, i);
       } else {
-        loadProductsForPurchase(selectedCategory, i); // Mostrar productos normales
+        await loadProductsForPurchase(selectedCategory, i);
       }
     });
+
     paginationContainer.appendChild(button);
   }
 }
@@ -223,20 +247,6 @@ function displayFilteredProducts(products, page = 1) {
       </button>
     `;
     productContainer.appendChild(card);
-  });
-
-  // Agregar funcionalidad al botón "Agregar al carrito"
-  document.querySelectorAll(".add-to-cart").forEach(button => {
-    button.addEventListener("click", (e) => {
-      const id = e.target.dataset.id;
-      const category = e.target.dataset.category;
-      const name = e.target.dataset.name;
-      const price = parseFloat(e.target.dataset.price);
-      const stock = parseInt(e.target.dataset.stock, 10);
-      const imageUrl = e.target.dataset.image;
-
-      addToCart(id, category, name, price, stock, 1, imageUrl); // Agregar 1 unidad al carrito
-    });
   });
 
   updatePagination(products.length, null, products); // Actualizar paginación para productos filtrados
