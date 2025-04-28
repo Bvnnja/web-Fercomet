@@ -14,16 +14,48 @@
   <div id="navbar-placeholder"></div>
 
   <h1>Compra de Productos</h1>
-  <div id="categoryButtons" style="margin-bottom: 20px;">
-    <!-- Aquí se generarán los botones de categorías dinámicamente -->
+  
+  <div style="display: flex;">
+    <!-- Contenedor lateral de filtros -->
+    <div id="filtersContainer" style="width: 20%; padding: 10px; border-right: 1px solid #ccc;">
+      <h2>Filtros</h2>
+      <details open>
+        <summary>Buscar por nombre</summary>
+        <div>
+          <input type="text" id="searchInput" placeholder="Escribe el nombre del producto">
+          <button id="searchButton">Buscar</button>
+        </div>
+      </details>
+      <details>
+        <summary>Filtrar por precio</summary>
+        <div>
+          <input type="number" id="minPrice" placeholder="Precio mínimo">
+          <input type="number" id="maxPrice" placeholder="Precio máximo">
+        </div>
+      </details>
+      <details>
+        <summary>Disponibilidad</summary>
+        <div>
+          <select id="availabilityFilter">
+            <option value="">Todos</option>
+            <option value="available">Disponible</option>
+            <option value="unavailable">Sin stock</option>
+          </select>
+        </div>
+      </details>
+      <button id="applyFiltersButton" style="margin-top: 10px;">Aplicar filtros</button>
+      <button id="resetFiltersButton" style="margin-top: 10px; background-color: #ffffff; color: #0d6efd; border: 1px solid #0d6efd;">Reiniciar filtros</button>
+    </div>
+
+    <!-- Contenedor de productos -->
+    <div style="width: 80%; padding: 10px;">
+      <div id="categoryButtons" style="margin-bottom: 20px;">
+        <!-- Aquí se generarán los botones de categorías dinámicamente -->
+      </div>
+      <div id="productContainer"></div>
+      <div id="paginationContainer"></div>
+    </div>
   </div>
-  <div>
-    <label for="searchInput">Buscar por nombre:</label>
-    <input type="text" id="searchInput" placeholder="Escribe el nombre del producto">
-    <button id="searchButton">Buscar</button>
-  </div>
-  <div id="productContainer"></div>
-  <div id="paginationContainer"></div>
 
   <div id="footer-placeholder"></div>
 </body>

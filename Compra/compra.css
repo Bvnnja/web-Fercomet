@@ -271,3 +271,59 @@
       transform: translateY(20px);
     }
   }
+
+  /* Contenedor de filtros */
+  #filtersContainer {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  #filtersContainer h2 {
+    font-size: 1.5rem;
+    color: #32735B;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  #filtersContainer details {
+    margin-bottom: 10px;
+  }
+
+  #filtersContainer summary {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #32735B;
+    cursor: pointer;
+  }
+
+  #filtersContainer summary:hover {
+    text-decoration: underline;
+  }
+
+  #filtersContainer input,
+  #filtersContainer select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  #filtersContainer button {
+    width: 100%;
+    padding: 10px;
+    background-color: #32735B;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  #filtersContainer button:hover {
+    background-color: #285f4a;
+  }

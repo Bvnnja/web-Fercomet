@@ -67,10 +67,11 @@ fetch('../../Modulos/Footer/footer.html')
 
 const actualizarContadorCarrito = () => {
   const contador = document.querySelector(".contador_carrito");
-  if (!contador) return;
-
   const carrito = JSON.parse(localStorage.getItem("cart")) || [];
-  contador.textContent = carrito.length;
+  if (contador) {
+    contador.textContent = carrito.length; // Mostrar el número de productos en el carrito
+    contador.style.display = carrito.length > 0 ? "inline-block" : "none"; // Ocultar si está vacío
+  }
 };
 
 // Renderizar el carrito
@@ -107,6 +108,7 @@ const renderizarCarrito = () => {
         <img src="${producto.imagen || '/imagenes/default-product.png'}" alt="${producto.name}" class="img-thumbnail me-3" style="width: 60px; height: 60px;">
         <div>
           <h6 class="mb-1">${producto.name}</h6>
+          <small class="text-muted">${producto.descripcion || ""}</small>
           <div class="d-flex align-items-center mt-2">
             <button class="btn btn-sm btn-secondary disminuir-cantidad" data-index="${index}">-</button>
             <span class="mx-2">${producto.cantidad}</span>
@@ -115,17 +117,17 @@ const renderizarCarrito = () => {
         </div>
       </div>
       <div class="text-end">
-        <span class="fw-bold d-block">$${(producto.price * producto.cantidad).toFixed(0)}</span>
+        <span class="fw-bold d-block">$${(producto.price * producto.cantidad).toFixed(2)}</span>
         <button class="btn btn-sm btn-danger eliminar-item mt-2" data-index="${index}"><i class="bi bi-trash"></i></button>
       </div>
     `;
     contenedor.appendChild(item);
   });
 
-  totalElement.textContent = `Total: $${total.toFixed(0)}`;
+  totalElement.textContent = `Total: $${total.toFixed(2)}`;
 };
 
-// Escuchar eventos para aumentar, disminuir y eliminar productos
+// Escuchar eventos para aumentar, disminuir, eliminar productos y vaciar carrito
 document.addEventListener("click", (e) => {
   const carrito = JSON.parse(localStorage.getItem("cart")) || [];
   if (e.target.classList.contains("aumentar-cantidad")) {
@@ -135,7 +137,6 @@ document.addEventListener("click", (e) => {
       localStorage.setItem("cart", JSON.stringify(carrito));
       renderizarCarrito();
       actualizarContadorCarrito();
-      window.dispatchEvent(new Event("carritoActualizado")); // Notificar actualización global
     }
   } else if (e.target.classList.contains("disminuir-cantidad")) {
     const index = parseInt(e.target.dataset.index, 10);
@@ -145,17 +146,28 @@ document.addEventListener("click", (e) => {
         localStorage.setItem("cart", JSON.stringify(carrito));
         renderizarCarrito();
         actualizarContadorCarrito();
-        window.dispatchEvent(new Event("carritoActualizado")); // Notificar actualización global
       }
     }
   } else if (e.target.classList.contains("eliminar-item")) {
     const index = parseInt(e.target.dataset.index, 10);
     if (!isNaN(index) && index >= 0 && index < carrito.length) {
-      carrito.splice(index, 1);
-      localStorage.setItem("cart", JSON.stringify(carrito));
-      renderizarCarrito();
-      actualizarContadorCarrito();
-      window.dispatchEvent(new Event("carritoActualizado")); // Notificar actualización global
+      const producto = carrito[index];
+      const confirmacion = confirm(`¿Estás seguro de que deseas eliminar "${producto.name}" del carrito?`);
+      if (confirmacion) {
+        carrito.splice(index, 1);
+        localStorage.setItem("cart", JSON.stringify(carrito));
+        renderizarCarrito();
+        actualizarContadorCarrito();
+      }
+    }
+  } else if (e.target.id === "vaciarCarrito") {
+    if (carrito.length > 0) {
+      const confirmacion = confirm("¿Estás seguro de que deseas vaciar todo el carrito?");
+      if (confirmacion) {
+        localStorage.removeItem("cart");
+        renderizarCarrito();
+        actualizarContadorCarrito();
+      }
     }
   }
 });

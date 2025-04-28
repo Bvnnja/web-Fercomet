@@ -74,8 +74,10 @@ async function loadProductsForPurchase(selectedCategory = null, page = 1) {
     const card = document.createElement("div");
     card.classList.add("product-card");
     card.innerHTML = `
-      <img src="${product.imagenUrl}" alt="${product.nombre}">
-      <h3>${product.nombre}</h3>
+      <div class="product-info" style="cursor: pointer;">
+        <img src="${product.imagenUrl}" alt="${product.nombre}">
+        <h3>${product.nombre}</h3>
+      </div>
       <p class="price">Precio: $${product.precio}</p>
       <p class="stock" style="color: ${product.cantidad > 0 ? '#6c757d' : 'red'};">
         ${product.cantidad > 0 ? `Disponibles: ${product.cantidad}` : 'Sin stock'}
@@ -84,6 +86,12 @@ async function loadProductsForPurchase(selectedCategory = null, page = 1) {
         Agregar al carrito
       </button>
     `;
+
+    // Redirigir al detalle del producto al hacer clic en la tarjeta o el nombre
+    card.querySelector(".product-info").addEventListener("click", () => {
+      window.location.href = `../DetalleProducto/productoDetalle.html?id=${product.id}&category=${product.category}`;
+    });
+
     productContainer.appendChild(card);
   });
 
@@ -153,7 +161,7 @@ function mostrarMensajeNoStock(nombreProducto) {
 }
 
 // Actualizar la interfaz de paginación
-function updatePagination(totalProducts, selectedCategory) {
+function updatePagination(totalProducts, selectedCategory, filteredProducts = null) {
   const paginationContainer = document.getElementById('paginationContainer');
   paginationContainer.innerHTML = "";
 
@@ -164,42 +172,44 @@ function updatePagination(totalProducts, selectedCategory) {
     button.textContent = i;
     button.classList.add("pagination-button");
     if (i === currentPage) button.classList.add("active");
-    button.addEventListener("click", () => loadProductsForPurchase(selectedCategory, i));
+    button.addEventListener("click", () => {
+      if (filteredProducts) {
+        displayFilteredProducts(filteredProducts, i); // Mostrar productos filtrados
+      } else {
+        loadProductsForPurchase(selectedCategory, i); // Mostrar productos normales
+      }
+    });
     paginationContainer.appendChild(button);
   }
 }
 
-// Filtrar productos mientras se escribe
-document.getElementById("searchInput").addEventListener("input", async () => {
-  const searchInput = document.getElementById("searchInput").value.toLowerCase();
+// Mostrar productos filtrados con paginación
+function displayFilteredProducts(products, page = 1) {
+  currentPage = page;
   const productContainer = document.getElementById("productContainer");
   productContainer.innerHTML = "";
 
-  const categories = [
-    "automotriz", "construccion", "electricidad", "gasfiteria", "griferia",
-    "herramientas", "jardineria", "pinturas", "seguridad"
-  ];
+  const startIndex = (page - 1) * productsPerPage;
+  const paginatedProducts = products.slice(startIndex, startIndex + productsPerPage);
 
-  for (const category of categories) {
-    const querySnapshot = await getDocs(collection(db, "Products", category, "items"));
-    querySnapshot.forEach((docu) => {
-      const data = docu.data();
-      if (data.nombre.toLowerCase().includes(searchInput)) {
-        const card = document.createElement("div");
-        card.classList.add("product-card");
-        card.innerHTML = `
-          <img src="${data.imagenUrl}" alt="${data.nombre}">
-          <h3>${data.nombre}</h3>
-          <p>Precio: $${data.precio}</p>
-          <p>Disponibles: ${data.cantidad}</p>
-        `;
-        productContainer.appendChild(card);
-      }
-    });
-  }
-});
+  paginatedProducts.forEach(product => {
+    const card = document.createElement("div");
+    card.classList.add("product-card");
+    card.innerHTML = `
+      <img src="${product.imagenUrl}" alt="${product.nombre}">
+      <h3>${product.nombre}</h3>
+      <p class="price">Precio: $${product.precio}</p>
+      <p class="stock" style="color: ${product.cantidad > 0 ? '#6c757d' : 'red'};">
+        ${product.cantidad > 0 ? `Disponibles: ${product.cantidad}` : 'Sin stock'}
+      </p>
+    `;
+    productContainer.appendChild(card);
+  });
 
-// Buscar productos por nombre
+  updatePagination(products.length, null, products); // Actualizar paginación para productos filtrados
+}
+
+// Buscar productos por nombre al presionar el botón
 document.getElementById("searchButton").addEventListener("click", async () => {
   const searchInput = document.getElementById("searchInput").value.toLowerCase();
   const productContainer = document.getElementById("productContainer");
@@ -210,28 +220,46 @@ document.getElementById("searchButton").addEventListener("click", async () => {
     return;
   }
 
-  const categories = [
-    "automotriz", "construccion", "electricidad", "gasfiteria", "griferia",
-    "herramientas", "jardineria", "pinturas", "seguridad"
-  ];
+  const filteredProducts = allProductsCache.filter(product =>
+    product.nombre.toLowerCase().includes(searchInput)
+  );
 
-  for (const category of categories) {
-    const querySnapshot = await getDocs(collection(db, "Products", category, "items"));
-    querySnapshot.forEach((docu) => {
-      const data = docu.data();
-      if (data.nombre.toLowerCase().includes(searchInput)) {
-        const card = document.createElement("div");
-        card.classList.add("product-card");
-        card.innerHTML = `
-          <img src="${data.imagenUrl}" alt="${data.nombre}">
-          <h3>${data.nombre}</h3>
-          <p>Precio: $${data.precio}</p>
-          <p>Disponibles: ${data.cantidad}</p>
-        `;
-        productContainer.appendChild(card);
-      }
-    });
+  if (filteredProducts.length === 0) {
+    productContainer.innerHTML = "<p>No se encontraron productos.</p>";
+    document.getElementById("paginationContainer").innerHTML = ""; // Limpiar paginación
+    return;
   }
+
+  displayFilteredProducts(filteredProducts); // Mostrar productos filtrados
+});
+
+// Aplicar filtros
+document.getElementById("applyFiltersButton").addEventListener("click", () => {
+  const minPrice = parseFloat(document.getElementById("minPrice").value) || 0;
+  const maxPrice = parseFloat(document.getElementById("maxPrice").value) || Infinity;
+  const availabilityFilter = document.getElementById("availabilityFilter").value;
+
+  const filteredProducts = allProductsCache.filter(product => {
+    const matchesPrice = product.precio >= minPrice && product.precio <= maxPrice;
+    const matchesAvailability =
+      availabilityFilter === "available" ? product.cantidad > 0 :
+      availabilityFilter === "unavailable" ? product.cantidad === 0 :
+      true;
+
+    return matchesPrice && matchesAvailability;
+  });
+
+  displayFilteredProducts(filteredProducts);
+});
+
+// Reiniciar filtros
+document.getElementById("resetFiltersButton").addEventListener("click", () => {
+  document.getElementById("searchInput").value = "";
+  document.getElementById("minPrice").value = "";
+  document.getElementById("maxPrice").value = "";
+  document.getElementById("availabilityFilter").value = "";
+
+  loadProductsForPurchase(); // Recargar todos los productos
 });
 
 // Cargar productos al inicio
