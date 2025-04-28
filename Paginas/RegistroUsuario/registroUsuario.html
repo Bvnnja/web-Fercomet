@@ -10,64 +10,63 @@
     <link rel="stylesheet" href="registroUsuario.css"> <!-- Para el formulario -->
   </head>
 
-
-<div id="navbar-placeholder"></div>
-<div class="center-wrapper">
 <body class="bg-light">
-  <div class="containerR wide-container my-5">
-    <h2 class="text-center fw-bold mb-4">Crear nueva cuenta de cliente</h2>
+  <div id="navbar-placeholder"></div>
+  <div class="center-wrapper">
+    <div class="containerR wide-container my-5">
+      <h2 class="text-center fw-bold mb-4">Crear nueva cuenta de cliente</h2>
 
-    <form id="registerForm">
-      <!-- Sección 1: Información Personal -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="card-title fw-semibold text-secondary">Información Personal</h5>
-          <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="nombre" placeholder="Ingresa tu nombre" required>
-          </div>
-          <div class="mb-3">
-            <label for="apellido" class="form-label">Apellidos <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="apellido" placeholder="Ingresa tus apellidos" required>
-          </div>
-          <div class="mb-3">
-            <label for="rut" class="form-label">Rut <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="rut" placeholder="12.345.678-9" required>
+      <form id="registerForm">
+        <!-- Sección 1: Información Personal -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title fw-semibold text-secondary">Información Personal</h5>
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="nombre" placeholder="Ingresa tu nombre" required>
+            </div>
+            <div class="mb-3">
+              <label for="apellido" class="form-label">Apellidos <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="apellido" placeholder="Ingresa tus apellidos" required>
+            </div>
+            <div class="mb-3">
+              <label for="rut" class="form-label">Rut <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="rut" placeholder="12.345.678-9" required>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Sección 2: Información de Inicio de Sesión -->
-      <div class="card mb-">
-        <div class="card-body">
-          <h5 class="card-title fw-semibold text-secondary">Información de inicio de sesión</h5>
-          
-          <div class="mb-3">
-            <label for="correo" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
-            <input type="email" class="form-control" id="email" placeholder="Ingresa tu correo" required>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Contraseña <span class="text-danger">*</span></label>
-            <input type="password" class="form-control" id="password" placeholder="Crea una contraseña" required>
-            <div class="form-text" id="passwordStrength">Fuerza de la contraseña: <span class="text-muted">Sin contraseña</span></div>
-          </div>
-          <div class="mb-3">
-            <label for="confirmar" class="form-label">Confirmar contraseña <span class="text-danger">*</span></label>
-            <input type="password" class="form-control" id="confirmar" placeholder="Confirma tu contraseña" required>
-          </div>
-          <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" id="mostrarPass">
-            <label class="form-check-label" for="mostrarPass">Mostrar Contraseña</label>
+        <!-- Sección 2: Información de Inicio de Sesión -->
+        <div class="card mb-">
+          <div class="card-body">
+            <h5 class="card-title fw-semibold text-secondary">Información de inicio de sesión</h5>
+            
+            <div class="mb-3">
+              <label for="correo" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="email" placeholder="Ingresa tu correo" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña <span class="text-danger">*</span></label>
+              <input type="password" class="form-control" id="password" placeholder="Crea una contraseña" required>
+              <div class="form-text" id="passwordStrength">Fuerza de la contraseña: <span class="text-muted">Sin contraseña</span></div>
+            </div>
+            <div class="mb-3">
+              <label for="confirmar" class="form-label">Confirmar contraseña <span class="text-danger">*</span></label>
+              <input type="password" class="form-control" id="confirmar" placeholder="Confirma tu contraseña" required>
+            </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" id="mostrarPass">
+              <label class="form-check-label" for="mostrarPass">Mostrar Contraseña</label>
+            </div>
           </div>
         </div>
-      </div>
 
-      <button type="submit" id="botoncrear" class="btn btn-success w-100">Crear cuenta</button>
-    </form>
-    
+        <button type="submit" id="botoncrear" class="btn btn-success w-100">Crear cuenta</button>
+      </form>
+      
+    </div>
   </div>
-</div>
-  
+  <div id="footer-placeholder"></div>
 
   <script type="module" src="/Servicios/firebase.js"></script>
   <script type="module" src="registroUsuario.js"></script>
@@ -75,5 +74,4 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </body>
-<div id="footer-placeholder"></div>
 </html>

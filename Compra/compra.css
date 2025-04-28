@@ -235,3 +235,39 @@
     background-color: #32735B;
     color: white;
   }
+
+  /* Mensaje de éxito y error */
+  .mensaje-exito {
+    animation: fadeInOut 4s ease-in-out;
+    background-color: green;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  .mensaje-error {
+    animation: fadeInOut 4s ease-in-out;
+    background-color: red;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    10%, 90% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }

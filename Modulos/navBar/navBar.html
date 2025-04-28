@@ -89,15 +89,16 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalCarritoLabel">Tu Carrito</h5>
+        <h5 class="modal-title" id="modalCarritoLabel">Carrito</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body" id="contenido-carrito">
         <!-- Aquí se insertarán los productos con JS -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Seguir Comprando</button>
-        <a href="/Paginas/Carrito/checkout.html" class="btn btn-primary">Ir a Pagar</a>
+        <div class="total">Total: $0</div>
+        <button class="btn btn-danger w-100" id="vaciarCarrito">Vaciar carrito</button>
+        <a href="/Carrito/carrito.html" class="btn btn-primary w-100 mt-2" id="botonIrAPagar">Ir a pagar</a>
       </div>
     </div>
   </div>
@@ -110,16 +111,20 @@
   const renderizarCarrito = () => {
     const contenedor = document.getElementById("contenido-carrito");
     const contador = document.querySelector(".contador_carrito");
+    const botonIrAPagar = document.getElementById("botonIrAPagar");
 
-    if (!contenedor || !contador) return;
+    if (!contenedor || !contador || !botonIrAPagar) return;
 
     contenedor.innerHTML = "";
     contador.textContent = carrito.length;
 
     if (carrito.length === 0) {
       contenedor.innerHTML = "<p class='text-center'>Tu carrito está vacío 🛒</p>";
+      botonIrAPagar.setAttribute("disabled", "true");
       return;
     }
+
+    botonIrAPagar.removeAttribute("disabled");
 
     let total = 0;
     carrito.forEach((producto, index) => {
@@ -146,28 +151,28 @@
     contenedor.appendChild(totalHTML);
   };
 
-  // Al abrir el modal
-  document.getElementById("modalCarrito")?.addEventListener("show.bs.modal", renderizarCarrito);
-
-  // Eliminar item del carrito
-  document.addEventListener("click", (e) => {
-    if (e.target.classList.contains("eliminar-item")) {
-      const index = e.target.dataset.index;
-      carrito.splice(index, 1);
-      localStorage.setItem("carrito", JSON.stringify(carrito));
-      renderizarCarrito();
-    }
-  });
-
-  // Escucha para otros scripts que agregan productos
-  window.agregarAlCarrito = (producto) => {
-    carrito.push(producto);
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+  const actualizarCarritoGlobal = () => {
+    carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     renderizarCarrito();
   };
 
-  // Mostrar número de productos al cargar la página
-  document.addEventListener("DOMContentLoaded", renderizarCarrito);
+  // Actualizar carrito al cargar la página
+  document.addEventListener("DOMContentLoaded", () => {
+    actualizarCarritoGlobal();
+    renderizarCarrito();
+  });
+
+  // Escuchar cambios en el localStorage para sincronizar entre pestañas o recargas
+  window.addEventListener("storage", () => {
+    actualizarCarritoGlobal();
+    renderizarCarrito();
+  });
+
+  // Actualizar carrito al cambiar de página
+  window.addEventListener("pageshow", () => {
+    actualizarCarritoGlobal();
+    renderizarCarrito();
+  });
 </script>
 
 

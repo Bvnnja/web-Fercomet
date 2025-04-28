@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -14,9 +14,6 @@ const firebaseConfig = {
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-// Carrito global
-let cart = [];
 
 let currentPage = 1;
 const productsPerPage = 4;
@@ -46,16 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
       await loadProductsForPurchase(category.id);
     });
     categoryButtonsContainer.appendChild(button);
-  });
-});
-
-// Agregar filtro de categorías
-document.addEventListener("DOMContentLoaded", () => {
-  const categoryFilter = document.getElementById("categoryFilter");
-
-  categoryFilter.addEventListener("change", async () => {
-    const selectedCategory = categoryFilter.value;
-    await loadProductsForPurchase(selectedCategory);
   });
 });
 
@@ -109,25 +96,60 @@ async function loadProductsForPurchase(selectedCategory = null, page = 1) {
       const price = parseFloat(button.dataset.precio);
       const available = parseInt(button.dataset.stock);
 
-      const cantidadCompra = parseInt(prompt(`¿Cuántos '${name}' quieres comprar?`, "1"));
-
-      if (cantidadCompra > 0 && cantidadCompra <= available) {
-        const existingProductIndex = cart.findIndex(item => item.productId === productId);
-
-        if (existingProductIndex !== -1) {
-          cart[existingProductIndex].cantidad += cantidadCompra;
-        } else {
-          cart.push({ category, productId, name, price, cantidad: cantidadCompra });
-        }
-
-        updateCartUI();
-      } else {
-        alert("Cantidad no válida o excede el stock.");
+      if (available <= 0) {
+        mostrarMensajeNoStock(name); // Mostrar mensaje de error
+        return;
       }
+
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const existingProductIndex = cart.findIndex(item => item.productId === productId);
+
+      if (existingProductIndex !== -1) {
+        if (cart[existingProductIndex].cantidad < available) {
+          cart[existingProductIndex].cantidad += 1;
+        } else {
+          mostrarMensajeNoStock(name); // Mostrar mensaje de error
+          return;
+        }
+      } else {
+        cart.push({ category, productId, name, price, cantidad: 1 });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      mostrarMensajeExito(name); // Mostrar mensaje de éxito
+      window.dispatchEvent(new Event("carritoActualizado")); // Notificar actualización
     });
   });
 
   updatePagination(allProductsCache.length, selectedCategory);
+}
+
+// Función para mostrar el mensaje de éxito
+function mostrarMensajeExito(nombreProducto) {
+  const mensaje = document.createElement("div");
+  mensaje.className = "mensaje-exito position-fixed bottom-0 end-0 m-3 p-3 bg-success text-white rounded shadow";
+  mensaje.style.zIndex = "1050";
+  mensaje.innerHTML = `<strong>¡Producto "${nombreProducto}" agregado al carrito con éxito!</strong>`;
+
+  document.body.appendChild(mensaje);
+
+  setTimeout(() => {
+    mensaje.remove();
+  }, 4000); // El mensaje desaparece después de 4 segundos
+}
+
+// Función para mostrar el mensaje de error (sin stock)
+function mostrarMensajeNoStock(nombreProducto) {
+  const mensaje = document.createElement("div");
+  mensaje.className = "mensaje-error position-fixed bottom-0 end-0 m-3 p-3 bg-danger text-white rounded shadow";
+  mensaje.style.zIndex = "1050";
+  mensaje.innerHTML = `<strong>El producto "${nombreProducto}" no tiene stock disponible.</strong>`;
+
+  document.body.appendChild(mensaje);
+
+  setTimeout(() => {
+    mensaje.remove();
+  }, 4000); // El mensaje desaparece después de 4 segundos
 }
 
 // Actualizar la interfaz de paginación
@@ -170,39 +192,11 @@ document.getElementById("searchInput").addEventListener("input", async () => {
           <h3>${data.nombre}</h3>
           <p>Precio: $${data.precio}</p>
           <p>Disponibles: ${data.cantidad}</p>
-          <button class="add-to-cart" data-category="${category}" data-id="${docu.id}" data-nombre="${data.nombre}" data-precio="${data.precio}" data-stock="${data.cantidad}">Agregar al carrito</button>
         `;
         productContainer.appendChild(card);
       }
     });
   }
-
-  // Añadir eventos a los botones
-  document.querySelectorAll(".add-to-cart").forEach(button => {
-    button.addEventListener("click", () => {
-      const category = button.dataset.category;
-      const productId = button.dataset.id;
-      const name = button.dataset.nombre;
-      const price = parseFloat(button.dataset.precio);
-      const available = parseInt(button.dataset.stock);
-
-      const cantidadCompra = parseInt(prompt(`¿Cuántos '${name}' quieres comprar?`, "1"));
-
-      if (cantidadCompra > 0 && cantidadCompra <= available) {
-        const existingProductIndex = cart.findIndex(item => item.productId === productId);
-
-        if (existingProductIndex !== -1) {
-          cart[existingProductIndex].cantidad += cantidadCompra;
-        } else {
-          cart.push({ category, productId, name, price, cantidad: cantidadCompra });
-        }
-
-        updateCartUI();
-      } else {
-        alert("Cantidad no válida o excede el stock.");
-      }
-    });
-  });
 });
 
 // Buscar productos por nombre
@@ -233,97 +227,12 @@ document.getElementById("searchButton").addEventListener("click", async () => {
           <h3>${data.nombre}</h3>
           <p>Precio: $${data.precio}</p>
           <p>Disponibles: ${data.cantidad}</p>
-          <button class="add-to-cart" data-category="${category}" data-id="${docu.id}" data-nombre="${data.nombre}" data-precio="${data.precio}" data-stock="${data.cantidad}">Agregar al carrito</button>
         `;
         productContainer.appendChild(card);
       }
     });
   }
-
-  // Añadir eventos a los botones
-  document.querySelectorAll(".add-to-cart").forEach(button => {
-    button.addEventListener("click", () => {
-      const category = button.dataset.category;
-      const productId = button.dataset.id;
-      const name = button.dataset.nombre;
-      const price = parseFloat(button.dataset.precio);
-      const available = parseInt(button.dataset.stock);
-
-      const cantidadCompra = parseInt(prompt(`¿Cuántos '${name}' quieres comprar?`, "1"));
-
-      if (cantidadCompra > 0 && cantidadCompra <= available) {
-        const existingProductIndex = cart.findIndex(item => item.productId === productId);
-
-        if (existingProductIndex !== -1) {
-          cart[existingProductIndex].cantidad += cantidadCompra;
-        } else {
-          cart.push({ category, productId, name, price, cantidad: cantidadCompra });
-        }
-
-        updateCartUI();
-      } else {
-        alert("Cantidad no válida o excede el stock.");
-      }
-    });
-  });
 });
-
-// Actualizar la interfaz del carrito
-function updateCartUI() {
-  const cartList = document.getElementById('cartList');
-  cartList.innerHTML = "";
-
-  if (cart.length === 0) {
-    cartList.innerHTML = "<li>El carrito está vacío</li>";
-    return;
-  }
-
-  cart.forEach((item, index) => {
-    const li = document.createElement('li');
-    li.innerHTML = `
-      ${item.name} - $${item.price} x ${item.cantidad} 
-      <button onclick="removeFromCart(${index})">Eliminar</button>
-    `;
-    cartList.appendChild(li);
-  });
-}
-
-// Eliminar producto del carrito
-window.removeFromCart = function(index) {
-  cart.splice(index, 1);
-  updateCartUI();
-}
-
-// Realizar la compra y actualizar las cantidades
-window.checkout = async function () {
-  if (cart.length === 0) {
-    alert("El carrito está vacío.");
-    return;
-  }
-
-  for (const item of cart) {
-    const productRef = doc(db, "Products", item.category, "items", item.productId);
-    const docSnap = await getDoc(productRef);
-    if (docSnap.exists()) {
-      const productData = docSnap.data();
-      const newQuantity = productData.cantidad - item.cantidad;
-
-      if (newQuantity < 0) {
-        alert(`No hay suficiente stock de ${item.name}.`);
-        return;
-      }
-
-      await updateDoc(productRef, {
-        cantidad: newQuantity
-      });
-    }
-  }
-
-  alert("Compra realizada exitosamente.");
-  cart = [];
-  updateCartUI();
-  loadProductsForPurchase(); // Actualizar el stock en pantalla
-}
 
 // Cargar productos al inicio
 loadProductsForPurchase();
