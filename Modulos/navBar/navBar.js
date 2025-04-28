@@ -48,6 +48,21 @@ fetch('../../Modulos/navBar/navbar.html')
       `;
       navbar.prepend(usuarioItem);
 
+      // Mostrar botón de administración si el usuario es admin
+      if (usuario.email === "adminFercomet@gmail.com") {
+        const adminItem = document.createElement('li');
+        adminItem.className = 'nav-item dropdown';
+        adminItem.innerHTML = `
+          <a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Administración
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+            <li><a class="dropdown-item" href="/Paginas/AgregarProducto/agregarProducto.html">Agregar Producto</a></li>
+          </ul>
+        `;
+        navbar.prepend(adminItem);
+      }
+
       // Cerrar sesión
       document.getElementById('logoutBtn').addEventListener('click', function () {
         localStorage.removeItem('Usuario');
@@ -105,7 +120,7 @@ const renderizarCarrito = () => {
     item.classList.add("d-flex", "justify-content-between", "align-items-center", "mb-3");
     item.innerHTML = `
       <div class="d-flex align-items-center">
-        <img src="${producto.imagen || '/imagenes/default-product.png'}" alt="${producto.name}" class="img-thumbnail me-3" style="width: 60px; height: 60px;">
+        <img src="${producto.imageUrl}" alt="${producto.name}" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
         <div>
           <h6 class="mb-1">${producto.name}</h6>
           <small class="text-muted">${producto.descripcion || ""}</small>
@@ -117,29 +132,74 @@ const renderizarCarrito = () => {
         </div>
       </div>
       <div class="text-end">
-        <span class="fw-bold d-block">$${(producto.price * producto.cantidad).toFixed(2)}</span>
+        <span class="fw-bold d-block">$${(producto.price * producto.cantidad).toLocaleString('es-CL')}</span>
         <button class="btn btn-sm btn-danger eliminar-item mt-2" data-index="${index}"><i class="bi bi-trash"></i></button>
       </div>
     `;
     contenedor.appendChild(item);
   });
 
-  totalElement.textContent = `Total: $${total.toFixed(2)}`;
+  totalElement.textContent = `Total: $${total.toLocaleString('es-CL')}`;
+};
+
+// Crear notificación centrada para confirmar vaciar carrito
+const crearNotificacionCentrada = (mensaje, onConfirm) => {
+  // Crear fondo oscuro
+  const overlay = document.createElement("div");
+  overlay.className = "notificacion-overlay";
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+  overlay.style.zIndex = "1060"; // Asegurar que esté por delante del modal del carrito
+
+  // Crear contenedor de la notificación
+  const notificacion = document.createElement("div");
+  notificacion.className = "notificacion-centrada bg-light border rounded shadow p-4";
+  notificacion.style.position = "fixed";
+  notificacion.style.top = "50%";
+  notificacion.style.left = "50%";
+  notificacion.style.transform = "translate(-50%, -50%)";
+  notificacion.style.zIndex = "1070"; // Asegurar que esté por delante del overlay
+  notificacion.innerHTML = `
+    <p class="mb-3">${mensaje}</p>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-sm btn-secondary me-2" id="cancelarNotificacion">Cancelar</button>
+      <button class="btn btn-sm btn-danger" id="confirmarNotificacion">Vaciar</button>
+    </div>
+  `;
+
+  // Agregar notificación y fondo al DOM
+  document.body.appendChild(overlay);
+  document.body.appendChild(notificacion);
+
+  // Manejar eventos de los botones
+  document.getElementById("cancelarNotificacion").onclick = () => {
+    document.body.removeChild(notificacion);
+    document.body.removeChild(overlay);
+  };
+  document.getElementById("confirmarNotificacion").onclick = () => {
+    onConfirm();
+    document.body.removeChild(notificacion);
+    document.body.removeChild(overlay);
+  };
 };
 
 // Escuchar eventos para aumentar, disminuir, eliminar productos y vaciar carrito
 document.addEventListener("click", (e) => {
   const carrito = JSON.parse(localStorage.getItem("cart")) || [];
-  if (e.target.classList.contains("aumentar-cantidad")) {
-    const index = parseInt(e.target.dataset.index, 10);
+  if (e.target.closest(".aumentar-cantidad")) {
+    const index = parseInt(e.target.closest(".aumentar-cantidad").dataset.index, 10);
     if (!isNaN(index) && index >= 0 && index < carrito.length) {
       carrito[index].cantidad += 1;
       localStorage.setItem("cart", JSON.stringify(carrito));
       renderizarCarrito();
       actualizarContadorCarrito();
     }
-  } else if (e.target.classList.contains("disminuir-cantidad")) {
-    const index = parseInt(e.target.dataset.index, 10);
+  } else if (e.target.closest(".disminuir-cantidad")) {
+    const index = parseInt(e.target.closest(".disminuir-cantidad").dataset.index, 10);
     if (!isNaN(index) && index >= 0 && index < carrito.length) {
       if (carrito[index].cantidad > 1) {
         carrito[index].cantidad -= 1;
@@ -148,26 +208,24 @@ document.addEventListener("click", (e) => {
         actualizarContadorCarrito();
       }
     }
-  } else if (e.target.classList.contains("eliminar-item")) {
-    const index = parseInt(e.target.dataset.index, 10);
+  } else if (e.target.closest(".eliminar-item")) {
+    const index = parseInt(e.target.closest(".eliminar-item").dataset.index, 10);
     if (!isNaN(index) && index >= 0 && index < carrito.length) {
       const producto = carrito[index];
-      const confirmacion = confirm(`¿Estás seguro de que deseas eliminar "${producto.name}" del carrito?`);
-      if (confirmacion) {
+      crearNotificacionCentrada(`¿Estás seguro de que deseas eliminar "${producto.name}" del carrito?`, () => {
         carrito.splice(index, 1);
         localStorage.setItem("cart", JSON.stringify(carrito));
         renderizarCarrito();
         actualizarContadorCarrito();
-      }
+      });
     }
   } else if (e.target.id === "vaciarCarrito") {
     if (carrito.length > 0) {
-      const confirmacion = confirm("¿Estás seguro de que deseas vaciar todo el carrito?");
-      if (confirmacion) {
+      crearNotificacionCentrada("¿Estás seguro de que deseas vaciar todo el carrito?", () => {
         localStorage.removeItem("cart");
         renderizarCarrito();
         actualizarContadorCarrito();
-      }
+      });
     }
   }
 });

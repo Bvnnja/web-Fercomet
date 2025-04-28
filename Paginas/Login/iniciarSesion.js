@@ -8,6 +8,52 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Función para mostrar el mensaje personalizado
+function mostrarMensajePersonalizado(mensaje) {
+  const overlay = document.createElement("div");
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+  overlay.style.display = "flex";
+  overlay.style.alignItems = "center";
+  overlay.style.justifyContent = "center";
+  overlay.style.zIndex = "1000";
+
+  const mensajeDiv = document.createElement("div");
+  mensajeDiv.style.backgroundColor = "#fff";
+  mensajeDiv.style.padding = "40px";
+  mensajeDiv.style.borderRadius = "16px";
+  mensajeDiv.style.boxShadow = "0 0 20px rgba(0, 0, 0, 0.5)";
+  mensajeDiv.style.textAlign = "center";
+  mensajeDiv.style.fontSize = "18px";
+  mensajeDiv.style.color = "#000";
+  mensajeDiv.style.display = "flex";
+  mensajeDiv.style.flexDirection = "column";
+  mensajeDiv.style.alignItems = "center";
+
+  const logoImg = document.createElement("img");
+  logoImg.src = "/imagenes/Captura de pantalla 2025-04-07 193041.png"; // Ruta del logo de Fercomet
+  logoImg.alt = "Fercomet Logo";
+  logoImg.style.maxWidth = "150px";
+  logoImg.style.marginBottom = "20px";
+
+  const mensajeTexto = document.createElement("p");
+  mensajeTexto.textContent = mensaje;
+  mensajeTexto.style.margin = "0";
+
+  mensajeDiv.appendChild(logoImg); // Agregar el logo al cuadro
+  mensajeDiv.appendChild(mensajeTexto); // Agregar el texto al cuadro
+  overlay.appendChild(mensajeDiv);
+  document.body.appendChild(overlay);
+
+  setTimeout(() => {
+    document.body.removeChild(overlay);
+  }, 5000);
+}
+
 // Manejar el formulario de inicio de sesión
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -45,9 +91,11 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       localStorage.setItem("Usuario", JSON.stringify(userData));
     }
 
-    alert("Inicio de sesión exitoso. Bienvenido, " + (userDoc.data()?.nombre || "Usuario"));
+    mostrarMensajePersonalizado("Inicio de sesión exitoso. Bienvenido, " + (userDoc.data()?.nombre || "Usuario"));
     // Redirigir al usuario a la página principal o dashboard
-    window.location.href = "/Paginas/Inicio/index.html";
+    setTimeout(() => {
+      window.location.href = "/Paginas/Inicio/index.html";
+    }, 5000);
   } catch (error) {
     console.error("Error al iniciar sesión:", error.message);
     errorMessage.textContent = "Correo o contraseña incorrectos.";

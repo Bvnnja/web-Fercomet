@@ -48,6 +48,7 @@ function updateCartUI() {
     const li = document.createElement('li');
     li.classList.add("d-flex", "justify-content-between", "align-items-center", "mb-3");
     li.innerHTML = `
+      <img src="${item.imageUrl}" alt="${item.name}" style="width: 80px; height: auto; margin-right: 15px;">
       <div class="product-info">
         <h6>${item.name}</h6>
         <p>Precio: $${item.price}</p>

@@ -20,7 +20,7 @@ const productsPerPage = 4;
 let allProductsCache = []; // Cache para almacenar los productos
 
 // Generar botones de categorías dinámicamente
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const categoryButtonsContainer = document.getElementById("categoryButtons");
   const categories = [
     { id: "", name: "Todos" },
@@ -44,7 +44,40 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     categoryButtonsContainer.appendChild(button);
   });
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const searchQuery = urlParams.get("search");
+
+  if (searchQuery) {
+    document.getElementById("searchInput").value = searchQuery; // Rellenar el campo de búsqueda
+    await searchProductsByName(searchQuery); // Buscar directamente por el término
+  } else {
+    await loadProductsForPurchase(); // Cargar todos los productos si no hay búsqueda
+  }
 });
+
+// Nueva función para buscar productos por nombre
+async function searchProductsByName(query) {
+  const productContainer = document.getElementById("productContainer");
+  productContainer.innerHTML = "<p>Cargando productos...</p>";
+
+  if (allProductsCache.length === 0) {
+    // Cargar todos los productos en caché si aún no están cargados
+    await loadProductsForPurchase();
+  }
+
+  const filteredProducts = allProductsCache.filter(product =>
+    product.nombre.toLowerCase().includes(query.toLowerCase())
+  );
+
+  if (filteredProducts.length === 0) {
+    productContainer.innerHTML = "<p>No se encontraron productos.</p>";
+    document.getElementById("paginationContainer").innerHTML = ""; // Limpiar paginación
+    return;
+  }
+
+  displayFilteredProducts(filteredProducts); // Mostrar productos filtrados
+}
 
 // Cargar productos en tarjetas con paginación
 async function loadProductsForPurchase(selectedCategory = null, page = 1) {
@@ -52,84 +85,30 @@ async function loadProductsForPurchase(selectedCategory = null, page = 1) {
   const productContainer = document.getElementById('productContainer');
   productContainer.innerHTML = "";
 
-  if (allProductsCache.length === 0 || selectedCategory !== null) {
-    allProductsCache = []; // Limpiar cache si se selecciona una nueva categoría
-    const categories = selectedCategory
-      ? [selectedCategory]
-      : ["automotriz", "construccion", "electricidad", "gasfiteria", "griferia", "herramientas", "jardineria", "pinturas", "seguridad"];
+  if (selectedCategory !== null) {
+    // Filtrar productos por categoría
+    const filteredProducts = allProductsCache.filter(product => product.category === selectedCategory);
+    displayFilteredProducts(filteredProducts);
+    return;
+  }
 
+  if (allProductsCache.length === 0) {
+    // Cargar todos los productos en caché si aún no están cargados
+    const categories = ["automotriz", "construccion", "electricidad", "gasfiteria", "griferia", "herramientas", "jardineria", "pinturas", "seguridad"];
     for (const category of categories) {
       const querySnapshot = await getDocs(collection(db, "Products", category, "items"));
       querySnapshot.forEach((docu) => {
         const data = docu.data();
-        allProductsCache.push({ ...data, category, id: docu.id });
+        if (!allProductsCache.some(product => product.id === docu.id && product.category === category)) {
+          allProductsCache.push({ ...data, category, id: docu.id });
+        }
       });
     }
   }
 
   const startIndex = (page - 1) * productsPerPage;
   const paginatedProducts = allProductsCache.slice(startIndex, startIndex + productsPerPage);
-
-  paginatedProducts.forEach((product) => {
-    const card = document.createElement("div");
-    card.classList.add("product-card");
-    card.innerHTML = `
-      <div class="product-info" style="cursor: pointer;">
-        <img src="${product.imagenUrl}" alt="${product.nombre}">
-        <h3>${product.nombre}</h3>
-      </div>
-      <p class="price">Precio: $${product.precio}</p>
-      <p class="stock" style="color: ${product.cantidad > 0 ? '#6c757d' : 'red'};">
-        ${product.cantidad > 0 ? `Disponibles: ${product.cantidad}` : 'Sin stock'}
-      </p>
-      <button class="add-to-cart" data-category="${product.category}" data-id="${product.id}" data-nombre="${product.nombre}" data-precio="${product.precio}" data-stock="${product.cantidad}" ${product.cantidad === 0 ? 'disabled' : ''}>
-        Agregar al carrito
-      </button>
-    `;
-
-    // Redirigir al detalle del producto al hacer clic en la tarjeta o el nombre
-    card.querySelector(".product-info").addEventListener("click", () => {
-      window.location.href = `../DetalleProducto/productoDetalle.html?id=${product.id}&category=${product.category}`;
-    });
-
-    productContainer.appendChild(card);
-  });
-
-  // Añadir eventos a los botones
-  document.querySelectorAll(".add-to-cart").forEach(button => {
-    button.addEventListener("click", () => {
-      const category = button.dataset.category;
-      const productId = button.dataset.id;
-      const name = button.dataset.nombre;
-      const price = parseFloat(button.dataset.precio);
-      const available = parseInt(button.dataset.stock);
-
-      if (available <= 0) {
-        mostrarMensajeNoStock(name); // Mostrar mensaje de error
-        return;
-      }
-
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const existingProductIndex = cart.findIndex(item => item.productId === productId);
-
-      if (existingProductIndex !== -1) {
-        if (cart[existingProductIndex].cantidad < available) {
-          cart[existingProductIndex].cantidad += 1;
-        } else {
-          mostrarMensajeNoStock(name); // Mostrar mensaje de error
-          return;
-        }
-      } else {
-        cart.push({ category, productId, name, price, cantidad: 1 });
-      }
-
-      localStorage.setItem("cart", JSON.stringify(cart));
-      mostrarMensajeExito(name); // Mostrar mensaje de éxito
-      window.dispatchEvent(new Event("carritoActualizado")); // Notificar actualización
-    });
-  });
-
-  updatePagination(allProductsCache.length, selectedCategory);
+  displayFilteredProducts(paginatedProducts);
 }
 
 // Función para mostrar el mensaje de éxito

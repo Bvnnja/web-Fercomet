@@ -13,15 +13,20 @@
     <a class="navbar-brand" href="/Paginas/Inicio/index.html">
       <img src="/imagenes/Proyecto nuevo.png" alt="Ferretería Fercomet" class="logo-navbar">
     </a>
+    <!-- Mas adelante se puede agregar un buscador 
     <form class="d-flex ms-auto w-50" action="#" method="get">
       <input class="form-control me-2" type="search" placeholder="¿Qué estás buscando?" aria-label="Buscar">
       <button class="btn btn-outline-dark" type="submit">Buscar</button>
-    </form>
+    </form> -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
       <ul class="navbar-nav ms-auto">
+        <!-- Botón de administración (se muestra dinámicamente si el usuario es admin) -->
+        <li class="nav-item" id="admin-button" style="display: none;">
+          <a class="nav-link text-dark" href="/Paginas/Administracion/administracion.html">Administración</a>
+        </li>
         <!-- Botones por defecto (se ocultan si hay usuario en JS) -->
         <li class="nav-item">
           <a class="nav-link text-dark" href="/Paginas/Login/login.html">Iniciar Sesión</a>
@@ -64,26 +69,27 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Herramientas de Construcción</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Cemento</a></li>
-            <li><a class="dropdown-item" href="#">Pernos</a></li>
-            <li><a class="dropdown-item" href="#">Ladrillos</a></li>
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=nuevo">Cemento</a></li>
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=pernos">Pernos</a></li>
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=ladrillos">Ladrillos</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Herramientas Eléctricas</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Taladros</a></li>
-            <li><a class="dropdown-item" href="#">Esmeriles</a></li>
-            <li><a class="dropdown-item" href="#">Sierras</a></li>
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=taladros">Taladros</a></li>
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=esmeriles">Esmeriles</a></li>
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=sierras">Sierras</a></li>
           </ul>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/Compra/comprar.html">Ver Todos los Productos</a>
+          <a class="nav-link" href="/Paginas/Compra/comprar.html">Ver Todos los Productos</a>
         </li>
       </ul>
     </div>
   </div>
 </nav>
+
 <!-- Modal Carrito -->
 <div class="modal fade" id="modalCarrito" tabindex="-1" aria-labelledby="modalCarritoLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -98,7 +104,7 @@
       <div class="modal-footer">
         <div class="total">Total: $0</div>
         <button class="btn btn-danger w-100" id="vaciarCarrito">Vaciar carrito</button>
-        <a href="/Carrito/carrito.html" class="btn btn-primary w-100 mt-2" id="botonIrAPagar">Ir a pagar</a>
+        <a href="/Paginas/Carrito/carrito.html" class="btn btn-primary w-100 mt-2" id="botonIrAPagar">Ir a pagar</a>
       </div>
     </div>
   </div>
