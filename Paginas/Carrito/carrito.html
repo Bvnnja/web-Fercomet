@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/Modulos/navBar/navBar.css">
+  <link rel="stylesheet" href="/Modulos/Footer/footer.css">
+  <link rel="stylesheet" href="carrito.css">
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+  <br>
+  <h1 class="text-center">Carro de compra</h1>
+  <div id="cartContainer">
+    <ul id="cartList" class="list-group">
+      <!-- Aquí se insertarán los productos con JS -->
+    </ul>
+    <div id="orderSummary">
+      <h5>Resumen del pedido</h5>
+      <div class="summary-item">
+        <span>Subtotal</span>
+        <span id="subtotal">$0.00</span>
+      </div>
+      <div class="summary-item total">
+        <span>Total del pedido</span>
+        <span id="total">$0.00</span>
+      </div>
+      <button id="checkoutButton" onclick="checkout()" disabled>Ir a pagar</button>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+</body>
+<script type="module" src="carrito.js"></script>
+<script src="/Modulos/navBar/navBar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Habilitar o deshabilitar el botón "Comprar" según el estado del carrito
+  function toggleCheckoutButton() {
+    const checkoutButton = document.getElementById("checkoutButton");
+    checkoutButton.disabled = cart.length === 0;
+  }
+  document.addEventListener("DOMContentLoaded", toggleCheckoutButton);
+  window.addEventListener("storage", toggleCheckoutButton);
+</script>
+</html>

@@ -1,0 +1,87 @@
+
+
+/* Contenedor principal */
+
+.center-wrapper {
+/* Ocupa todo el alto de la pantalla */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa; /* fondo opcional igual que el body */
+  padding: 60px 20px; /* espaciado opcional por si hay navbar fijo */
+  box-sizing: border-box;
+}
+
+/* Títulos */
+h2 {
+  color: #32735B;
+  font-size: 2rem;
+}
+
+.card-title {
+  color: #5A8C7A;
+  font-size: 1.2rem;
+  border-left: 4px solid #5A8C7A;
+  padding-left: 10px;
+}
+
+/* Inputs */
+input.form-control {
+  border-radius: 10px;
+  border: 1px solid #A6A6A6;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input.form-control:focus {
+  border-color: #32735B;
+  box-shadow: 0 0 5px rgba(50, 115, 91, 0.5);
+}
+
+/* Checkbox */
+.form-check-label {
+  user-select: none;
+}
+
+
+
+#botoncrear{
+  background-color: #32735B;
+  border: none;
+  padding: 12px;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 15px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+button[type="submit"]:hover {
+  background-color: #285E4B;
+  transform: translateY(-1px);
+}
+
+/* Fuerza de contraseña */
+#passwordStrength {
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+/* Textos y detalles */
+.text-danger {
+  font-size: 0.85rem;
+}
+
+.card {
+  border: none;
+  background-color: #e4e4e4;
+  border-radius: 15px;
+}
+
+
+/* Haz que el contenedor principal tenga más ancho */
+.wide-container {
+  width: 100%;
+  max-width: 1000px; /* Puedes ajustar este valor a gusto */
+  margin: 0 auto;
+  padding: 0 20px;
+}

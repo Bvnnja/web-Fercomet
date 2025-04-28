@@ -1,0 +1,92 @@
+/* Estilo general del contenedor */
+.editar-producto-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #ffffff; /* Blanco */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+/* Título principal */
+.editar-producto-container h1 {
+  text-align: center;
+  color: #467a6a; /* Verde del navbar */
+  margin-bottom: 20px;
+}
+
+/* Estilo del formulario */
+.editar-producto-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Estilo de las etiquetas */
+.editar-producto-form label {
+  font-weight: bold;
+  color: #467a6a; /* Verde del navbar */
+}
+
+/* Estilo de los inputs y select */
+.editar-producto-form input,
+.editar-producto-form select {
+  padding: 10px;
+  border: 1px solid #467a6a; /* Verde del navbar */
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Estilo del botón */
+.editar-producto-form button {
+  padding: 10px 15px;
+  background-color: #467a6a; /* Verde del navbar */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.editar-producto-form button:hover {
+  background-color: #3b6254; /* Verde más oscuro para hover */
+}
+
+/* Estilo de la imagen previa */
+#imagenPrevia {
+  display: block;
+  margin: 10px auto;
+  max-width: 150px;
+  max-height: 150px;
+  border: 2px solid #467a6a; /* Verde del navbar */
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+/* Espaciado entre los elementos */
+.editar-producto-form input,
+.editar-producto-form select,
+.editar-producto-form button {
+  margin-bottom: 10px;
+}
+
+/* Estilo de la tarjeta */
+.card {
+  border: 1px solid #467a6a; /* Verde del navbar */
+}
+
+.card-header {
+  background-color: #467a6a; /* Verde del navbar */
+  color: white;
+  text-align: center;
+}
+
+.card-body {
+  background-color: #ffffff; /* Blanco */
+}
+
+

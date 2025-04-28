@@ -1,0 +1,186 @@
+<!-- Navbar Superior: Mensajes -->
+<nav class="er-navbar">
+  <div class="messages">
+    <p>Compra Ahora y Retira en nuestra Tienda <a href="https://maps.app.goo.gl/oRcJcBEnWKF4pKnK6" class="mensage-link">¡AQUÍ!</a></p>
+    <p>Conoce Nuestra Tienda <a href="https://maps.app.goo.gl/oRcJcBEnWKF4pKnK6" class="mensage-link">¡AQUÍ!</a></p>
+    <p>Haz seguimiento de tu Compra <a href="https://maps.app.goo.gl/oRcJcBEnWKF4pKnK6" class="mensage-link">¡AQUÍ!</a></p>
+  </div>
+</nav>
+
+<!-- Navbar Principal -->
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/Paginas/Inicio/index.html">
+      <img src="/imagenes/Proyecto nuevo.png" alt="Ferretería Fercomet" class="logo-navbar">
+    </a>
+    <!-- Mas adelante se puede agregar un buscador 
+    <form class="d-flex ms-auto w-50" action="#" method="get">
+      <input class="form-control me-2" type="search" placeholder="¿Qué estás buscando?" aria-label="Buscar">
+      <button class="btn btn-outline-dark" type="submit">Buscar</button>
+    </form> -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <!-- Botón de administración (se muestra dinámicamente si el usuario es admin) -->
+        <li class="nav-item" id="admin-button" style="display: none;">
+          <a class="nav-link text-dark" href="/Paginas/Administracion/administracion.html">Administración</a>
+        </li>
+        <!-- Botones por defecto (se ocultan si hay usuario en JS) -->
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="/Paginas/Login/login.html">Iniciar Sesión</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="/Paginas/RegistroUsuario/registroUsuario.html">Registrarse</a>
+        </li>
+        <!-- Dropdown de usuario (se muestra dinámicamente si hay usuario en localStorage) -->
+        <li class="nav-item dropdown" id="usuario-dropdown" style="display: none;">
+          <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle me-2"></i><span id="usuario-nombre">Usuario</span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="#">Datos personales</a></li>
+            <li><a class="dropdown-item" href="#" id="cerrar-sesion">Cerrar sesión</a></li>
+          </ul>
+        </li>
+        <!-- Carrito de compras -->
+        <li class="nav-item position-relative me-3">
+          <a class="nav-link text-dark" href="#" data-bs-toggle="modal" data-bs-target="#modalCarrito">
+            <i class="bi bi-cart-fill me-1"></i>Carrito
+            <span class="contador_carrito position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              0
+            </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
+
+<!-- Navbar Inferior: Categorías -->
+<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse justify-content-center">
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Herramientas de Construcción</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=nuevo">Cemento</a></li>
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=pernos">Pernos</a></li>
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=ladrillos">Ladrillos</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Herramientas Eléctricas</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=taladros">Taladros</a></li>
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=esmeriles">Esmeriles</a></li>
+            <li><a class="dropdown-item" href="/Paginas/Compra/comprar.html?search=sierras">Sierras</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/Paginas/Compra/comprar.html">Ver Todos los Productos</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Modal Carrito -->
+<div class="modal fade" id="modalCarrito" tabindex="-1" aria-labelledby="modalCarritoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCarritoLabel">Carrito</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="contenido-carrito">
+        <!-- Aquí se insertarán los productos con JS -->
+      </div>
+      <div class="modal-footer">
+        <div class="total">Total: $0</div>
+        <button class="btn btn-danger w-100" id="vaciarCarrito">Vaciar carrito</button>
+        <a href="/Paginas/Carrito/carrito.html" class="btn btn-primary w-100 mt-2" id="botonIrAPagar">Ir a pagar</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="module">
+  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+  const renderizarCarrito = () => {
+    const contenedor = document.getElementById("contenido-carrito");
+    const contador = document.querySelector(".contador_carrito");
+    const botonIrAPagar = document.getElementById("botonIrAPagar");
+
+    if (!contenedor || !contador || !botonIrAPagar) return;
+
+    contenedor.innerHTML = "";
+    contador.textContent = carrito.length;
+
+    if (carrito.length === 0) {
+      contenedor.innerHTML = "<p class='text-center'>Tu carrito está vacío 🛒</p>";
+      botonIrAPagar.setAttribute("disabled", "true");
+      return;
+    }
+
+    botonIrAPagar.removeAttribute("disabled");
+
+    let total = 0;
+    carrito.forEach((producto, index) => {
+      total += parseFloat(producto.precio) || 0;
+
+      const item = document.createElement("div");
+      item.classList.add("d-flex", "justify-content-between", "align-items-center", "mb-3");
+      item.innerHTML = `
+        <div>
+          <h6 class="mb-1">${producto.nombre}</h6>
+          <small>${producto.descripcion || ""}</small>
+        </div>
+        <div>
+          <span class="fw-bold me-3">$${producto.precio}</span>
+          <button class="btn btn-sm btn-danger eliminar-item" data-index="${index}">X</button>
+        </div>
+      `;
+      contenedor.appendChild(item);
+    });
+
+    const totalHTML = document.createElement("div");
+    totalHTML.classList.add("mt-4", "text-end");
+    totalHTML.innerHTML = `<h5>Total: $${total.toFixed(0)}</h5>`;
+    contenedor.appendChild(totalHTML);
+  };
+
+  const actualizarCarritoGlobal = () => {
+    carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    renderizarCarrito();
+  };
+
+  // Actualizar carrito al cargar la página
+  document.addEventListener("DOMContentLoaded", () => {
+    actualizarCarritoGlobal();
+    renderizarCarrito();
+  });
+
+  // Escuchar cambios en el localStorage para sincronizar entre pestañas o recargas
+  window.addEventListener("storage", () => {
+    actualizarCarritoGlobal();
+    renderizarCarrito();
+  });
+
+  // Actualizar carrito al cambiar de página
+  window.addEventListener("pageshow", () => {
+    actualizarCarritoGlobal();
+    renderizarCarrito();
+  });
+</script>
+
+
+<script type="module" src="/Servicios/firebase.js"></script>
+<script type="module" src="/Servicios/iniciarSesion.js"></script>

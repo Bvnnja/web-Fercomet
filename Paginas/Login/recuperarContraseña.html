@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Contraseña</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+</head>
+<body>
+    <h1>Recuperar Contraseña</h1>
+    <form id="recuperar-form">
+        <label for="email">Correo Electrónico:</label>
+        <input type="email" id="email" required>
+        <button type="submit">Enviar</button>
+    </form>
+    <p id="mensaje"></p>
+
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA50EDq4nAaqNx3HICdZJPAnGNMdOsyb1k",
+            authDomain: "fercomet-32e92.firebaseapp.com",
+            projectId: "fercomet-32e92",
+            storageBucket: "fercomet-32e92.appspot.com",
+            messagingSenderId: "995994877980",
+            appId: "1:995994877980:web:1239c3e358b596e562dfd9",
+            measurementId: "G-J00DPD8T8X"
+        };
+
+        // Inicializar Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.getAuth(app);
+
+        // Manejar el envío del formulario
+        document.getElementById('recuperar-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const mensaje = document.getElementById('mensaje');
+
+            try {
+                // Corregir el uso del método sendPasswordResetEmail
+                await firebase.auth.sendPasswordResetEmail(auth, email);
+                mensaje.textContent = "Correo de recuperación enviado. Revisa tu bandeja de entrada.";
+                mensaje.style.color = "green";
+            } catch (error) {
+                mensaje.textContent = "Error: " + error.message;
+                mensaje.style.color = "red";
+            }
+        });
+    </script>
+</body>
+</html>

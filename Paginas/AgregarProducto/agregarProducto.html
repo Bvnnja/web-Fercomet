@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD Productos</title>
+  <!-- Enlazamos el archivo JavaScript -->
+  <script type="module" src="agregarProducto.js" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/Paginas/AgregarProducto/agregarProducto.css">
+  <link rel="stylesheet" href="/Modulos/navBar/navBar.css">
+  <link rel="stylesheet" href="/Modulos/Footer/footer.css">
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <div class="agregar-producto-container">
+    <form id="productForm" class="agregar-producto-form">
+      <h1>Formulario de Producto</h1>
+      <label for="nombre">Nombre del producto</label>
+      <input type="text" id="nombre" required><br>
+
+      <label for="precio">Precio</label>
+      <input type="number" id="precio" required><br>
+
+      <label for="unidad">Unidad (kg, unidad, etc.)</label>
+      <input type="text" id="unidad" required><br>
+
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" required style="width: 100%; height: 100px; resize: none; border: 2px solid #467a6a; border-radius: 4px; padding: 10px;"></textarea><br>
+
+      <div style="position: relative; display: flex; align-items: center;">
+        <div style="flex: 1;">
+          <label for="imagenUrl">URL de la imagen</label>
+          <input type="text" id="imagenUrl" required style="width: 100%;">
+        </div>
+        <i class="bi bi-question-circle" style="cursor: pointer; margin-left: 10px;" 
+           title="Para subir una imagen, haz clic en el botón 'Subir Imagen a Postimages'. Esto abrirá la página de Postimages en una nueva pestaña. 
+           Sigue estos pasos:
+           1. Haz clic en 'Elegir imágenes' y selecciona la imagen desde tu computadora.
+           2. Espera a que la imagen se cargue.
+           3. Copia el enlace generado (por ejemplo, el enlace directo).
+           4. Pega el enlace en este campo."></i>
+      </div><br>
+      <button type="button" onclick="window.open('https://postimages.org/', '_blank')">Subir Imagen a Postimages</button><br>
+
+      <label for="cantidad">Cantidad disponible</label>
+      <input type="number" id="cantidad" required><br>
+
+      <label for="categoria">Selecciona una categoría</label>
+      <select id="categoria" required>
+        <option value="">Selecciona una categoría</option>
+        <option value="automotriz">Automotriz</option>
+        <option value="construccion">Construcción</option>
+        <option value="electricidad">Electricidad</option>
+        <option value="gasfiteria">Gasfitería</option>
+        <option value="griferia">Grifería</option>
+        <option value="herramientas">Herramientas</option>
+        <option value="jardineria">Jardinería</option>
+        <option value="pinturas">Pinturas</option>
+        <option value="seguridad">Seguridad</option>
+      </select><br>
+
+      <button type="submit">Agregar Producto</button>
+    </form>
+
+    <h2 class="product-list-title text-center mt-4">Lista de Productos</h2>
+
+    <div class="filters-container" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+      <select id="filterCategory" style="width: 150px; padding: 10px; border: 2px solid #467a6a; border-radius: 4px;">
+        <option value="">Todos</option>
+        <option value="automotriz">Automotriz</option>
+        <option value="construccion">Construcción</option>
+        <option value="electricidad">Electricidad</option>
+        <option value="gasfiteria">Gasfitería</option>
+        <option value="griferia">Grifería</option>
+        <option value="herramientas">Herramientas</option>
+        <option value="jardineria">Jardinería</option>
+        <option value="pinturas">Pinturas</option>
+        <option value="seguridad">Seguridad</option>
+      </select>
+
+      <div style="display: flex; gap: 5px;">
+        <input type="text" id="searchProduct" placeholder="Buscar por nombre" 
+               style="padding: 10px; border: 2px solid #467a6a; border-radius: 4px; width: 300px;">
+        <button id="searchButton" style="padding: 10px 20px; background-color: #467a6a; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          Buscar
+        </button>
+      </div>
+    </div>
+
+    <ul id="productList" class="product-list"></ul>
+  </div>
+
+  <script src="/Modulos/navBar/navBar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="agregarProducto.js"></script>
+</body>
+</html>

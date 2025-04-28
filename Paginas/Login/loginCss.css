@@ -1,0 +1,114 @@
+/* Fuente y Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.center-wrapper {
+  min-height: 100vh; /* Ocupa todo el alto de la pantalla */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa; /* fondo opcional igual que el body */
+  padding: 60px 20px; /* espaciado opcional por si hay navbar fijo */
+  box-sizing: border-box;
+}
+
+
+/* Contenedor principal */
+.login-container {
+  background-color: white;
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Logo */
+.login-container .logo {
+  max-width: 220px;
+  margin-bottom: 20px;
+}
+
+/* Título */
+.login-container h1 {
+  color: #32735B;
+  margin-bottom: 24px;
+  font-size: 24px;
+}
+
+/* Inputs */
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #595959;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: 0.3s;
+}
+
+.form-group input:focus {
+  border-color: #32735B;
+  outline: none;
+  box-shadow: 0 0 5px rgba(50, 115, 91, 0.2);
+}
+
+/* Botón */
+.form-group button {
+  width: 100%;
+  background-color: #32735B;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-group button:hover {
+  background-color: #285e4b;
+}
+
+/* Enlaces */
+.form-links {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.form-links a {
+  color: #32735B;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.form-links a:hover {
+  color: #214a3a;
+  text-decoration: underline;
+}
+
+/* Mensaje de error */
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: left;
+}

@@ -1,0 +1,218 @@
+/* Estilo general del contenedor de la página */
+.agregar-producto-container {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 20px;
+}
+
+.agregar-producto-container h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  background-color: #467a6a; /* Fondo verde */
+  color: #ffffff; /* Texto blanco */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra del texto */
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.agregar-producto-container h2 {
+  text-align: center;
+  margin-top: 20px;
+  color: #467a6a; /* Color del navbar */
+}
+
+/* Estilo del formulario */
+.agregar-producto-form {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff; /* Fondo blanco */
+  color: #000000; /* Texto negro */
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Sombra más visible */
+}
+
+.agregar-producto-form h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  background-color: #467a6a; /* Fondo verde */
+  color: #ffffff; /* Texto blanco */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Sombra del texto */
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.agregar-producto-form label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.agregar-producto-form input, 
+.agregar-producto-form select, 
+.agregar-producto-form button {
+  background-color: #ffffff; /* Fondo blanco */
+  color: #000000; /* Texto negro */
+  border: 2px solid #467a6a; /* Borde verde */
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.agregar-producto-form input:focus, 
+.agregar-producto-form select:focus {
+  outline: none;
+  border-color: #3b6254; /* Verde más oscuro al enfocar */
+  box-shadow: 0 0 5px rgba(59, 98, 84, 0.5);
+}
+
+.agregar-producto-form button {
+  background-color: #467a6a; /* Color del navbar */
+  color: #ffffff; /* Texto blanco */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.agregar-producto-form button:hover {
+  background-color: #3b6254; /* Color más oscuro */
+}
+
+/* Estilo de los filtros */
+.filters-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filters-container select {
+  width: 150px;
+  padding: 10px;
+  border: 2px solid #467a6a;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.filters-container input {
+  padding: 10px;
+  border: 2px solid #467a6a;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 200px;
+}
+
+.filters-container button {
+  padding: 10px 20px;
+  background-color: #467a6a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.filters-container button:hover {
+  background-color: #3b6254;
+}
+
+/* Estilo de la lista de productos */
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.product-list-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #467a6a; /* Color del navbar */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Sombra del texto */
+  margin: 60px 0 40px; /* Más espacio arriba y abajo */
+  border-bottom: 2px solid #467a6a; /* Línea decorativa */
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.product-card {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.product-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-card .card-body {
+  padding: 15px;
+}
+
+.product-card .card-body h5 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #343a40;
+}
+
+.product-card .card-body p {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #6c757d;
+  max-height: 40px; /* Limitar la altura de la descripción */
+  overflow: hidden; /* Ocultar el texto que exceda la altura */
+  text-overflow: ellipsis; /* Agregar puntos suspensivos al final */
+  white-space: nowrap; /* Evitar que el texto se divida en varias líneas */
+}
+
+.product-card .card-body .price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #28a745;
+}
+
+.product-card .card-body button {
+  width: 100%; /* Abarcar todo el ancho */
+  padding: 10px;
+  margin: 5px 0; /* Espaciado uniforme */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.product-card .card-body button.delete {
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+.product-card .card-body button.delete:hover {
+  background-color: #a71d2a;
+}
+
+.product-card .card-body button.edit {
+  background-color: #28a745; /* Verde */
+  color: #ffffff;
+}
+
+.product-card .card-body button.edit:hover {
+  background-color: #218838; /* Verde más oscuro */
+}

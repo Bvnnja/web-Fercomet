@@ -1,0 +1,147 @@
+/* Estilo general */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* Contenedor principal */
+#cartContainer {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Lista de productos */
+#cartList {
+  flex: 3;
+  list-style: none;
+  padding: 0;
+}
+
+#cartList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+#cartList li:last-child {
+  border-bottom: none;
+}
+
+#cartList li img {
+  width: 80px;
+  height: auto;
+  margin-right: 15px;
+}
+
+#cartList li .product-info {
+  flex: 1;
+}
+
+#cartList li .product-info h6 {
+  margin: 0;
+  font-size: 1rem;
+  color: #495057;
+}
+
+#cartList li .product-info p {
+  margin: 5px 0;
+  color: #6c757d;
+}
+
+#cartList li .quantity-controls {
+  display: flex;
+  align-items: center;
+}
+
+#cartList li .quantity-controls button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#cartList li .quantity-controls button:hover {
+  background-color: #0056b3;
+}
+
+#cartList li .quantity-controls span {
+  margin: 0 10px;
+  font-size: 1rem;
+}
+
+#cartList li .remove-item {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#cartList li .remove-item:hover {
+  background-color: #c82333;
+}
+
+/* Resumen del pedido */
+#orderSummary {
+  flex: 1;
+  margin-left: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+#orderSummary h5 {
+  margin-bottom: 20px;
+  font-size: 1.25rem;
+  color: #343a40;
+}
+
+#orderSummary .summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #495057;
+}
+
+#orderSummary .summary-item.total {
+  font-weight: bold;
+  color: #1a8d16;
+}
+
+#orderSummary button {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 1rem;
+  background-color: #32735B;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.text-center{
+    text-align: center;
+    font-weight: bold;
+    
+}
+
+#orderSummary button:hover {
+  background-color: #c82333;
+}
