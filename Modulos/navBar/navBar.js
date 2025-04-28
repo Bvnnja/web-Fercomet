@@ -80,12 +80,13 @@ fetch('../../Modulos/Footer/footer.html')
   })
   .catch(error => console.error('Error al cargar el footer:', error));
 
+// Actualizar el contador del carrito
 const actualizarContadorCarrito = () => {
   const contador = document.querySelector(".contador_carrito");
   const carrito = JSON.parse(localStorage.getItem("cart")) || [];
   if (contador) {
-    contador.textContent = carrito.length; // Mostrar el número de productos en el carrito
-    contador.style.display = carrito.length > 0 ? "inline-block" : "none"; // Ocultar si está vacío
+    contador.textContent = carrito.reduce((total, item) => total + item.cantidad, 0); // Sumar cantidades
+    contador.style.display = carrito.length > 0 ? "inline-block" : "none"; // Mostrar solo si hay productos
   }
 };
 
@@ -235,8 +236,8 @@ document.getElementById("modalCarrito")?.addEventListener("show.bs.modal", rende
 
 // Escuchar evento personalizado para actualizar el carrito
 window.addEventListener("carritoActualizado", () => {
-  renderizarCarrito();
   actualizarContadorCarrito();
+  renderizarCarrito();
 });
 
 // Escuchar cambios en el localStorage

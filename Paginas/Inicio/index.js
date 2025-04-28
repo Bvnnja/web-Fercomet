@@ -115,6 +115,7 @@ async function loadProductsCarousel() {
       const name = button.dataset.nombre;
       const price = parseFloat(button.dataset.precio);
       const available = parseInt(button.dataset.stock);
+      const imageUrl = button.closest(".card").querySelector("img").src; // Obtener la URL de la imagen
 
       if (available <= 0) {
         mostrarMensajeNoStock(name);
@@ -132,7 +133,7 @@ async function loadProductsCarousel() {
           return;
         }
       } else {
-        cart.push({ category, productId, name, price, cantidad: 1 });
+        cart.push({ category, productId, name, price, cantidad: 1, imageUrl }); // Incluir imagenUrl
       }
 
       localStorage.setItem("cart", JSON.stringify(cart));

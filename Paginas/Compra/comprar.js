@@ -100,7 +100,12 @@ async function loadProductsForPurchase(selectedCategory = null, page = 1) {
       querySnapshot.forEach((docu) => {
         const data = docu.data();
         if (!allProductsCache.some(product => product.id === docu.id && product.category === category)) {
-          allProductsCache.push({ ...data, category, id: docu.id });
+          allProductsCache.push({ 
+            ...data, 
+            category, 
+            id: docu.id, 
+            imagenUrl: data.imagenUrl || "/imagenes/default.png" // Asegurarse de incluir imagenUrl o un valor predeterminado
+          });
         }
       });
     }
@@ -139,6 +144,36 @@ function mostrarMensajeNoStock(nombreProducto) {
   }, 4000); // El mensaje desaparece después de 4 segundos
 }
 
+// Función para agregar un producto al carrito
+function addToCart(productId, category, name, price, stock, quantity, imageUrl) {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const existingProductIndex = cart.findIndex(item => item.id === productId);
+
+  if (existingProductIndex !== -1) {
+    if (cart[existingProductIndex].cantidad + quantity <= stock) {
+      cart[existingProductIndex].cantidad += quantity;
+    } else {
+      mostrarMensajeNoStock(name);
+      return;
+    }
+  } else {
+    cart.push({ 
+      id: productId, 
+      category, 
+      name, 
+      price, 
+      cantidad: quantity, 
+      imageUrl 
+    });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart)); // Guardar el carrito actualizado en localStorage
+  mostrarMensajeExito(name);
+
+  // Actualizar el contador del carrito en el navBar
+  window.dispatchEvent(new Event("carritoActualizado"));
+}
+
 // Actualizar la interfaz de paginación
 function updatePagination(totalProducts, selectedCategory, filteredProducts = null) {
   const paginationContainer = document.getElementById('paginationContainer');
@@ -175,14 +210,33 @@ function displayFilteredProducts(products, page = 1) {
     const card = document.createElement("div");
     card.classList.add("product-card");
     card.innerHTML = `
-      <img src="${product.imagenUrl}" alt="${product.nombre}">
-      <h3>${product.nombre}</h3>
-      <p class="price">Precio: $${product.precio}</p>
-      <p class="stock" style="color: ${product.cantidad > 0 ? '#6c757d' : 'red'};">
-        ${product.cantidad > 0 ? `Disponibles: ${product.cantidad}` : 'Sin stock'}
-      </p>
+      <a href="/Paginas/DetalleProducto/productoDetalle.html?id=${product.id}&category=${product.category}" style="text-decoration: none; color: inherit;">
+        <img src="${product.imagenUrl}" alt="${product.nombre}">
+        <h3>${product.nombre}</h3>
+        <p class="price">Precio: $${product.precio}</p>
+        <p class="stock" style="color: ${product.cantidad > 0 ? '#6c757d' : 'red'};">
+          ${product.cantidad > 0 ? `Disponibles: ${product.cantidad}` : 'Sin stock'}
+        </p>
+      </a>
+      <button class="btn btn-primary mt-2 add-to-cart" ${product.cantidad === 0 ? 'disabled' : ''} data-id="${product.id}" data-category="${product.category}" data-name="${product.nombre}" data-price="${product.precio}" data-stock="${product.cantidad}" data-image="${product.imagenUrl}">
+        Agregar al carrito
+      </button>
     `;
     productContainer.appendChild(card);
+  });
+
+  // Agregar funcionalidad al botón "Agregar al carrito"
+  document.querySelectorAll(".add-to-cart").forEach(button => {
+    button.addEventListener("click", (e) => {
+      const id = e.target.dataset.id;
+      const category = e.target.dataset.category;
+      const name = e.target.dataset.name;
+      const price = parseFloat(e.target.dataset.price);
+      const stock = parseInt(e.target.dataset.stock, 10);
+      const imageUrl = e.target.dataset.image;
+
+      addToCart(id, category, name, price, stock, 1, imageUrl); // Agregar 1 unidad al carrito
+    });
   });
 
   updatePagination(products.length, null, products); // Actualizar paginación para productos filtrados
