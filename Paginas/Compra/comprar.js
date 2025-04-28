@@ -85,13 +85,6 @@ async function loadProductsForPurchase(selectedCategory = null, page = 1) {
   const productContainer = document.getElementById('productContainer');
   productContainer.innerHTML = "";
 
-  if (selectedCategory !== null) {
-    // Filtrar productos por categoría
-    const filteredProducts = allProductsCache.filter(product => product.category === selectedCategory);
-    displayFilteredProducts(filteredProducts);
-    return;
-  }
-
   if (allProductsCache.length === 0) {
     // Cargar todos los productos en caché si aún no están cargados
     const categories = ["automotriz", "construccion", "electricidad", "gasfiteria", "griferia", "herramientas", "jardineria", "pinturas", "seguridad"];
@@ -100,15 +93,35 @@ async function loadProductsForPurchase(selectedCategory = null, page = 1) {
       querySnapshot.forEach((docu) => {
         const data = docu.data();
         if (!allProductsCache.some(product => product.id === docu.id && product.category === category)) {
-          allProductsCache.push({ ...data, category, id: docu.id });
+          allProductsCache.push({ 
+            ...data, 
+            category, 
+            id: docu.id, 
+            imagenUrl: data.imagenUrl || "/imagenes/default.png" // Asegurarse de incluir imagenUrl o un valor predeterminado
+          });
         }
       });
     }
   }
 
+  let filteredProducts = allProductsCache;
+
+  if (selectedCategory && selectedCategory !== "") {
+    // Filtrar productos por categoría si se selecciona una específica
+    filteredProducts = allProductsCache.filter(product => product.category === selectedCategory);
+  }
+
+  if (filteredProducts.length === 0) {
+    productContainer.innerHTML = "<p>No se encontraron productos.</p>";
+    document.getElementById("paginationContainer").innerHTML = ""; // Limpiar paginación
+    return;
+  }
+
   const startIndex = (page - 1) * productsPerPage;
-  const paginatedProducts = allProductsCache.slice(startIndex, startIndex + productsPerPage);
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
   displayFilteredProducts(paginatedProducts);
+
+  updatePagination(filteredProducts.length, selectedCategory); // Actualizar paginación
 }
 
 // Función para mostrar el mensaje de éxito
@@ -139,6 +152,36 @@ function mostrarMensajeNoStock(nombreProducto) {
   }, 4000); // El mensaje desaparece después de 4 segundos
 }
 
+// Función para agregar un producto al carrito
+function addToCart(productId, category, name, price, stock, quantity, imageUrl) {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const existingProductIndex = cart.findIndex(item => item.id === productId);
+
+  if (existingProductIndex !== -1) {
+    if (cart[existingProductIndex].cantidad + quantity <= stock) {
+      cart[existingProductIndex].cantidad += quantity;
+    } else {
+      mostrarMensajeNoStock(name);
+      return;
+    }
+  } else {
+    cart.push({ 
+      id: productId, 
+      category, 
+      name, 
+      price, 
+      cantidad: quantity, 
+      imageUrl 
+    });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart)); // Guardar el carrito actualizado en localStorage
+  mostrarMensajeExito(name);
+
+  // Actualizar el contador del carrito en el navBar
+  window.dispatchEvent(new Event("carritoActualizado"));
+}
+
 // Actualizar la interfaz de paginación
 function updatePagination(totalProducts, selectedCategory, filteredProducts = null) {
   const paginationContainer = document.getElementById('paginationContainer');
@@ -150,14 +193,30 @@ function updatePagination(totalProducts, selectedCategory, filteredProducts = nu
     const button = document.createElement("button");
     button.textContent = i;
     button.classList.add("pagination-button");
-    if (i === currentPage) button.classList.add("active");
-    button.addEventListener("click", () => {
+
+    // Resaltar el botón de la página actual
+    if (i === currentPage) {
+      button.classList.add("active");
+    }
+
+    button.addEventListener("click", async () => {
+      // Actualizar la página actual
+      currentPage = i;
+
+      // Eliminar la clase 'active' de todos los botones
+      document.querySelectorAll(".pagination-button").forEach(btn => btn.classList.remove("active"));
+
+      // Agregar la clase 'active' al botón actual
+      button.classList.add("active");
+
+      // Recargar los productos para la página seleccionada
       if (filteredProducts) {
-        displayFilteredProducts(filteredProducts, i); // Mostrar productos filtrados
+        displayFilteredProducts(filteredProducts, i);
       } else {
-        loadProductsForPurchase(selectedCategory, i); // Mostrar productos normales
+        await loadProductsForPurchase(selectedCategory, i);
       }
     });
+
     paginationContainer.appendChild(button);
   }
 }
@@ -175,12 +234,17 @@ function displayFilteredProducts(products, page = 1) {
     const card = document.createElement("div");
     card.classList.add("product-card");
     card.innerHTML = `
-      <img src="${product.imagenUrl}" alt="${product.nombre}">
-      <h3>${product.nombre}</h3>
-      <p class="price">Precio: $${product.precio}</p>
-      <p class="stock" style="color: ${product.cantidad > 0 ? '#6c757d' : 'red'};">
-        ${product.cantidad > 0 ? `Disponibles: ${product.cantidad}` : 'Sin stock'}
-      </p>
+      <a href="/Paginas/DetalleProducto/productoDetalle.html?id=${product.id}&category=${product.category}" style="text-decoration: none; color: inherit;">
+        <img src="${product.imagenUrl}" alt="${product.nombre}">
+        <h3>${product.nombre}</h3>
+        <p class="price">Precio: $${product.precio}</p>
+        <p class="stock" style="color: ${product.cantidad > 0 ? '#6c757d' : 'red'};">
+          ${product.cantidad > 0 ? `Disponibles: ${product.cantidad}` : 'Sin stock'}
+        </p>
+      </a>
+      <button class="btn btn-primary mt-2 add-to-cart" ${product.cantidad === 0 ? 'disabled' : ''} data-id="${product.id}" data-category="${product.category}" data-name="${product.nombre}" data-price="${product.precio}" data-stock="${product.cantidad}" data-image="${product.imagenUrl}">
+        Agregar al carrito
+      </button>
     `;
     productContainer.appendChild(card);
   });
