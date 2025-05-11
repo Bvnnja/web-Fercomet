@@ -34,13 +34,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const urlParams = new URLSearchParams(window.location.search);
   const searchQuery = urlParams.get("search");
+  const categoryQuery = urlParams.get("category"); // Leer categoría de la URL
+
+  // Asegurarnos de que los productos estén cargados en el caché
+  if (allProductsCache.length === 0) {
+    await loadProductsForPurchase();
+  }
+
+  let filteredProducts = allProductsCache;
+
+  if (categoryQuery) {
+    filteredProducts = filteredProducts.filter(product => product.category === categoryQuery); // Filtrar por categoría
+  }
 
   if (searchQuery) {
     document.getElementById("searchInput").value = searchQuery; // Rellenar el campo de búsqueda
-    await searchProductsByName(searchQuery); // Buscar directamente por el término
-  } else {
-    await loadProductsForPurchase(); // Cargar todos los productos si no hay búsqueda
+    filteredProducts = filteredProducts.filter(product =>
+      product.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+    ); // Filtrar por término de búsqueda
   }
+
+  if (filteredProducts.length === 0) {
+    const productContainer = document.getElementById("productContainer");
+    productContainer.innerHTML = "<p>No se encontraron productos.</p>";
+    document.getElementById("paginationContainer").innerHTML = ""; // Limpiar paginación
+    return;
+  }
+
+  displayFilteredProducts(filteredProducts); // Mostrar productos filtrados
 });
 
 // Nueva función para buscar productos por nombre
