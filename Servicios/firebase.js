@@ -1,12 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import firebaseConfig from "../../Servicios/firebaseConfig.js";
-
-// Inicializa Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+import { app, db, auth } from "../../Servicios/firebaseConfig.js"; // Importar desde firebaseConfig.js
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Función para obtener los productos desde la subcolección 'items' de la subcolección dada
 async function obtenerProductos(subcategoria) {
@@ -28,7 +21,5 @@ async function obtenerProductos(subcategoria) {
   return productos;
 }
 
-
-
 // Exportamos las funcionalidades para que puedan ser usadas en otros archivos
-export { auth, db, obtenerProductos };
+export { auth, db, obtenerProductos }; // Exportar auth y db directamente desde firebaseConfig.js
