@@ -1,19 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { db } from "../../Servicios/firebaseConfig.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// Configuración de Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyA50EDq4nAaqNx3HICdZJPAnGNMdOsyb1k",
-  authDomain: "fercomet-32e92.firebaseapp.com",
-  projectId: "fercomet-32e92",
-  storageBucket: "fercomet-32e92.firebasestorage.app",
-  messagingSenderId: "995994877980",
-  appId: "1:995994877980:web:1239c3e358b596e562dfd9",
-};
-
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 let allProductsCache = []; // Cache para almacenar los productos
 
@@ -102,7 +88,12 @@ async function loadProductsCarousel() {
     card.addEventListener("click", () => {
       const productId = card.dataset.id;
       const category = card.dataset.category;
-      window.location.href = `../../DetalleProducto/productoDetalle.html?id=${productId}&category=${category}`;
+      if (productId && category) {
+        const queryParams = new URLSearchParams({ id: productId, category }).toString();
+        window.location.href = `/Paginas/DetalleProducto/productoDetalle.html?${queryParams}`;
+      } else {
+        console.error("Faltan datos del producto para redirigir al detalle.");
+      }
     });
   });
 

@@ -1,19 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// Configuración de Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyA50EDq4nAaqNx3HICdZJPAnGNMdOsyb1k",
-  authDomain: "fercomet-32e92.firebaseapp.com",
-  projectId: "fercomet-32e92",
-  storageBucket: "fercomet-32e92.firebasestorage.app",
-  messagingSenderId: "995994877980",
-  appId: "1:995994877980:web:1239c3e358b596e562dfd9",
-};
-
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import { db } from "../../Servicios/firebaseConfig.js";
 
 let currentPage = 1;
 const productsPerPage = 4;
@@ -47,13 +34,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const urlParams = new URLSearchParams(window.location.search);
   const searchQuery = urlParams.get("search");
+  const categoryQuery = urlParams.get("category"); // Leer categoría de la URL
+
+  // Asegurarnos de que los productos estén cargados en el caché
+  if (allProductsCache.length === 0) {
+    await loadProductsForPurchase();
+  }
+
+  let filteredProducts = allProductsCache;
+
+  if (categoryQuery) {
+    filteredProducts = filteredProducts.filter(product => product.category === categoryQuery); // Filtrar por categoría
+  }
 
   if (searchQuery) {
     document.getElementById("searchInput").value = searchQuery; // Rellenar el campo de búsqueda
-    await searchProductsByName(searchQuery); // Buscar directamente por el término
-  } else {
-    await loadProductsForPurchase(); // Cargar todos los productos si no hay búsqueda
+    filteredProducts = filteredProducts.filter(product =>
+      product.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+    ); // Filtrar por término de búsqueda
   }
+
+  if (filteredProducts.length === 0) {
+    const productContainer = document.getElementById("productContainer");
+    productContainer.innerHTML = "<p>No se encontraron productos.</p>";
+    document.getElementById("paginationContainer").innerHTML = ""; // Limpiar paginación
+    return;
+  }
+
+  displayFilteredProducts(filteredProducts); // Mostrar productos filtrados
 });
 
 // Nueva función para buscar productos por nombre
@@ -221,6 +229,44 @@ function updatePagination(totalProducts, selectedCategory, filteredProducts = nu
   }
 }
 
+// Función para asignar eventos a los botones de agregar al carrito
+function assignAddToCartEvents() {
+  document.querySelectorAll(".add-to-cart").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation(); // Evitar que el clic en el botón active otros eventos
+      const category = button.dataset.category;
+      const productId = button.dataset.id;
+      const name = button.dataset.name;
+      const price = parseFloat(button.dataset.price);
+      const available = parseInt(button.dataset.stock);
+      const imageUrl = button.dataset.image; // Obtener la URL de la imagen
+
+      if (available <= 0) {
+        mostrarMensajeNoStock(name);
+        return;
+      }
+
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const existingProductIndex = cart.findIndex((item) => item.id === productId);
+
+      if (existingProductIndex !== -1) {
+        if (cart[existingProductIndex].cantidad < available) {
+          cart[existingProductIndex].cantidad += 1;
+        } else {
+          mostrarMensajeNoStock(name);
+          return;
+        }
+      } else {
+        cart.push({ category, id: productId, name, price, cantidad: 1, imageUrl }); // Incluir imagenUrl
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      mostrarMensajeExito(name);
+      window.dispatchEvent(new Event("carritoActualizado"));
+    });
+  });
+}
+
 // Mostrar productos filtrados con paginación
 function displayFilteredProducts(products, page = 1) {
   currentPage = page;
@@ -249,6 +295,7 @@ function displayFilteredProducts(products, page = 1) {
     productContainer.appendChild(card);
   });
 
+  assignAddToCartEvents(); // Asignar eventos a los botones después de renderizar
   updatePagination(products.length, null, products); // Actualizar paginación para productos filtrados
 }
 
