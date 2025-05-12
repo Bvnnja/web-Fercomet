@@ -1,0 +1,168 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f4f6fa;
+  margin: 0;
+  min-height: 100vh;
+}
+
+.pago-container {
+  max-width: 420px;
+  margin: 50px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  padding: 32px 28px 24px 28px;
+  position: relative;
+}
+
+.pago-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.logo-fercomet {
+  width: 90px;
+  margin-bottom: 10px;
+}
+
+.pago-header h1 {
+  color: #1a3e5c;
+  font-size: 2rem;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.pago-form label {
+  color: #1a3e5c;
+  font-weight: 600;
+  margin-top: 12px;
+  display: block;
+}
+
+.pago-form input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  margin-bottom: 10px;
+  border: 1px solid #b0bec5;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #f8fafc;
+  transition: border 0.2s;
+}
+
+.pago-form input:focus {
+  border: 1.5px solid #007bff;
+  outline: none;
+  background: #fff;
+}
+
+.input-icon-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.card-icon {
+  position: absolute;
+  right: 10px;
+  font-size: 1.5rem;
+  pointer-events: none;
+}
+
+.eye-icon {
+  position: absolute;
+  left: 8px;
+  font-size: 1.3rem;
+  color: #888;
+  cursor: pointer;
+  user-select: none;
+  z-index: 2;
+}
+
+.input-icon-group input[type="password"],
+.input-icon-group input[type="text"] {
+  padding-left: 32px;
+}
+
+.pago-row {
+  display: flex;
+  gap: 16px;
+}
+
+.pago-row > div {
+  flex: 1;
+}
+
+.pago-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #007bff 60%, #1a3e5c 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: 18px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: background 0.2s;
+}
+
+.pago-btn:hover {
+  background: linear-gradient(90deg, #0056b3 60%, #1a3e5c 100%);
+}
+
+.cancelar-btn {
+  width: 100%;
+  padding: 12px;
+  background: #fff;
+  color: #d32f2f;
+  border: 2px solid #d32f2f;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cancelar-btn:hover {
+  background: #d32f2f;
+  color: #fff;
+}
+
+#paymentResult {
+  text-align: center;
+  margin-top: 20px;
+  color: #007bff;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.success-message {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 600px) {
+  .pago-container {
+    max-width: 98vw;
+    padding: 16px 4vw 16px 4vw;
+  }
+  .pago-header h1 {
+    font-size: 1.3rem;
+  }
+}
