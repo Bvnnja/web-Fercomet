@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pasarela de Pago | Fercomet</title>
+  <link rel="stylesheet" href="pasarelaPago.css">
+</head>
+<body>
+  <div class="pago-container">
+    <div class="pago-header">
+      <img src="/imagenes/Captura de pantalla 2025-04-07 193041.png" alt="Fercomet" class="logo-fercomet" style="width:180px; margin-bottom:10px;">
+      <h1>Pasarela de Pago</h1>
+    </div>
+    <form id="paymentForm" class="pago-form">
+      <label for="cardNumber">Número de tarjeta</label>
+      <div class="input-icon-group">
+        <input type="text" id="cardNumber" maxlength="19" placeholder="0000 0000 0000 0000" required autocomplete="off">
+        <span id="cardTypeIcon" class="card-icon"></span>
+      </div>
+      <label for="cardName">Nombre en la tarjeta</label>
+      <input type="text" id="cardName" required autocomplete="off">
+      <div class="pago-row">
+        <div>
+          <label for="expiry">Expiración</label>
+          <input type="text" id="expiry" maxlength="5" placeholder="MM/AA" required autocomplete="off">
+        </div>
+        <div>
+          <label for="cvv">CVV</label>
+          <div class="input-icon-group">
+            <span id="toggleCvv" class="eye-icon" tabindex="0">&#128065;</span>
+            <input type="password" id="cvv" maxlength="4" required autocomplete="off" style="padding-left:32px;">
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="pago-btn">Pagar</button>
+      <button type="button" class="cancelar-btn" id="cancelarPago">Cancelar</button>
+    </form>
+    <div id="paymentResult"></div>
+    <div id="successMessage" class="success-message" style="display:none;">
+      <img src="/imagenes/Captura de pantalla 2025-04-07 193041.png" alt="Fercomet" style="width:180px; margin-bottom:30px; filter:drop-shadow(0 0 10px #fff);">
+      <h2 style="font-size:2.2rem; margin-bottom:10px; text-shadow:0 2px 10px #000;">¡Tu compra fue realizada con éxito!</h2>
+      <p style="font-size:1.1rem; color:#b0e57c; margin-bottom:0;">Serás redirigido al inicio...</p>
+    </div>
+  </div>
+  <script type="module" src="pasarelaPago.js"></script>
+</body>
+</html>
