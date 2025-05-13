@@ -3,6 +3,49 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-
 
 // No import jsPDF, usa window.jspdf.jsPDF
 
+// Función para mostrar notificaciones de estado de pedido
+function mostrarNotificacionEstadoPedido(mensaje, tipo = "info") {
+  // tipo: "info", "success", "warning", "danger"
+  const colores = {
+    info: "#32735B",
+    success: "#28a745",
+    warning: "#ffc107",
+    danger: "#dc3545"
+  };
+  const overlay = document.createElement("div");
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100vw";
+  overlay.style.height = "100vh";
+  overlay.style.background = "rgba(0,0,0,0.2)";
+  overlay.style.zIndex = "9999";
+  overlay.style.display = "flex";
+  overlay.style.alignItems = "center";
+  overlay.style.justifyContent = "center";
+
+  const noti = document.createElement("div");
+  noti.style.background = "#fff";
+  noti.style.borderRadius = "14px";
+  noti.style.boxShadow = "0 8px 32px rgba(50,115,91,0.18)";
+  noti.style.padding = "28px 32px 22px 32px";
+  noti.style.maxWidth = "350px";
+  noti.style.width = "100%";
+  noti.style.textAlign = "center";
+  noti.style.border = `2px solid ${colores[tipo] || "#32735B"}`;
+  noti.innerHTML = `
+    <i class="bi bi-bell-fill" style="font-size:2rem;color:${colores[tipo]};margin-bottom:10px;"></i>
+    <div style="font-size:1.08rem;color:${colores[tipo]};font-weight:600;">${mensaje}</div>
+  `;
+
+  overlay.appendChild(noti);
+  document.body.appendChild(overlay);
+
+  setTimeout(() => {
+    document.body.removeChild(overlay);
+  }, 3500);
+}
+
 async function cargarCompras() {
   const usuario = JSON.parse(localStorage.getItem("Usuario"));
   const comprasContainer = document.getElementById("comprasContainer");
@@ -14,48 +57,77 @@ async function cargarCompras() {
   }
 
   try {
-    const userDocRef = doc(db, "usuarios", usuario.uid);
-    const userDoc = await getDoc(userDocRef);
-    const compras = userDoc.exists() && Array.isArray(userDoc.data().compras) ? userDoc.data().compras : [];
+    // Obtener compras desde la colección global "compras"
+    const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+    const comprasGlobalSnapshot = await getDocs(collection(db, "compras"));
+    // Filtrar solo las compras del usuario actual
+    const comprasGlobalUsuario = [];
+    comprasGlobalSnapshot.forEach(docu => {
+      const compra = docu.data();
+      if (compra.usuario && compra.usuario.uid === usuario.uid) {
+        // Adjuntar el número de compra (últimos 6 caracteres del ID)
+        compra.numeroCompra = "#" + docu.id.slice(-6).toUpperCase();
+        comprasGlobalUsuario.push(compra);
+      }
+    });
 
-    if (compras.length === 0) {
+    // Si no hay compras globales, mostrar mensaje
+    if (comprasGlobalUsuario.length === 0) {
       comprasContainer.innerHTML = "<div class='alert alert-info text-center'>No tienes compras registradas.</div>";
       return;
     }
 
-    comprasContainer.innerHTML = compras.slice().reverse().map((compra, idx) => `
-      <div class="compra-card">
-        <div class="compra-header">
-          <span class="compra-num">Compra #${compras.length - idx}</span>
-          <span class="compra-fecha">${compra.fecha ? new Date(compra.fecha).toLocaleString() : "Sin fecha"}</span>
-        </div>
-        <div class="compra-body">
-          <div class="compra-total">Total: $${compra.total || 0}</div>
-          <div><b>Productos:</b></div>
-          <ul class="compra-productos-list">
-            ${
-              Array.isArray(compra.productos) && compra.productos.length > 0
-                ? compra.productos.map(prod => `
-                  <li class="compra-producto-item">
-                    <span class="compra-producto-nombre">${prod.nombre}</span>
-                    <span class="compra-producto-cantidad">x${prod.cantidad}</span>
-                    <span class="compra-producto-precio">$${prod.precio}</span>
-                  </li>
-                `).join("")
-                : "<li class='compra-producto-item'><span class='text-muted'>No hay productos</span></li>"
-            }
-          </ul>
-          <div class="mt-3 d-flex gap-2 flex-wrap">
-            <button class="btn btn-outline-success btn-sm descargar-boleta" data-idx="${compras.length - idx - 1}"><i class="bi bi-file-earmark-arrow-down"></i> Descargar boleta</button>
+    // Mostrar las compras del usuario desde la colección global
+    comprasContainer.innerHTML = comprasGlobalUsuario
+      .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || "")) // Ordenar por fecha descendente
+      .map((compra, idx) => {
+        // Definir todos los posibles estados y sus estilos
+        const estados = {
+          pendiente: { label: "Pendiente", badge: "info" },
+          despachado: { label: "Despachado", badge: "warning" },
+          entregado: { label: "Entregado", badge: "success" },
+          listo_retiro: { label: "Listo para el Retiro", badge: "primary" },
+          cancelado: { label: "Cancelado", badge: "danger" },
+          en_preparacion: { label: "En preparación", badge: "secondary" },
+          otro: { label: "Otro", badge: "dark" }
+        };
+        const estadoKey = compra.estado || "pendiente";
+        const estadoObj = estados[estadoKey] || { label: estadoKey.charAt(0).toUpperCase() + estadoKey.slice(1), badge: "secondary" };
+        return `
+        <div class="compra-card">
+          <div class="compra-header">
+            <span class="compra-num">Compra ${compra.numeroCompra || ""}</span>
+            <span class="compra-fecha">${compra.fecha ? new Date(compra.fecha).toLocaleString() : "Sin fecha"}</span>
+          </div>
+          <div class="compra-body">
+            <div class="compra-total">Total: $${compra.total || 0}</div>
+            <div><b>Estado:</b> <span class="badge bg-${estadoObj.badge}">${estadoObj.label}</span></div>
+            <div><b>Productos:</b></div>
+            <ul class="compra-productos-list">
+              ${
+                Array.isArray(compra.productos) && compra.productos.length > 0
+                  ? compra.productos.map(prod => `
+                    <li class="compra-producto-item">
+                      <span class="compra-producto-nombre">${prod.nombre}</span>
+                      <span class="compra-producto-cantidad">x${prod.cantidad}</span>
+                      <span class="compra-producto-precio">$${prod.precio}</span>
+                    </li>
+                  `).join("")
+                  : "<li class='compra-producto-item'><span class='text-muted'>No hay productos</span></li>"
+              }
+            </ul>
+            <div class="mt-3 d-flex gap-2 flex-wrap">
+              <button class="btn btn-outline-success btn-sm descargar-boleta" data-idx="${idx}"><i class="bi bi-file-earmark-arrow-down"></i> Descargar boleta</button>
+            </div>
           </div>
         </div>
-      </div>
-    `).join("");
+        `;
+      }).join("");
 
     // Botón Descargar Boleta (PDF tipo boleta)
     document.querySelectorAll('.descargar-boleta').forEach(btn => {
       btn.addEventListener('click', function() {
-        const compra = compras[btn.dataset.idx];
+        const compra = comprasGlobalUsuario[btn.dataset.idx];
         if (!compra) return;
         const usuario = JSON.parse(localStorage.getItem("Usuario")) || {};
         const docPDF = new window.jspdf.jsPDF();
@@ -90,7 +162,7 @@ async function cargarCompras() {
           docPDF.text(`Fecha:`, 140, 44);
           docPDF.text(`${compra.fecha ? new Date(compra.fecha).toLocaleString() : "Sin fecha"}`, 160, 44);
           docPDF.text(`N° Boleta:`, 140, 50);
-          docPDF.text(`${parseInt(btn.dataset.idx) + 1}`, 170, 50);
+          docPDF.text(`${compra.numeroCompra || ""}`, 170, 50);
 
           // Segunda línea separadora
           docPDF.setDrawColor(200, 200, 200);
