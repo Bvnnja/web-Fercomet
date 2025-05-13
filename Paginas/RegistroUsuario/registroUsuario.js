@@ -123,7 +123,8 @@ form.addEventListener('submit', async (e) => {
       apellido: apellido.value,
       rut: rut.value,
       email: email.value,
-      fechaRegistro: new Date()
+      fechaRegistro: new Date(),
+      carrito: [] // Carrito vacío al crear usuario
     };
   
     await setDoc(doc(db, "usuarios", user.uid), usuarioData);

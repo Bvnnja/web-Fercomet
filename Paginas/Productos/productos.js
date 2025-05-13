@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { db } from "../../Servicios/firebaseConfig.js";
 
 let currentPage = 1;
@@ -160,6 +161,19 @@ function mostrarMensajeNoStock(nombreProducto) {
   }, 4000); // El mensaje desaparece después de 4 segundos
 }
 
+// Guardar carrito en Firestore para el usuario autenticado
+async function guardarCarritoUsuario(cart) {
+  const usuario = JSON.parse(localStorage.getItem("Usuario"));
+  if (usuario && usuario.uid) {
+    try {
+      const userDocRef = doc(db, "usuarios", usuario.uid);
+      await updateDoc(userDocRef, { carrito: cart });
+    } catch (e) {
+      console.error("No se pudo actualizar el carrito en Firestore:", e);
+    }
+  }
+}
+
 // Función para agregar un producto al carrito
 function addToCart(productId, category, name, price, stock, quantity, imageUrl) {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -184,6 +198,7 @@ function addToCart(productId, category, name, price, stock, quantity, imageUrl) 
   }
 
   localStorage.setItem("cart", JSON.stringify(cart)); // Guardar el carrito actualizado en localStorage
+  guardarCarritoUsuario(cart); // Guardar también en Firestore
   mostrarMensajeExito(name);
 
   // Actualizar el contador del carrito en el navBar
@@ -261,6 +276,7 @@ function assignAddToCartEvents() {
       }
 
       localStorage.setItem("cart", JSON.stringify(cart));
+      guardarCarritoUsuario(cart); // Guardar también en Firestore
       mostrarMensajeExito(name);
       window.dispatchEvent(new Event("carritoActualizado"));
     });

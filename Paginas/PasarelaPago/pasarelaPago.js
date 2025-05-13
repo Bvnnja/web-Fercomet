@@ -1,5 +1,5 @@
 import { db } from "../../Servicios/firebaseConfig.js";
-import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { doc, getDoc, updateDoc, arrayUnion, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // --- Validadores y helpers ---
 const cardNumberInput = document.getElementById('cardNumber');
@@ -130,6 +130,48 @@ document.getElementById('paymentForm').addEventListener('submit', async function
     await updateDoc(productRef, { cantidad: newQuantity });
   }
 
+  // Guardar compra en Firestore
+  try {
+    const usuario = JSON.parse(localStorage.getItem("Usuario"));
+    if (usuario && usuario.uid) {
+      const userDocRef = doc(db, "usuarios", usuario.uid);
+
+      // Calcular total
+      const total = cart.reduce((sum, item) => sum + (item.price * item.cantidad), 0);
+
+      // Crear objeto compra con estado inicial "pendiente"
+      const compra = {
+        fecha: new Date().toISOString(),
+        total,
+        estado: "pendiente", // <-- Estado inicial
+        productos: cart.map(item => ({
+          id: item.productId || item.id,
+          nombre: item.name,
+          cantidad: item.cantidad,
+          precio: item.price
+        })),
+        usuario: {
+          uid: usuario.uid,
+          nombre: usuario.nombre,
+          apellido: usuario.apellido,
+          rut: usuario.rut,
+          email: usuario.email
+        }
+      };
+
+      // Agregar la compra al array "compras" en Firestore (usuario)
+      await updateDoc(userDocRef, {
+        compras: arrayUnion(compra)
+      });
+
+      // Guardar la compra en la colección global "compras"
+      await addDoc(collection(db, "compras"), compra);
+    }
+  } catch (err) {
+    console.error("Error al guardar la compra en Firestore:", err);
+    // No bloquea el flujo de compra
+  }
+
   // Vaciar carrito
   localStorage.setItem("cart", JSON.stringify([]));
 
@@ -146,4 +188,35 @@ document.getElementById('paymentForm').addEventListener('submit', async function
 
 document.getElementById('cancelarPago').addEventListener('click', function() {
   window.location.href = "/Paginas/Carrito/carrito.html";
+});
+
+const paymentForm = document.getElementById('paymentForm');
+const paymentResult = document.getElementById('paymentResult');
+const metodoBtns = document.querySelectorAll('.metodo-btn');
+
+metodoBtns.forEach(btn => {
+  btn.addEventListener('click', function() {
+    metodoBtns.forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const metodo = this.getAttribute('data-metodo');
+    if (metodo === "tarjeta") {
+      paymentForm.style.display = "";
+      paymentResult.innerHTML = "";
+    } else {
+      paymentForm.style.display = "none";
+      let msg = "";
+      if (metodo === "bancoestado") {
+        msg = "<b>Banco Estado:</b> Realiza tu pago a la cuenta 123456789, rut 11.111.111-1, a nombre de Fercomet. Luego envía el comprobante a pagos@fercomet.cl";
+      } else if (metodo === "transferencia") {
+        msg = "<b>Transferencia bancaria:</b> Realiza tu pago a la cuenta 987654321, rut 22.222.222-2, a nombre de Fercomet. Luego envía el comprobante a pagos@fercomet.cl";
+      } else if (metodo === "debito") {
+        msg = "<b>Débito:</b> Puedes pagar con tu tarjeta de débito en nuestra tienda física.";
+      } else if (metodo === "credito") {
+        msg = "<b>Crédito:</b> Puedes pagar con tu tarjeta de crédito en nuestra tienda física.";
+      } else {
+        msg = "<b>Otro método:</b> Consulta con nuestro equipo para coordinar el pago.";
+      }
+      paymentResult.innerHTML = `<div class="alert alert-info" style="margin-top:20px;">${msg}</div>`;
+    }
+  });
 });

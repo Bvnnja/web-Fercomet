@@ -1,0 +1,128 @@
+.datos-personales-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 24px rgba(50, 115, 91, 0.13);
+  padding: 38px 32px 28px 32px;
+  border: 2px solid #32735B;
+  position: relative;
+  overflow: hidden;
+}
+
+.datos-personales-container::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 180px;
+  height: 180px;
+  background: url('/imagenes/Proyecto nuevo.png') no-repeat center/contain;
+  opacity: 0.08;
+  z-index: 0;
+}
+
+.datos-form label {
+  font-weight: 700;
+  color: #32735B;
+  letter-spacing: 0.5px;
+  font-size: 1.08rem;
+}
+
+.datos-form input[disabled] {
+  background: #f5f5f5;
+  color: #888;
+  border: 1px solid #e0e0e0;
+}
+
+.datos-form input {
+  font-size: 1.08rem;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #b0e5d6;
+  background: #f8faf9;
+  transition: border-color 0.2s;
+}
+
+.datos-form input:focus {
+  border-color: #32735B;
+  background: #fff;
+}
+
+.datos-form .editar-btn {
+  color: #32735B;
+  font-size: 1.2rem;
+  border: none;
+  background: none;
+  padding: 0;
+  transition: color 0.2s, background 0.2s;
+}
+
+.datos-form .editar-btn:hover {
+  color: #fff;
+  background: #32735B;
+  border-radius: 50%;
+}
+
+#guardarCambiosBtn {
+  margin-top: 18px;
+  min-width: 180px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  background: linear-gradient(90deg, #32735B 60%, #1a3e5c 100%);
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(50,115,91,0.07);
+  transition: background 0.2s;
+}
+
+#guardarCambiosBtn:hover {
+  background: linear-gradient(90deg, #1a3e5c 60%, #32735B 100%);
+}
+
+#eliminarCuentaBtn {
+  margin-top: 30px;
+  background: linear-gradient(90deg, #b30000 60%, #ff4d4d 100%);
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 1.08rem;
+  box-shadow: 0 2px 8px rgba(179,0,0,0.07);
+  transition: background 0.2s;
+}
+
+#eliminarCuentaBtn:hover {
+  background: linear-gradient(90deg, #ff4d4d 60%, #b30000 100%);
+  color: #fff;
+}
+
+h2.text-center.mb-4 {
+  color: #32735B;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 36px !important;
+  font-size: 2.1rem;
+  text-shadow: 0 2px 12px #b0e5d6;
+}
+
+#mensajeDatos .alert-success {
+  background: #e6f9f0;
+  color: #32735B;
+  border: 1.5px solid #32735B;
+}
+
+#mensajeDatos .alert-danger {
+  background: #ffeaea;
+  color: #b30000;
+  border: 1.5px solid #b30000;
+}
+
+@media (max-width: 700px) {
+  .datos-personales-container {
+    padding: 18px 6px 18px 6px;
+  }
+  h2.text-center.mb-4 {
+    font-size: 1.3rem;
+  }
+}

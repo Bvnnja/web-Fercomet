@@ -1,5 +1,5 @@
 import { db } from "../../Servicios/firebaseConfig.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Obtener parámetros de la URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -80,8 +80,8 @@ async function loadProductDetail() {
   }
 }
 
-// Modifica la función addToCart para aceptar la cantidad seleccionada
-function addToCart(productId, category, name, price, available, quantity) {
+// Modifica la función addToCart para aceptar la cantidad seleccionada y guardar en Firestore
+async function addToCart(productId, category, name, price, available, quantity) {
   if (available <= 0) {
     mostrarMensajeNoStock(name);
     return;
@@ -102,8 +102,23 @@ function addToCart(productId, category, name, price, available, quantity) {
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
+  await guardarCarritoUsuario(cart); // Guardar en Firestore
   mostrarMensajeExito(name);
   window.dispatchEvent(new Event("carritoActualizado"));
+}
+
+// Guardar carrito en Firestore para el usuario autenticado
+async function guardarCarritoUsuario(cart) {
+  const usuario = JSON.parse(localStorage.getItem("Usuario"));
+  if (usuario && usuario.uid) {
+    try {
+      const userDocRef = doc(db, "usuarios", usuario.uid);
+      await updateDoc(userDocRef, { carrito: cart });
+    } catch (e) {
+      // No bloquear la experiencia si falla, solo loguear
+      console.error("No se pudo actualizar el carrito en Firestore:", e);
+    }
+  }
 }
 
 // Función para mostrar el mensaje de éxito

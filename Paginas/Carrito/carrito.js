@@ -1,5 +1,7 @@
 import { db } from "../../Servicios/firebaseConfig.js";
 import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { auth } from "../../Servicios/firebaseConfig.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // Carrito global
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -19,6 +21,15 @@ function carritoTieneDatos() {
     return Array.isArray(arr) && arr.length > 0;
   } catch {
     return false;
+  }
+}
+
+// Guardar carrito en Firestore cuando se modifica
+async function guardarCarritoUsuario() {
+  const usuario = JSON.parse(localStorage.getItem("Usuario"));
+  if (usuario && usuario.uid) {
+    const userDocRef = doc(db, "usuarios", usuario.uid);
+    await updateDoc(userDocRef, { carrito: cart });
   }
 }
 
@@ -67,6 +78,8 @@ function updateCartUI() {
 
   subtotalElement.textContent = `$${total.toFixed(2)}`;
   totalElement.textContent = `$${total.toFixed(2)}`;
+  localStorage.setItem("cart", JSON.stringify(cart));
+  guardarCarritoUsuario();
 }
 
 // Actualizar el contador global del carrito
@@ -86,6 +99,7 @@ window.decreaseQuantity = function(index) {
     cart.splice(index, 1);
   }
   localStorage.setItem("cart", JSON.stringify(cart));
+  guardarCarritoUsuario();
   updateCartUI();
   actualizarContadorCarrito();
 }
@@ -142,6 +156,7 @@ window.increaseQuantity = async function(index) {
     if (item.cantidad < cantidadDisponible) {
       cart[index].cantidad += 1;
       localStorage.setItem("cart", JSON.stringify(cart));
+      guardarCarritoUsuario();
       updateCartUI();
       actualizarContadorCarrito();
     } else {
@@ -180,6 +195,7 @@ window.removeFromCart = function(index) {
     mostrarConfirmacionEliminacion(nombre, () => {
       cart.splice(index, 1); // Eliminar el producto del carrito
       localStorage.setItem("cart", JSON.stringify(cart)); // Actualizar localStorage
+      guardarCarritoUsuario();
       actualizarCarritoGlobal(); // Actualizar la interfaz y el contador
       window.dispatchEvent(new Event("carritoActualizado")); // Notificar actualización global
     });
@@ -202,6 +218,7 @@ document.addEventListener("click", (e) => {
 window.vaciarCarrito = function() {
   cart = [];
   localStorage.setItem("cart", JSON.stringify(cart));
+  guardarCarritoUsuario();
   actualizarCarritoGlobal();
   window.dispatchEvent(new Event("carritoActualizado")); // Notificar actualización global
 };
@@ -244,6 +261,13 @@ function actualizarCarritoGlobal() {
   actualizarContadorCarrito();
   validarCarrito();
 }
+
+// Limpiar carrito al cerrar sesión
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    localStorage.removeItem("cart");
+  }
+});
 
 // Cargar el carrito al inicio
 document.addEventListener("DOMContentLoaded", actualizarCarritoGlobal);

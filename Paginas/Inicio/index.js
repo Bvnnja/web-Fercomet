@@ -1,5 +1,5 @@
 import { db } from "../../Servicios/firebaseConfig.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let allProductsCache = []; // Cache para almacenar los productos
 
@@ -7,6 +7,91 @@ let allProductsCache = []; // Cache para almacenar los productos
 function getRandomProducts(products, count) {
   const shuffled = [...products].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
+}
+
+// Notificación de estado de compra abajo a la derecha, llamativa y 4 segundos
+function mostrarNotificacionEstadoCompra(mensaje, tipo = "info", identificador = "", compraUid = "", nombreProducto = "") {
+  const colores = {
+    info: "#32735B",
+    success: "#28a745",
+    warning: "#ffc107",
+    danger: "#dc3545",
+    primary: "#0d6efd",
+    secondary: "#6c757d",
+    dark: "#212529"
+  };
+  const noti = document.createElement("div");
+  noti.className = "noti-estado-compra-fercomet";
+  noti.style.position = "fixed";
+  noti.style.bottom = "30px";
+  noti.style.right = "30px";
+  noti.style.background = "#fff";
+  noti.style.borderRadius = "14px";
+  noti.style.boxShadow = "0 8px 32px rgba(50,115,91,0.18)";
+  noti.style.padding = "22px 32px 18px 32px";
+  noti.style.maxWidth = "350px";
+  noti.style.width = "100%";
+  noti.style.textAlign = "center";
+  noti.style.border = `3px solid ${colores[tipo] || "#32735B"}`;
+  noti.style.zIndex = "9999";
+  noti.style.fontWeight = "bold";
+  noti.style.fontSize = "1.08rem";
+  noti.style.color = colores[tipo] || "#32735B";
+  noti.style.display = "flex";
+  noti.style.flexDirection = "column";
+  noti.style.alignItems = "center";
+  noti.style.animation = "fadeInOutFercomet 4s";
+
+  // Formato: El estado de tu compra ha cambiado a: Entregado | LENTE SEGURIDAD FCL
+  let mensajeFinal = mensaje;
+  if (nombreProducto) {
+    // Elimina cualquier texto "(Producto: ...)" o similar
+    mensajeFinal = mensaje.replace(/\(Producto:.*?\)/gi, "").replace(/Producto:/gi, "").replace(/\s{2,}/g, " ").trim();
+    // Si el mensaje ya contiene "ha cambiado a:" o "es:", agrega el producto después con "|"
+    if (!mensajeFinal.includes('|')) {
+      mensajeFinal += ` | ${nombreProducto}`;
+    }
+  }
+
+  noti.innerHTML = `
+    <i class="bi bi-bell-fill" style="font-size:2.2rem;color:${colores[tipo]};margin-bottom:10px;"></i>
+    <div>
+      ${mensajeFinal}
+      ${identificador ? `<span class="badge bg-primary ms-2">${identificador}</span>` : ""}
+      ${compraUid ? `<div style="font-size:0.95rem;margin-top:6px;"><b>UID:</b> <span style="color:#666">${compraUid}</span></div>` : ""}
+    </div>
+  `;
+
+  document.body.appendChild(noti);
+
+  setTimeout(() => {
+    noti.remove();
+  }, 4000);
+
+  // En la campanilla solo el nombre del producto
+  if (window.agregarNotificacionFercomet) {
+    window.agregarNotificacionFercomet(
+      mensajeFinal,
+      tipo
+    );
+  }
+}
+
+// Animación CSS para la notificación (agrega esto solo una vez)
+if (!document.getElementById("fercomet-noti-estado-css")) {
+  const style = document.createElement("style");
+  style.id = "fercomet-noti-estado-css";
+  style.innerHTML = `
+    @keyframes fadeInOutFercomet {
+      0% { opacity: 0; transform: translateY(40px);}
+      10%, 90% { opacity: 1; transform: translateY(0);}
+      100% { opacity: 0; transform: translateY(40px);}
+    }
+    .noti-estado-compra-fercomet {
+      animation: fadeInOutFercomet 4s;
+    }
+  `;
+  document.head.appendChild(style);
 }
 
 // Cargar productos en un carrusel
@@ -128,10 +213,24 @@ async function loadProductsCarousel() {
       }
 
       localStorage.setItem("cart", JSON.stringify(cart));
+      guardarCarritoUsuario(cart); // Guardar también en Firestore
       mostrarMensajeExito(name);
       window.dispatchEvent(new Event("carritoActualizado"));
     });
   });
+}
+
+// Guardar carrito en Firestore para el usuario autenticado
+async function guardarCarritoUsuario(cart) {
+  const usuario = JSON.parse(localStorage.getItem("Usuario"));
+  if (usuario && usuario.uid) {
+    try {
+      const userDocRef = doc(db, "usuarios", usuario.uid);
+      await updateDoc(userDocRef, { carrito: cart });
+    } catch (e) {
+      console.error("No se pudo actualizar el carrito en Firestore:", e);
+    }
+  }
 }
 
 // Función para mostrar el mensaje de éxito
@@ -162,5 +261,131 @@ function mostrarMensajeNoStock(nombreProducto) {
   }, 4000); // El mensaje desaparece después de 4 segundos
 }
 
-// Cargar productos al inicio
-document.addEventListener("DOMContentLoaded", loadProductsCarousel);
+// Mostrar notificación de estado de compra al cargar el index si el usuario tiene compras
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadProductsCarousel();
+
+  // Notificación por cambio de estado en tiempo real (solo si hay usuario)
+  const usuario = JSON.parse(localStorage.getItem("Usuario"));
+  if (usuario && usuario.uid) {
+    const userDocRef = doc(db, "usuarios", usuario.uid);
+
+    // Guardar último estado conocido de cada compra en memoria
+    let ultimoEstadoPorCompra = {};
+
+    // Inicializar con los estados actuales
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      if (Array.isArray(userData.compras)) {
+        userData.compras.forEach(compra => {
+          if (compra.fecha) {
+            ultimoEstadoPorCompra[compra.fecha] = compra.estado || "pendiente";
+          }
+        });
+      }
+    }
+
+    // Suscribirse a cambios en tiempo real
+    onSnapshot(userDocRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        if (Array.isArray(userData.compras)) {
+          userData.compras.forEach(compra => {
+            if (compra.fecha) {
+              const estadoAnterior = ultimoEstadoPorCompra[compra.fecha];
+              const estadoActual = compra.estado || "pendiente";
+              if (estadoAnterior && estadoAnterior !== estadoActual) {
+                const estados = {
+                  pendiente: { label: "Pendiente", tipo: "info" },
+                  despachado: { label: "Despachado", tipo: "warning" },
+                  entregado: { label: "Entregado", tipo: "success" },
+                  listo_retiro: { label: "Listo para el Retiro", tipo: "primary" },
+                  cancelado: { label: "Cancelado", tipo: "danger" },
+                  en_preparacion: { label: "En preparación", tipo: "secondary" },
+                  otro: { label: "Otro", tipo: "dark" }
+                };
+                const estadoObj = estados[estadoActual] || { label: estadoActual, tipo: "info" };
+                const identificador = compra.numeroCompra ? compra.numeroCompra : "";
+                const compraUid = compra.uid || compra.uidCompra || ""; // Ajusta según cómo guardes el UID de la compra
+                const nombreProducto = Array.isArray(compra.productos) && compra.productos.length > 0
+                  ? compra.productos.map(p => p.nombre).join(", ")
+                  : "";
+                mostrarNotificacionEstadoCompra(
+                  `El estado de tu compra ha cambiado a: <b>${estadoObj.label}</b>`,
+                  estadoObj.tipo,
+                  identificador,
+                  compraUid,
+                  nombreProducto
+                );
+              }
+              ultimoEstadoPorCompra[compra.fecha] = estadoActual;
+            }
+          });
+        }
+      }
+    });
+  }
+
+  // Solo mostrar si hay una notificación pendiente en sessionStorage
+  const notiCompra = sessionStorage.getItem("notiEstadoCompraPendiente");
+  if (notiCompra) {
+    try {
+      const data = JSON.parse(notiCompra);
+      if (data && data.mensaje && data.tipo) {
+        let identificador = "";
+        let nombreProducto = "";
+        const match = data.mensaje.match(/#([A-Z0-9]{6,})/i);
+        if (match) identificador = match[0];
+        mostrarNotificacionEstadoCompra(data.mensaje, data.tipo, identificador, "", nombreProducto);
+      }
+    } catch {}
+    sessionStorage.removeItem("notiEstadoCompraPendiente");
+  }
+
+  // Mostrar notificación de estado de compra SOLO si el usuario acaba de iniciar sesión
+  if (usuario && usuario.uid && sessionStorage.getItem("mostrarNotiEstadoCompra") === "1") {
+    try {
+      const userDocRef = doc(db, "usuarios", usuario.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        if (Array.isArray(userData.compras) && userData.compras.length > 0) {
+          const estados = {
+            pendiente: { label: "Pendiente", tipo: "info" },
+            despachado: { label: "Despachado", tipo: "warning" },
+            entregado: { label: "Entregado", tipo: "success" },
+            listo_retiro: { label: "Listo para el Retiro", tipo: "primary" },
+            cancelado: { label: "Cancelado", tipo: "danger" },
+            en_preparacion: { label: "En preparación", tipo: "secondary" },
+            otro: { label: "Otro", tipo: "dark" }
+          };
+          userData.compras
+            .slice()
+            .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || ""))
+            .slice(0, 3)
+            .forEach(compra => {
+              if (compra.estado) {
+                const estadoKey = compra.estado;
+                const estadoObj = estados[estadoKey] || { label: estadoKey, tipo: "info" };
+                const identificador = compra.numeroCompra ? compra.numeroCompra : "";
+                const nombreProducto = Array.isArray(compra.productos) && compra.productos.length > 0
+                  ? compra.productos.map(p => p.nombre).join(", ")
+                  : "";
+                mostrarNotificacionEstadoCompra(
+                  `El estado de tu compra es: <b>${estadoObj.label}</b>`,
+                  estadoObj.tipo,
+                  identificador,
+                  "",
+                  nombreProducto
+                );
+              }
+            });
+        }
+      }
+    } catch (e) {
+      console.error("No se pudo obtener el estado de la compra:", e);
+    }
+    sessionStorage.removeItem("mostrarNotiEstadoCompra");
+  }
+});
