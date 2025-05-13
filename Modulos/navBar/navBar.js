@@ -42,7 +42,7 @@ fetch('../../Modulos/navBar/navbar.html')
           <i class="bi bi-person-circle me-2"></i>${usuario.nombre}
         </a>
         <ul class="dropdown-menu" aria-labelledby="userDropdown">
-          <li><a class="dropdown-item" href="/DatosPersonales.html">Datos personales</a></li>
+          <li><a class="dropdown-item" href="/Paginas/DatosPersonales/datosPersonales.html">Datos personales</a></li>
           <li><a class="dropdown-item" href="/Paginas/MisCompras/misCompras.html" id="mis-compras-link">Mis compras</a></li>
           <li><a class="dropdown-item" href="#" id="logoutBtn">Cerrar sesión</a></li>
         </ul>
@@ -59,6 +59,7 @@ fetch('../../Modulos/navBar/navbar.html')
           </a>
           <ul class="dropdown-menu" aria-labelledby="adminDropdown">
             <li><a class="dropdown-item" href="/Paginas/AgregarProducto/agregarProducto.html">Agregar Producto</a></li>
+            <li><a class="dropdown-item" href="/Paginas/AdminCompras/adminCompras.html">Gestionar Compras</a></li>
           </ul>
         `;
         navbar.prepend(adminItem);
@@ -70,6 +71,157 @@ fetch('../../Modulos/navBar/navbar.html')
         window.location.href = '/Paginas/Inicio/index.html';
       });
     }
+
+    // Agregar campanilla de notificaciones al navbar si no existe
+    function agregarCampanillaNotificaciones() {
+      const navbar = document.querySelector('.navbar-nav.ms-auto');
+      if (!navbar || document.getElementById("notificacionesDropdown")) return;
+
+      const notiItem = document.createElement('li');
+      notiItem.className = 'nav-item dropdown position-relative';
+      notiItem.innerHTML = `
+        <a class="nav-link" href="#" id="notificacionesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-bell-fill" style="font-size:1.5rem;"></i>
+          <span id="contadorNotificaciones" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none;font-size:0.8rem;">0</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificacionesDropdown" id="listaNotificaciones" style="min-width:320px;max-width:400px;">
+          <li class="dropdown-header text-center fw-bold">Notificaciones</li>
+          <li><hr class="dropdown-divider"></li>
+          <li class="text-center text-muted" id="sinNotificaciones">No tienes notificaciones nuevas</li>
+        </ul>
+      `;
+      navbar.prepend(notiItem);
+    }
+
+    // Guardar y mostrar notificaciones en localStorage y en la campanilla
+    function agregarNotificacion(mensaje, tipo = "info") {
+      const notificaciones = JSON.parse(localStorage.getItem("NotificacionesFercomet") || "[]");
+      notificaciones.unshift({
+        mensaje,
+        tipo,
+        fecha: new Date().toISOString(),
+        leida: false
+      });
+      localStorage.setItem("NotificacionesFercomet", JSON.stringify(notificaciones));
+      actualizarCampanillaNotificaciones();
+    }
+
+    function actualizarCampanillaNotificaciones() {
+      const notificaciones = JSON.parse(localStorage.getItem("NotificacionesFercomet") || "[]");
+      const noLeidas = notificaciones.filter(n => !n.leida);
+      const contador = document.getElementById("contadorNotificaciones");
+      const lista = document.getElementById("listaNotificaciones");
+      const sinNotificaciones = document.getElementById("sinNotificaciones");
+
+      if (contador) {
+        contador.textContent = noLeidas.length;
+        contador.style.display = noLeidas.length > 0 ? "inline-block" : "none";
+      }
+
+      if (lista) {
+        // Limpiar notificaciones antiguas (excepto header y divider)
+        lista.querySelectorAll('.noti-fercomet-item').forEach(el => el.remove());
+        // Eliminar el botón de borrar todas si ya existe
+        const btnBorrarTodasExistente = document.getElementById("btnBorrarTodasNotificaciones");
+        if (btnBorrarTodasExistente) btnBorrarTodasExistente.remove();
+
+        if (notificaciones.length === 0 && sinNotificaciones) {
+          sinNotificaciones.style.display = "block";
+        } else if (sinNotificaciones) {
+          sinNotificaciones.style.display = "none";
+        }
+
+        // Limitar visualización a 4 y permitir scroll
+        lista.style.maxHeight = "320px";
+        lista.style.overflowY = "auto";
+        lista.style.minHeight = "0";
+
+        notificaciones.slice(0, 20).forEach((noti, idx) => {
+          const li = document.createElement("li");
+          li.className = "noti-fercomet-item px-3 py-2 d-flex align-items-center justify-content-between";
+          let mensajeMostrar = noti.mensaje;
+          const btnCerrar = document.createElement("button");
+          btnCerrar.innerHTML = "&times;";
+          btnCerrar.style.background = "transparent";
+          btnCerrar.style.border = "none";
+          btnCerrar.style.fontSize = "1.2rem";
+          btnCerrar.style.color = "#888";
+          btnCerrar.style.cursor = "pointer";
+          btnCerrar.style.marginLeft = "10px";
+          btnCerrar.setAttribute("aria-label", "Eliminar notificación");
+          btnCerrar.onclick = (e) => {
+            e.stopPropagation();
+            eliminarNotificacionPorIndice(idx);
+          };
+
+          const contenido = document.createElement("div");
+          contenido.style.fontSize = "0.97rem";
+          contenido.innerHTML = `
+            <span class="me-2"><i class="bi bi-bell-fill" style="color:${noti.tipo === "success" ? "#28a745" : noti.tipo === "danger" ? "#dc3545" : noti.tipo === "warning" ? "#ffc107" : "#32735B"}"></i></span>
+            ${mensajeMostrar}
+          `;
+
+          li.appendChild(contenido);
+          li.appendChild(btnCerrar);
+          lista.appendChild(li);
+        });
+
+        // --- Botón borrar todas FIJO al fondo del dropdown ---
+        // Si ya existe, elimínalo antes de agregarlo de nuevo
+        let btnFooter = document.getElementById("btnBorrarTodasNotificacionesFooter");
+        if (btnFooter) btnFooter.parentNode.removeChild(btnFooter);
+
+        if (notificaciones.length > 0) {
+          // Crear el botón y un contenedor li
+          const liFooter = document.createElement("li");
+          liFooter.id = "btnBorrarTodasNotificacionesFooter";
+          liFooter.className = "dropdown-footer text-center py-2";
+          liFooter.style.position = "sticky";
+          liFooter.style.bottom = "0";
+          liFooter.style.background = "#fff";
+          liFooter.style.zIndex = "2";
+          liFooter.style.borderTop = "1px solid #eee";
+          liFooter.style.margin = "0";
+          liFooter.style.padding = "10px 0 5px 0";
+          const btnBorrarTodas = document.createElement("button");
+          btnBorrarTodas.className = "btn btn-sm btn-outline-danger";
+          btnBorrarTodas.textContent = "Borrar Notificaciones";
+          btnBorrarTodas.onclick = (e) => {
+            e.stopPropagation();
+            localStorage.removeItem("NotificacionesFercomet");
+            actualizarCampanillaNotificaciones();
+          };
+          liFooter.appendChild(btnBorrarTodas);
+          lista.appendChild(liFooter);
+        }
+      }
+    }
+
+    // Eliminar notificación por índice (en el array de notificaciones)
+    function eliminarNotificacionPorIndice(idx) {
+      let notificaciones = JSON.parse(localStorage.getItem("NotificacionesFercomet") || "[]");
+      if (idx >= 0 && idx < notificaciones.length) {
+        notificaciones.splice(idx, 1);
+        localStorage.setItem("NotificacionesFercomet", JSON.stringify(notificaciones));
+        actualizarCampanillaNotificaciones();
+      }
+    }
+
+    // Marcar notificaciones como leídas al abrir el dropdown
+    document.body.addEventListener("click", (e) => {
+      if (e.target.closest("#notificacionesDropdown")) {
+        let notificaciones = JSON.parse(localStorage.getItem("NotificacionesFercomet") || "[]");
+        notificaciones = notificaciones.map(n => ({ ...n, leida: true }));
+        localStorage.setItem("NotificacionesFercomet", JSON.stringify(notificaciones));
+        setTimeout(actualizarCampanillaNotificaciones, 300);
+      }
+    });
+
+    // Permite a otras páginas agregar notificaciones llamando a window.agregarNotificacionFercomet
+    window.agregarNotificacionFercomet = agregarNotificacion;
+
+    agregarCampanillaNotificaciones();
+    actualizarCampanillaNotificaciones();
   })
   .catch(error => console.error('Error al cargar el navbar:', error));
 

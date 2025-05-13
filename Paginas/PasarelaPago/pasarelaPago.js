@@ -1,5 +1,5 @@
 import { db } from "../../Servicios/firebaseConfig.js";
-import { doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { doc, getDoc, updateDoc, arrayUnion, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // --- Validadores y helpers ---
 const cardNumberInput = document.getElementById('cardNumber');
@@ -139,22 +139,33 @@ document.getElementById('paymentForm').addEventListener('submit', async function
       // Calcular total
       const total = cart.reduce((sum, item) => sum + (item.price * item.cantidad), 0);
 
-      // Crear objeto compra
+      // Crear objeto compra con estado inicial "pendiente"
       const compra = {
         fecha: new Date().toISOString(),
         total,
+        estado: "pendiente", // <-- Estado inicial
         productos: cart.map(item => ({
           id: item.productId || item.id,
           nombre: item.name,
           cantidad: item.cantidad,
           precio: item.price
-        }))
+        })),
+        usuario: {
+          uid: usuario.uid,
+          nombre: usuario.nombre,
+          apellido: usuario.apellido,
+          rut: usuario.rut,
+          email: usuario.email
+        }
       };
 
-      // Agregar la compra al array "compras" en Firestore
+      // Agregar la compra al array "compras" en Firestore (usuario)
       await updateDoc(userDocRef, {
         compras: arrayUnion(compra)
       });
+
+      // Guardar la compra en la colección global "compras"
+      await addDoc(collection(db, "compras"), compra);
     }
   } catch (err) {
     console.error("Error al guardar la compra en Firestore:", err);
