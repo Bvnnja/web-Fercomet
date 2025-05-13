@@ -78,11 +78,18 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       console.log("Datos del usuario guardados en Firestore:", userData);
       // Guardar en localStorage
       localStorage.setItem("Usuario", JSON.stringify(userData));
+      localStorage.setItem("cart", JSON.stringify([])); // Carrito vacío para nuevo usuario
     } else {
       const userData = userDoc.data();
       console.log("Datos del usuario ya existen en Firestore:", userData);
       // Guardar en localStorage
       localStorage.setItem("Usuario", JSON.stringify(userData));
+      // Sincronizar carrito del usuario
+      if (Array.isArray(userData.carrito)) {
+        localStorage.setItem("cart", JSON.stringify(userData.carrito));
+      } else {
+        localStorage.setItem("cart", JSON.stringify([]));
+      }
     }
 
     mostrarMensajePersonalizado("Inicio de sesión exitoso. Bienvenido, " + (userDoc.data()?.nombre || "Usuario"));

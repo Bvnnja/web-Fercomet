@@ -1,5 +1,5 @@
 import { db } from "../../Servicios/firebaseConfig.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let allProductsCache = []; // Cache para almacenar los productos
 
@@ -128,10 +128,24 @@ async function loadProductsCarousel() {
       }
 
       localStorage.setItem("cart", JSON.stringify(cart));
+      guardarCarritoUsuario(cart); // Guardar también en Firestore
       mostrarMensajeExito(name);
       window.dispatchEvent(new Event("carritoActualizado"));
     });
   });
+}
+
+// Guardar carrito en Firestore para el usuario autenticado
+async function guardarCarritoUsuario(cart) {
+  const usuario = JSON.parse(localStorage.getItem("Usuario"));
+  if (usuario && usuario.uid) {
+    try {
+      const userDocRef = doc(db, "usuarios", usuario.uid);
+      await updateDoc(userDocRef, { carrito: cart });
+    } catch (e) {
+      console.error("No se pudo actualizar el carrito en Firestore:", e);
+    }
+  }
 }
 
 // Función para mostrar el mensaje de éxito

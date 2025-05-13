@@ -147,3 +147,34 @@ document.getElementById('paymentForm').addEventListener('submit', async function
 document.getElementById('cancelarPago').addEventListener('click', function() {
   window.location.href = "/Paginas/Carrito/carrito.html";
 });
+
+const paymentForm = document.getElementById('paymentForm');
+const paymentResult = document.getElementById('paymentResult');
+const metodoBtns = document.querySelectorAll('.metodo-btn');
+
+metodoBtns.forEach(btn => {
+  btn.addEventListener('click', function() {
+    metodoBtns.forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const metodo = this.getAttribute('data-metodo');
+    if (metodo === "tarjeta") {
+      paymentForm.style.display = "";
+      paymentResult.innerHTML = "";
+    } else {
+      paymentForm.style.display = "none";
+      let msg = "";
+      if (metodo === "bancoestado") {
+        msg = "<b>Banco Estado:</b> Realiza tu pago a la cuenta 123456789, rut 11.111.111-1, a nombre de Fercomet. Luego envía el comprobante a pagos@fercomet.cl";
+      } else if (metodo === "transferencia") {
+        msg = "<b>Transferencia bancaria:</b> Realiza tu pago a la cuenta 987654321, rut 22.222.222-2, a nombre de Fercomet. Luego envía el comprobante a pagos@fercomet.cl";
+      } else if (metodo === "debito") {
+        msg = "<b>Débito:</b> Puedes pagar con tu tarjeta de débito en nuestra tienda física.";
+      } else if (metodo === "credito") {
+        msg = "<b>Crédito:</b> Puedes pagar con tu tarjeta de crédito en nuestra tienda física.";
+      } else {
+        msg = "<b>Otro método:</b> Consulta con nuestro equipo para coordinar el pago.";
+      }
+      paymentResult.innerHTML = `<div class="alert alert-info" style="margin-top:20px;">${msg}</div>`;
+    }
+  });
+});

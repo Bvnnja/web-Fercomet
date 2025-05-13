@@ -80,6 +80,21 @@ fetch('../../Modulos/Footer/footer.html')
   })
   .catch(error => console.error('Error al cargar el footer:', error));
 
+// Guardar carrito en Firestore para el usuario autenticado
+async function guardarCarritoUsuario(cart) {
+  const usuario = JSON.parse(localStorage.getItem("Usuario"));
+  if (usuario && usuario.uid) {
+    try {
+      const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      const { db } = await import("../../Servicios/firebaseConfig.js");
+      const userDocRef = doc(db, "usuarios", usuario.uid);
+      await updateDoc(userDocRef, { carrito: cart });
+    } catch (e) {
+      console.error("No se pudo actualizar el carrito en Firestore:", e);
+    }
+  }
+}
+
 // Actualizar el contador del carrito
 const actualizarContadorCarrito = () => {
   const contador = document.querySelector(".contador_carrito");
@@ -189,15 +204,16 @@ const crearNotificacionCentrada = (mensaje, onConfirm) => {
 };
 
 // Escuchar eventos para aumentar, disminuir, eliminar productos y vaciar carrito
-document.addEventListener("click", (e) => {
-  const carrito = JSON.parse(localStorage.getItem("cart")) || [];
+document.addEventListener("click", async (e) => {
+  let carrito = JSON.parse(localStorage.getItem("cart")) || [];
+  let updated = false;
+
   if (e.target.closest(".aumentar-cantidad")) {
     const index = parseInt(e.target.closest(".aumentar-cantidad").dataset.index, 10);
     if (!isNaN(index) && index >= 0 && index < carrito.length) {
       carrito[index].cantidad += 1;
       localStorage.setItem("cart", JSON.stringify(carrito));
-      renderizarCarrito();
-      actualizarContadorCarrito();
+      updated = true;
     }
   } else if (e.target.closest(".disminuir-cantidad")) {
     const index = parseInt(e.target.closest(".disminuir-cantidad").dataset.index, 10);
@@ -205,8 +221,7 @@ document.addEventListener("click", (e) => {
       if (carrito[index].cantidad > 1) {
         carrito[index].cantidad -= 1;
         localStorage.setItem("cart", JSON.stringify(carrito));
-        renderizarCarrito();
-        actualizarContadorCarrito();
+        updated = true;
       }
     }
   } else if (e.target.closest(".eliminar-item")) {
@@ -216,18 +231,28 @@ document.addEventListener("click", (e) => {
       crearNotificacionCentrada(`¿Estás seguro de que deseas eliminar "${producto.name}" del carrito?`, () => {
         carrito.splice(index, 1);
         localStorage.setItem("cart", JSON.stringify(carrito));
+        guardarCarritoUsuario(carrito);
         renderizarCarrito();
         actualizarContadorCarrito();
       });
+      return; // El guardado se hace en el callback
     }
   } else if (e.target.id === "vaciarCarrito") {
     if (carrito.length > 0) {
       crearNotificacionCentrada("¿Estás seguro de que deseas vaciar todo el carrito?", () => {
         localStorage.removeItem("cart");
+        guardarCarritoUsuario([]);
         renderizarCarrito();
         actualizarContadorCarrito();
       });
+      return; // El guardado se hace en el callback
     }
+  }
+
+  if (updated) {
+    guardarCarritoUsuario(carrito);
+    renderizarCarrito();
+    actualizarContadorCarrito();
   }
 });
 

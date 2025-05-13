@@ -11,6 +11,27 @@
       <img src="/imagenes/Captura de pantalla 2025-04-07 193041.png" alt="Fercomet" class="logo-fercomet" style="width:180px; margin-bottom:10px;">
       <h1>Pasarela de Pago</h1>
     </div>
+    <div class="metodo-pago-section">
+      <label style="font-weight:bold; margin-bottom:10px; display:block;">Selecciona el método de pago:</label>
+      <div id="metodosPagoBtns" class="metodos-pago-btns-grid">
+        <div class="metodos-row">
+          <button type="button" class="metodo-btn active" data-metodo="tarjeta">
+            <img src="https://img.icons8.com/color/48/000000/bank-card-back-side.png" alt="Tarjeta" class="icon-metodo"> 
+            <span>Tarjeta de crédito/débito</span>
+          </button>
+          <button type="button" class="metodo-btn" data-metodo="transferencia">
+            <img src="https://img.icons8.com/color/48/000000/money-transfer.png" alt="Transferencia" class="icon-metodo"> 
+            <span>Transferencia bancaria</span>
+          </button>
+        </div>
+        <div class="metodos-row">
+          <button type="button" class="metodo-btn" data-metodo="otro">
+            <img src="https://img.icons8.com/color/48/000000/help.png" alt="Otro" class="icon-metodo"> 
+            <span>Otro</span>
+          </button>
+        </div>
+      </div>
+    </div>
     <form id="paymentForm" class="pago-form">
       <label for="cardNumber">Número de tarjeta</label>
       <div class="input-icon-group">
@@ -18,7 +39,7 @@
         <span id="cardTypeIcon" class="card-icon"></span>
       </div>
       <label for="cardName">Nombre en la tarjeta</label>
-      <input type="text" id="cardName" required autocomplete="off">
+      <input type="text" id="cardName" required autocomplete="off" placeholder="Fercomet S.A.">
       <div class="pago-row">
         <div>
           <label for="expiry">Expiración</label>
@@ -28,7 +49,7 @@
           <label for="cvv">CVV</label>
           <div class="input-icon-group">
             <span id="toggleCvv" class="eye-icon" tabindex="0">&#128065;</span>
-            <input type="password" id="cvv" maxlength="4" required autocomplete="off" style="padding-left:32px;">
+            <input type="password" id="cvv" maxlength="3" required autocomplete="off" style="padding-left:32px;">
           </div>
         </div>
       </div>
