@@ -1,5 +1,5 @@
 import { db } from "../../Servicios/firebaseConfig.js";
-import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // --- Validadores y helpers ---
 const cardNumberInput = document.getElementById('cardNumber');
@@ -128,6 +128,37 @@ document.getElementById('paymentForm').addEventListener('submit', async function
 
     const newQuantity = cantidadDisponible - item.cantidad;
     await updateDoc(productRef, { cantidad: newQuantity });
+  }
+
+  // Guardar compra en Firestore
+  try {
+    const usuario = JSON.parse(localStorage.getItem("Usuario"));
+    if (usuario && usuario.uid) {
+      const userDocRef = doc(db, "usuarios", usuario.uid);
+
+      // Calcular total
+      const total = cart.reduce((sum, item) => sum + (item.price * item.cantidad), 0);
+
+      // Crear objeto compra
+      const compra = {
+        fecha: new Date().toISOString(),
+        total,
+        productos: cart.map(item => ({
+          id: item.productId || item.id,
+          nombre: item.name,
+          cantidad: item.cantidad,
+          precio: item.price
+        }))
+      };
+
+      // Agregar la compra al array "compras" en Firestore
+      await updateDoc(userDocRef, {
+        compras: arrayUnion(compra)
+      });
+    }
+  } catch (err) {
+    console.error("Error al guardar la compra en Firestore:", err);
+    // No bloquea el flujo de compra
   }
 
   // Vaciar carrito

@@ -43,6 +43,7 @@ fetch('../../Modulos/navBar/navbar.html')
         </a>
         <ul class="dropdown-menu" aria-labelledby="userDropdown">
           <li><a class="dropdown-item" href="/DatosPersonales.html">Datos personales</a></li>
+          <li><a class="dropdown-item" href="/Paginas/MisCompras/misCompras.html" id="mis-compras-link">Mis compras</a></li>
           <li><a class="dropdown-item" href="#" id="logoutBtn">Cerrar sesión</a></li>
         </ul>
       `;
