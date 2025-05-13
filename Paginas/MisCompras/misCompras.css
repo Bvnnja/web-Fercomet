@@ -1,0 +1,104 @@
+.compras-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+.card-header {
+  font-size: 1.1rem;
+}
+
+.card-body ul {
+  margin-bottom: 0;
+}
+
+.compra-card {
+  border-radius: 18px;
+  box-shadow: 0 4px 18px rgba(50, 115, 91, 0.10);
+  margin-bottom: 32px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.compra-card:hover {
+  box-shadow: 0 8px 28px rgba(50, 115, 91, 0.18);
+}
+
+.compra-header {
+  background: linear-gradient(90deg, #32735B 60%, #1a3e5c 100%);
+  color: #fff;
+  padding: 18px 28px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.compra-header .compra-num {
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.compra-header .compra-fecha {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.compra-body {
+  padding: 22px 28px 18px 28px;
+}
+
+.compra-total {
+  font-size: 1.1rem;
+  color: #32735B;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.compra-productos-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.compra-producto-item {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 10px 0;
+}
+
+.compra-producto-item:last-child {
+  border-bottom: none;
+}
+
+.compra-producto-nombre {
+  font-weight: 500;
+  color: #1a3e5c;
+  flex: 1;
+}
+
+.compra-producto-cantidad {
+  color: #32735B;
+  font-weight: 500;
+  margin-right: 12px;
+}
+
+.compra-producto-precio {
+  color: #888;
+  font-size: 0.98rem;
+}
+
+@media (max-width: 600px) {
+  .compra-card, .compra-header, .compra-body {
+    padding: 12px !important;
+  }
+  .compras-container {
+    padding: 0 4px;
+  }
+}
