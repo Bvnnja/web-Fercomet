@@ -150,6 +150,256 @@ body {
     font-size: 1.5rem;
   }
 
+  /* Estilo adicional para mejorar la presentación del detalle del producto */
+  .detalle-producto-card {
+    background: linear-gradient(135deg, #ffffff 80%, #e8f5e9 100%);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(50, 115, 91, 0.13), 0 2px 8px #e8f5e9;
+    padding: 36px 32px 28px 32px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    max-width: 950px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 36px;
+    align-items: flex-start;
+    min-height: 420px;
+  }
+
+  .detalle-producto-card .col-md-6 {
+    flex: 1 1 320px;
+    min-width: 320px;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .detalle-producto-card img {
+    max-width: 100%;
+    max-height: 320px;
+    object-fit: contain;
+    border-radius: 12px;
+    background: #f8fafb;
+    box-shadow: 0 2px 8px rgba(50,115,91,0.06);
+    margin-bottom: 18px;
+  }
+
+  .detalle-producto-card h1 {
+    font-size: 2.2rem;
+    color: #32735B;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .detalle-producto-card .price {
+    font-size: 1.7rem;
+    color: #43a047;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .detalle-producto-card p {
+    font-size: 1.15rem;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  .detalle-producto-card .stock {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 18px;
+  }
+
+  .detalle-producto-card .stock.red {
+    color: #e53935;
+    font-weight: bold;
+  }
+
+  .detalle-producto-card .quantity-selector {
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .detalle-producto-card #addToCartButton {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 12px 0;
+    background: linear-gradient(90deg, #32735B 60%, #43a047 100%);
+    border: none;
+    color: white;
+    transition: background 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 8px rgba(50, 115, 91, 0.10);
+  }
+
+  .detalle-producto-card #addToCartButton:disabled {
+    background: #ccc;
+    color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .detalle-producto-card #addToCartButton:hover:not(:disabled) {
+    background: linear-gradient(90deg, #285f4a 60%, #388e3c 100%);
+    box-shadow: 0 4px 16px rgba(50, 115, 91, 0.18);
+  }
+
+  .detalle-producto-card .btn-outline-secondary {
+    font-size: 1.2rem;
+    padding: 6px 16px;
+    border-radius: 8px;
+  }
+
+  .detalle-producto-card .quantity-selector span {
+    font-size: 1.2rem;
+    font-weight: bold;
+    min-width: 32px;
+    display: inline-block;
+    text-align: center;
+  }
+
+  .detalle-producto-card .descripcion {
+    margin-top: 18px;
+    font-size: 1.1rem;
+    color: #444;
+    background: #f5f7fa;
+    border-radius: 10px;
+    padding: 18px 18px 12px 18px;
+    box-shadow: 0 2px 8px rgba(50,115,91,0.06);
+  }
+
+  @media (max-width: 900px) {
+    .detalle-producto-card {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 18px 8px 18px 8px;
+    }
+    .detalle-producto-card .col-md-6 {
+      max-width: 100%;
+      min-width: 0;
+      padding: 0;
+    }
+    .detalle-producto-card img {
+      max-height: 180px;
+      padding: 12px;
+    }
+  }
+
+  /* Mejorar la sección de pestañas y contenido de descripción/comentarios */
+  #productTabs {
+    background: #f5f7fa;
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 2px 8px rgba(50,115,91,0.08);
+    padding-left: 12px;
+    padding-right: 12px;
+    margin-bottom: 0;
+    border-bottom: none;
+  }
+
+  #productTabs .nav-link {
+    color: #32735B;
+    font-weight: 600;
+    font-size: 1.08rem;
+    border: none;
+    border-radius: 14px 14px 0 0;
+    margin-right: 6px;
+    background: #e8f5e9;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  #productTabs .nav-link.active,
+  #productTabs .nav-link:focus {
+    background: linear-gradient(90deg, #32735B 60%, #43a047 100%);
+    color: #fff;
+    border: none;
+  }
+
+  .tab-content {
+    background: #fff;
+    border-radius: 0 0 14px 14px;
+    box-shadow: 0 2px 8px rgba(50,115,91,0.08);
+    padding: 28px 24px 18px 24px;
+    margin-bottom: 24px;
+    min-height: 120px;
+  }
+
+  .tab-content .descripcion {
+    font-size: 1.13rem;
+    color: #285f4a;
+    background: #f5f7fa;
+    border-radius: 10px;
+    padding: 18px 18px 12px 18px;
+    box-shadow: 0 2px 8px rgba(50,115,91,0.06);
+    margin-bottom: 0;
+  }
+
+  .tab-content #reviews {
+    font-size: 1.08rem;
+    color: #444;
+    background: #f8fafb;
+    border-radius: 10px;
+    padding: 18px 18px 12px 18px;
+    box-shadow: 0 2px 8px rgba(50,115,91,0.04);
+  }
+
+  /* Botones de asistencia y tienda */
+  .row.mt-5 .btn-warning {
+    background: linear-gradient(90deg, #ffb300 60%, #ffd54f 100%);
+    color: #32735B;
+    font-weight: 700;
+    font-size: 1.13rem;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 28px;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.13);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .row.mt-5 .btn-warning:hover {
+    background: linear-gradient(90deg, #ff9800 60%, #ffd54f 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(255, 193, 7, 0.18);
+  }
+
+  .row.mt-5 .text-center {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(50,115,91,0.06);
+    padding: 24px 10px 18px 10px;
+    margin-bottom: 18px;
+  }
+
+  .row.mt-5 .text-center p {
+    font-size: 1.08rem;
+    color: #32735B;
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-weight: 500;
+  }
+
+  @media (max-width: 900px) {
+    .tab-content {
+      padding: 14px 6px 10px 6px;
+    }
+    .row.mt-5 .text-center {
+      padding: 14px 4px 10px 4px;
+    }
+  }
+
   /* Footer */
   #footer-placeholder {
     margin-top: 50px;
