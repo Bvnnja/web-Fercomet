@@ -174,6 +174,13 @@ async function loadProductsCarousel() {
       const productId = card.dataset.id;
       const category = card.dataset.category;
       if (productId && category) {
+        // Guardar el producto seleccionado en sessionStorage para el detalle
+        const productoSeleccionado = allProductsCache.find(
+          p => p.id === productId && p.category === category
+        );
+        if (productoSeleccionado) {
+          sessionStorage.setItem("productoDetalle", JSON.stringify(productoSeleccionado));
+        }
         const queryParams = new URLSearchParams({ id: productId, category }).toString();
         window.location.href = `/Paginas/DetalleProducto/productoDetalle.html?${queryParams}`;
       } else {

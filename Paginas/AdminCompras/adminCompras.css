@@ -1,0 +1,247 @@
+/* Estilos exclusivos para Admin Compras */
+body.admin-compras-page {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+}
+
+body.admin-compras-page .container {
+  max-width: 1400px;
+}
+
+body.admin-compras-page .compras-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 28px;
+}
+
+body.admin-compras-page .compra-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 24px rgba(50, 115, 91, 0.13);
+  border: 1.5px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  transition: box-shadow 0.2s, transform 0.2s;
+  margin-bottom: 0;
+  padding: 0;
+  position: relative;
+}
+
+body.admin-compras-page .compra-card:hover {
+  box-shadow: 0 12px 32px rgba(50, 115, 91, 0.18);
+  transform: translateY(-4px) scale(1.01);
+}
+
+body.admin-compras-page .compra-header {
+  background: linear-gradient(90deg, #32735B 60%, #1a3e5c 100%);
+  color: #fff;
+  border-radius: 18px 18px 0 0;
+  padding: 18px 28px;
+  font-size: 1.13rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 60px;
+}
+
+body.admin-compras-page .compra-header span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body.admin-compras-page .compra-body {
+  padding: 24px 28px 18px 28px;
+  font-size: 1.05rem;
+  color: #222;
+  background: #f8fafb;
+  border-radius: 0 0 18px 18px;
+  flex: 1;
+}
+
+body.admin-compras-page .compra-body ul {
+  padding-left: 18px;
+  margin-bottom: 0;
+}
+
+body.admin-compras-page .compra-body li {
+  font-size: 0.98rem;
+  margin-bottom: 2px;
+}
+
+body.admin-compras-page .badge {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 7px 18px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(50,115,91,0.08);
+  border: none;
+}
+body.admin-compras-page .badge-pendiente { background: #ffc107; color: #333; }
+body.admin-compras-page .badge-despachado { background: #0dcaf0; color: #fff; }
+body.admin-compras-page .badge-entregado { background: #28a745; color: #fff; }
+body.admin-compras-page .badge-primary { background: #0d6efd; color: #fff; }
+body.admin-compras-page .badge-secondary { background: #6c757d; color: #fff; }
+body.admin-compras-page .badge-danger { background: #dc3545; color: #fff; }
+body.admin-compras-page .badge-dark { background: #212529; color: #fff; }
+body.admin-compras-page .bg-success { background: #28a745 !important; color: #fff !important; }
+
+/* Filtros */
+body.admin-compras-page .mb-4.d-flex.flex-wrap {
+  background: #f5f7fa;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(50,115,91,0.08);
+  padding: 18px 12px 12px 12px;
+  margin-bottom: 32px !important;
+  gap: 12px !important;
+}
+body.admin-compras-page .form-select, 
+body.admin-compras-page .form-control {
+  border-radius: 8px;
+  border: 1.5px solid #b2dfdb;
+  font-size: 1rem;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(50, 115, 91, 0.04);
+}
+body.admin-compras-page .form-select:focus, 
+body.admin-compras-page .form-control:focus {
+  border-color: #43a047;
+  outline: none;
+  box-shadow: 0 0 0 2px #b2dfdb;
+}
+/* Botones */
+body.admin-compras-page .btn {
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 8px 18px;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(50, 115, 91, 0.04);
+}
+body.admin-compras-page .btn-primary {
+  background: linear-gradient(90deg, #32735B 60%, #43a047 100%);
+  border: none;
+  color: #fff;
+}
+body.admin-compras-page .btn-primary:hover, 
+body.admin-compras-page .btn-primary:focus {
+  background: linear-gradient(90deg, #285f4a 60%, #388e3c 100%);
+  color: #fff;
+}
+body.admin-compras-page .btn-outline-success {
+  border: 2px solid #28a745;
+  color: #28a745;
+  background: #fff;
+}
+body.admin-compras-page .btn-outline-success:hover, 
+body.admin-compras-page .btn-outline-success:focus {
+  background: #28a745;
+  color: #fff;
+}
+body.admin-compras-page .btn-outline-danger {
+  border: 2px solid #dc3545;
+  color: #dc3545;
+  background: #fff;
+}
+body.admin-compras-page .btn-outline-danger:hover, 
+body.admin-compras-page .btn-outline-danger:focus {
+  background: #dc3545;
+  color: #fff;
+}
+body.admin-compras-page .btn-outline-warning {
+  border: 2px solid #ffc107;
+  color: #b8860b;
+  background: #fff;
+}
+body.admin-compras-page .btn-outline-warning:hover, 
+body.admin-compras-page .btn-outline-warning:focus {
+  background: #ffc107;
+  color: #fff;
+}
+body.admin-compras-page .btn-outline-secondary {
+  border: 2px solid #6c757d;
+  color: #6c757d;
+  background: #fff;
+}
+body.admin-compras-page .btn-outline-secondary:hover, 
+body.admin-compras-page .btn-outline-secondary:focus {
+  background: #6c757d;
+  color: #fff;
+}
+/* Textareas y campos */
+body.admin-compras-page textarea.form-control {
+  border-radius: 8px;
+  border: 1.5px solid #b2dfdb;
+  font-size: 1rem;
+  background: #fff;
+  resize: vertical;
+  min-height: 48px;
+  margin-bottom: 6px;
+}
+body.admin-compras-page textarea.form-control:focus {
+  border-color: #43a047;
+  outline: none;
+  box-shadow: 0 0 0 2px #b2dfdb;
+}
+/* Motivo de cancelación y stock repuesto */
+body.admin-compras-page .mt-3 .badge.bg-success {
+  font-size: 0.98rem;
+  padding: 7px 14px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Badge de stock repuesto visual central */
+body.admin-compras-page .stock-repuesto-badge-fercomet {
+  pointer-events: none;
+  background: #28a745;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.08rem;
+  padding: 10px 32px;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(50,115,91,0.18);
+  text-align: center;
+  display: inline-block;
+  min-width: 120px;
+  letter-spacing: 0.5px;
+  animation: fadeInStockRepuestoBadge 0.7s;
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+@keyframes fadeInStockRepuestoBadge {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.8);}
+  100% { opacity: 1; transform: translateX(-50%) scale(1);}
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  body.admin-compras-page .compras-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  body.admin-compras-page .compra-card, 
+  body.admin-compras-page .compra-header, 
+  body.admin-compras-page .compra-body {
+    padding: 12px !important;
+  }
+}
+@media (max-width: 600px) {
+  body.admin-compras-page .container {
+    padding: 0 4px;
+  }
+  body.admin-compras-page .compra-header, 
+  body.admin-compras-page .compra-body {
+    padding: 10px !important;
+  }
+  body.admin-compras-page .compra-card {
+    border-radius: 10px;
+  }
+}
