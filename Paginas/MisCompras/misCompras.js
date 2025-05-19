@@ -46,6 +46,11 @@ function mostrarNotificacionEstadoPedido(mensaje, tipo = "info") {
   }, 3500);
 }
 
+// Formatear número con puntos de miles
+function formatearCLP(num) {
+  return Number(num).toLocaleString('es-CL');
+}
+
 async function cargarCompras() {
   const usuario = JSON.parse(localStorage.getItem("Usuario"));
   const comprasContainer = document.getElementById("comprasContainer");
@@ -81,18 +86,31 @@ async function cargarCompras() {
     comprasContainer.innerHTML = comprasGlobalUsuario
       .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || "")) // Ordenar por fecha descendente
       .map((compra, idx) => {
-        // Definir todos los posibles estados y sus estilos
+        // Definir todos los posibles estados y sus estilos (coincidir con adminCompras)
         const estados = {
-          pendiente: { label: "Pendiente", badge: "info" },
-          despachado: { label: "Despachado", badge: "warning" },
-          entregado: { label: "Entregado", badge: "success" },
-          listo_retiro: { label: "Listo para el Retiro", badge: "primary" },
-          cancelado: { label: "Cancelado", badge: "danger" },
-          en_preparacion: { label: "En preparación", badge: "secondary" },
-          otro: { label: "Otro", badge: "dark" }
+          pendiente: { label: "Pendiente", badge: "badge-pendiente" },
+          pendiente_transferencia: { label: "Pendiente Transferencia", badge: "badge-warning" },
+          transferencia_recibida: { label: "Transferencia Recibida", badge: "badge-success" },
+          despachado: { label: "Despachado", badge: "badge-despachado" },
+          entregado: { label: "Entregado", badge: "badge-entregado" },
+          listo_retiro: { label: "Listo para el Retiro", badge: "badge-primary" },
+          en_preparacion: { label: "En preparación", badge: "badge-secondary" },
+          cancelado: { label: "Cancelado", badge: "badge-danger" },
+          otro: { label: "Otro", badge: "badge-dark" }
         };
         const estadoKey = compra.estado || "pendiente";
-        const estadoObj = estados[estadoKey] || { label: estadoKey.charAt(0).toUpperCase() + estadoKey.slice(1), badge: "secondary" };
+        const estadoObj = estados[estadoKey] || { label: estadoKey.charAt(0).toUpperCase() + estadoKey.slice(1), badge: "badge-secondary" };
+        // Mostrar ubicación solo si el estado es "listo_retiro"
+        const ubicacionHtml = estadoKey === "listo_retiro"
+          ? `
+            <div class="alert alert-info mt-3" style="font-size:1.05rem;">
+              <b>¡Tu compra está lista para el retiro!</b><br>
+              Retira en: <a href="https://maps.app.goo.gl/oRcJcBEnWKF4pKnK6" target="_blank" style="color:#32735B;text-decoration:underline;">
+                La Quebrada, Canal Chacao 02590, Quilpué, Valparaíso
+              </a>
+            </div>
+          `
+          : "";
         return `
         <div class="compra-card">
           <div class="compra-header">
@@ -100,8 +118,9 @@ async function cargarCompras() {
             <span class="compra-fecha">${compra.fecha ? new Date(compra.fecha).toLocaleString() : "Sin fecha"}</span>
           </div>
           <div class="compra-body">
-            <div class="compra-total">Total: $${compra.total || 0}</div>
-            <div><b>Estado:</b> <span class="badge bg-${estadoObj.badge}">${estadoObj.label}</span></div>
+            <div class="compra-total">Total: $${formatearCLP(compra.total || 0)}</div>
+            <div><b>Estado:</b> <span class="badge ${estadoObj.badge}">${estadoObj.label}</span></div>
+            ${ubicacionHtml}
             <div><b>Productos:</b></div>
             <ul class="compra-productos-list">
               ${
@@ -110,7 +129,7 @@ async function cargarCompras() {
                     <li class="compra-producto-item">
                       <span class="compra-producto-nombre">${prod.nombre}</span>
                       <span class="compra-producto-cantidad">x${prod.cantidad}</span>
-                      <span class="compra-producto-precio">$${prod.precio}</span>
+                      <span class="compra-producto-precio">$${formatearCLP(prod.precio)}</span>
                     </li>
                   `).join("")
                   : "<li class='compra-producto-item'><span class='text-muted'>No hay productos</span></li>"

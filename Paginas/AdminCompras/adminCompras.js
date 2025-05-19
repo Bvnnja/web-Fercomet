@@ -3,6 +3,8 @@ import { collection, getDocs, doc, updateDoc, getDoc } from "https://www.gstatic
 
 const ESTADOS = [
   { value: "pendiente", label: "Pendiente", badge: "badge-pendiente" },
+  { value: "pendiente_transferencia", label: "Pendiente Transferencia", badge: "badge-warning" },
+  { value: "transferencia_recibida", label: "Transferencia Recibida", badge: "badge-success" },
   { value: "despachado", label: "Despachado", badge: "badge-despachado" },
   { value: "entregado", label: "Entregado", badge: "badge-entregado" },
   { value: "listo_retiro", label: "Listo para el Retiro", badge: "badge-primary" },
@@ -355,6 +357,8 @@ async function cargarCompras(filtroEstado = "", numeroCompra = "", usuarioFiltro
                 if (usuarioActual && usuarioActual.uid === usuarioUid) {
                   const estados = {
                     pendiente: { label: "Pendiente", tipo: "info" },
+                    pendiente_transferencia: { label: "Pendiente Transferencia", tipo: "warning" },
+                    transferencia_recibida: { label: "Transferencia Recibida", tipo: "success" },
                     despachado: { label: "Despachado", tipo: "warning" },
                     entregado: { label: "Entregado", tipo: "success" },
                     listo_retiro: { label: "Listo para el Retiro", tipo: "primary" },

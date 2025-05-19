@@ -57,6 +57,12 @@
       <button type="button" class="cancelar-btn" id="cancelarPago">Cancelar</button>
     </form>
     <div id="paymentResult"></div>
+    <!-- Input para comprobante de transferencia, oculto por defecto -->
+    <div id="comprobanteTransferenciaContainer" style="display:none; margin-top:18px;">
+      <label for="comprobanteTransferencia" style="font-weight:600;">Adjuntar comprobante de transferencia (opcional):</label>
+      <input type="file" id="comprobanteTransferencia" accept="image/*,.pdf">
+      <div id="comprobantePreview" style="margin-top:8px;"></div>
+    </div>
     <div id="successMessage" class="success-message" style="display:none;">
       <img src="/imagenes/Captura de pantalla 2025-04-07 193041.png" alt="Fercomet" style="width:180px; margin-bottom:30px; filter:drop-shadow(0 0 10px #fff);">
       <h2 style="font-size:2.2rem; margin-bottom:10px; text-shadow:0 2px 10px #000;">¡Tu compra fue realizada con éxito!</h2>

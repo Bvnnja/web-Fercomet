@@ -9,6 +9,11 @@ function getRandomProducts(products, count) {
   return shuffled.slice(0, count);
 }
 
+// Formatear número con puntos de miles
+function formatearCLP(num) {
+  return Number(num).toLocaleString('es-CL');
+}
+
 // Notificación de estado de compra abajo a la derecha, llamativa y 4 segundos
 function mostrarNotificacionEstadoCompra(mensaje, tipo = "info", identificador = "", compraUid = "", nombreProducto = "") {
   const colores = {
@@ -133,7 +138,7 @@ async function loadProductsCarousel() {
               <img src="${product.imagenUrl}" class="card-img-top" alt="${product.nombre}">
               <div class="card-body text-center">
                 <h5 class="card-title">${product.nombre}</h5>
-                <p class="card-text">Precio: $${product.precio}</p>
+                <p class="card-text">Precio: $${formatearCLP(product.precio)}</p>
                 <p class="card-text" style="color: ${product.cantidad > 0 ? '#6c757d' : 'red'};">
                   ${product.cantidad > 0 ? `Disponibles: ${product.cantidad}` : 'Sin stock'}
                 </p>
