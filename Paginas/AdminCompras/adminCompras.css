@@ -87,6 +87,8 @@ body.admin-compras-page .badge-primary { background: #0d6efd; color: #fff; }
 body.admin-compras-page .badge-secondary { background: #6c757d; color: #fff; }
 body.admin-compras-page .badge-danger { background: #dc3545; color: #fff; }
 body.admin-compras-page .badge-dark { background: #212529; color: #fff; }
+body.admin-compras-page .badge-warning { background: #ff9800; color: #fff; }
+body.admin-compras-page .badge-success { background: #28a745; color: #fff; }
 body.admin-compras-page .bg-success { background: #28a745 !important; color: #fff !important; }
 
 /* Filtros */

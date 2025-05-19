@@ -7,6 +7,11 @@ let currentPage = 1;
 const productsPerPage = 4;
 let allProductsCache = []; // Cache para almacenar los productos
 
+// Formatear número con puntos de miles
+function formatearCLP(num) {
+  return Number(num).toLocaleString('es-CL');
+}
+
 // Generar botones de categorías dinámicamente
 document.addEventListener("DOMContentLoaded", async () => {
   const categoryButtonsContainer = document.getElementById("categoryButtons");
@@ -299,7 +304,7 @@ function displayFilteredProducts(products, page = 1) {
       <a href="/Paginas/DetalleProducto/productoDetalle.html?id=${product.id}&category=${product.category}" style="text-decoration: none; color: inherit;">
         <img src="${product.imagenUrl}" alt="${product.nombre}">
         <h3>${product.nombre}</h3>
-        <p class="price">Precio: $${product.precio}</p>
+        <p class="price">Precio: $${formatearCLP(product.precio)}</p>
         <p class="stock" style="color: ${product.cantidad > 0 ? '#6c757d' : 'red'};">
           ${product.cantidad > 0 ? `Disponibles: ${product.cantidad}` : 'Sin stock'}
         </p>

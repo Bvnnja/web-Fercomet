@@ -13,6 +13,11 @@ if (referrer.includes("/Paginas/Inicio/index.html")) {
   volverDestino = "/Paginas/Inicio/index.html";
 }
 
+// Formatear número con puntos de miles
+function formatearCLP(num) {
+  return Number(num).toLocaleString('es-CL');
+}
+
 async function loadProductDetail() {
   if (!productId || !category) {
     alert("Producto no encontrado.");
@@ -52,7 +57,7 @@ async function loadProductDetail() {
       </div>
       <div class="col-md-6">
         <h1>${product.nombre}</h1>
-        <p><strong>Precio:</strong> <span class="price">$${product.precio}</span></p>
+        <p><strong>Precio:</strong> <span class="price">$${formatearCLP(product.precio)}</span></p>
         <p><strong>Disponibilidad:</strong> ${product.cantidad > 0 ? `En stock (${product.cantidad})` : "Sin stock"}</p>
         <div class="quantity-selector mt-3">
           <button id="decreaseQuantity" class="btn btn-outline-secondary" ${product.cantidad === 0 ? 'disabled' : ''}>-</button>
@@ -303,9 +308,9 @@ function mostrarComentarios(productId, category) {
     // Asignar eventos a los botones de eliminar
     comentariosLista.querySelectorAll(".eliminar-comentario").forEach(btn => {
       btn.onclick = async function() {
-        if (confirm("¿Seguro que deseas eliminar este comentario?")) {
+        mostrarConfirmacionEliminar(async () => {
           await deleteDoc(doc(db, "Products", category, "items", productId, "comentarios", btn.dataset.id));
-        }
+        });
       };
     });
 
@@ -378,6 +383,50 @@ function mostrarComentarios(productId, category) {
       };
     });
   });
+}
+
+// Notificación emergente personalizada para confirmar eliminación
+function mostrarConfirmacionEliminar(onConfirm) {
+  // Si ya existe, no crear otra
+  if (document.getElementById("confirmacion-eliminar")) return;
+
+  const overlay = document.createElement("div");
+  overlay.id = "confirmacion-eliminar";
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100vw";
+  overlay.style.height = "100vh";
+  overlay.style.background = "rgba(0,0,0,0.3)";
+  overlay.style.zIndex = "2000";
+  overlay.style.display = "flex";
+  overlay.style.alignItems = "center";
+  overlay.style.justifyContent = "center";
+
+  const modal = document.createElement("div");
+  modal.className = "bg-white rounded shadow p-4";
+  modal.style.minWidth = "320px";
+  modal.style.maxWidth = "90vw";
+  modal.innerHTML = `
+    <div class="mb-3" style="font-size:1.15rem;">
+      <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+      ¿Seguro que deseas eliminar este comentario?
+    </div>
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-danger" id="confirmar-eliminar-btn">Eliminar</button>
+      <button class="btn btn-secondary" id="cancelar-eliminar-btn">Cancelar</button>
+    </div>
+  `;
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  document.getElementById("confirmar-eliminar-btn").onclick = () => {
+    document.body.removeChild(overlay);
+    onConfirm();
+  };
+  document.getElementById("cancelar-eliminar-btn").onclick = () => {
+    document.body.removeChild(overlay);
+  };
 }
 
 document.getElementById("backButton").addEventListener("click", () => {

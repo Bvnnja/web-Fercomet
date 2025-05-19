@@ -208,7 +208,24 @@ metodoBtns.forEach(btn => {
       if (metodo === "bancoestado") {
         msg = "<b>Banco Estado:</b> Realiza tu pago a la cuenta 123456789, rut 11.111.111-1, a nombre de Fercomet. Luego envía el comprobante a pagos@fercomet.cl";
       } else if (metodo === "transferencia") {
-        msg = "<b>Transferencia bancaria:</b> Realiza tu pago a la cuenta 987654321, rut 22.222.222-2, a nombre de Fercomet. Luego envía el comprobante a pagos@fercomet.cl";
+        msg = `
+          <div style="text-align:left;">
+            <b>Datos para Transferencia Bancaria:</b>
+            <table style="width:100%;margin:10px 0 10px 0;">
+              <tr><td><b>Banco:</b></td><td>Banco Estado</td></tr>
+              <tr><td><b>Tipo de cuenta:</b></td><td>Cuenta Corriente</td></tr>
+              <tr><td><b>N° Cuenta:</b></td><td>123456789</td></tr>
+              <tr><td><b>RUT:</b></td><td>11.111.111-1</td></tr>
+              <tr><td><b>Nombre:</b></td><td>Fercomet</td></tr>
+              <tr><td><b>Email:</b></td><td>pagos@fercomet.cl</td></tr>
+            </table>
+            <div class="alert alert-warning" style="font-size:0.98rem;">
+              Realiza la transferencia y luego envía el comprobante a <b>pagos@fercomet.cl</b>.<br>
+              <b>Importante:</b> Debes confirmar tu compra para que quede registrada.
+            </div>
+            <button id="confirmarTransferenciaBtn" class="pago-btn" style="margin-top:10px;width:100%;">Confirmar compra por transferencia</button>
+          </div>
+        `;
       } else if (metodo === "debito") {
         msg = "<b>Débito:</b> Puedes pagar con tu tarjeta de débito en nuestra tienda física.";
       } else if (metodo === "credito") {
@@ -217,6 +234,62 @@ metodoBtns.forEach(btn => {
         msg = "<b>Otro método:</b> Consulta con nuestro equipo para coordinar el pago.";
       }
       paymentResult.innerHTML = `<div class="alert alert-info" style="margin-top:20px;">${msg}</div>`;
+
+      // Lógica para confirmar compra por transferencia
+      if (metodo === "transferencia") {
+        setTimeout(() => { // Espera a que el botón esté en el DOM
+          const btnTransfer = document.getElementById('confirmarTransferenciaBtn');
+          if (btnTransfer) {
+            btnTransfer.onclick = async function() {
+              // Obtener carrito
+              let cart = JSON.parse(localStorage.getItem("cart")) || [];
+              if (cart.length === 0) {
+                paymentResult.innerHTML = `<div class="alert alert-danger">El carrito está vacío.</div>`;
+                return;
+              }
+              try {
+                const usuario = JSON.parse(localStorage.getItem("Usuario"));
+                if (usuario && usuario.uid) {
+                  const userDocRef = doc(db, "usuarios", usuario.uid);
+                  const total = cart.reduce((sum, item) => sum + (item.price * item.cantidad), 0);
+                  const compra = {
+                    fecha: new Date().toISOString(),
+                    total,
+                    estado: "pendiente_transferencia",
+                    productos: cart.map(item => ({
+                      id: item.productId || item.id,
+                      nombre: item.name,
+                      cantidad: item.cantidad,
+                      precio: item.price
+                    })),
+                    usuario: {
+                      uid: usuario.uid,
+                      nombre: usuario.nombre,
+                      apellido: usuario.apellido,
+                      rut: usuario.rut,
+                      email: usuario.email
+                    }
+                  };
+                  await updateDoc(userDocRef, {
+                    compras: arrayUnion(compra)
+                  });
+                  await addDoc(collection(db, "compras"), compra);
+                }
+                // Vaciar carrito
+                localStorage.setItem("cart", JSON.stringify([]));
+                paymentForm.style.display = "none";
+                paymentResult.style.display = "none";
+                document.getElementById('successMessage').style.display = "flex";
+                setTimeout(() => {
+                  window.location.href = "/Paginas/Inicio/index.html";
+                }, 3000);
+              } catch (err) {
+                paymentResult.innerHTML = `<div class="alert alert-danger">Error al registrar la compra. Intenta nuevamente.</div>`;
+              }
+            };
+          }
+        }, 100);
+      }
     }
   });
 });
