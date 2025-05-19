@@ -1,11 +1,5 @@
-import firebaseConfig from "../../Servicios/firebaseConfig.js";
-console.log(firebaseConfig);
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app); 
+import { auth } from "../../Servicios/firebaseConfig.js";
+import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // Lógica para enviar el correo de recuperación
 document.getElementById("btnEnviar").addEventListener("click", () => {
@@ -18,7 +12,7 @@ document.getElementById("btnEnviar").addEventListener("click", () => {
       mensaje.style.color = "green";
     })
     .catch((error) => {
-      mensaje.textContent = "⚠️ Debes ingresar un correo válido.";
+      mensaje.textContent = "⚠️ Debes ingresar un correo válido o el correo no está registrado.";
       mensaje.style.color = "red";
     });
 });

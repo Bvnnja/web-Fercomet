@@ -82,4 +82,46 @@
     color: #FF4C4C;
     margin-top: 1.2rem;
   }
-  
+
+  .botones-recuperar {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 1.2rem;
+  }
+
+  .recuperar .btn-volver {
+    background: #fff;
+    color: #32735B;
+    border: 2px solid #32735B;
+    border-radius: 8px;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    box-shadow: 0 2px 8px rgba(50, 115, 91, 0.06);
+  }
+
+  .recuperar .btn-volver:hover {
+    background: #e8f5e9;
+    color: #285e4b;
+    border-color: #285e4b;
+  }
+
+  .recuperar #btnEnviar {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.95rem;
+    background-color: #32735B;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 500;
+  }
+
+  .recuperar #btnEnviar:hover {
+    background-color: #286E4D;
+    transform: scale(1.03);
+  }

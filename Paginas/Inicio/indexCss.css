@@ -1,68 +1,126 @@
 body {
-  background-color: #ffffff;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+  min-height: 100vh;
 }
 
+/* Título principal de productos */
+.container > h2.text-center {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #32735B;
+  letter-spacing: 1px;
+  margin-bottom: 32px;
+  margin-top: 24px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(50, 115, 91, 0.08);
+  padding: 18px 0 12px 0;
+  border-bottom: 3px solid #43a047;
+  position: relative;
+}
+
+.container > h2.text-center::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: #43a047;
+  border-radius: 2px;
+  margin: 12px auto 0 auto;
+  box-shadow: 0 2px 8px #b2dfdb;
+}
+
+/* Tarjetas de producto */
 .card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.452);
-  height: 100%; /* Asegurar que todas las tarjetas tengan la misma altura */
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 6px 24px rgba(50, 115, 91, 0.12);
+  transition: transform 0.22s cubic-bezier(.4,2,.6,1), box-shadow 0.22s;
+  background: linear-gradient(135deg, #ffffff 80%, #e8f5e9 100%);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-height: 370px;
+  margin-bottom: 24px;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(50, 115, 91, 0.18);
+  background: linear-gradient(135deg, #f0fff4 70%, #d0f5e9 100%);
 }
 
 .card-img-top {
-  height: 200px; /* Altura fija para las imágenes */
-  object-fit: cover; /* Ajustar las imágenes para que se vean bien */
+  height: 180px;
+  object-fit: contain;
+  border-radius: 12px 12px 0 0;
+  background: #f8fafb;
+  box-shadow: 0 2px 8px rgba(50, 115, 91, 0.06);
+  margin-top: 12px;
 }
 
 .card-title {
-  font-size: 1.2em;
+  font-size: 1.25em;
   font-weight: bold;
+  color: #32735B;
   text-align: center;
+  margin-bottom: 8px;
 }
 
 .card-text {
   font-size: 1em;
   color: #555;
   text-align: center;
+  margin-bottom: 4px;
 }
 
 .card-body {
   background-color: #fff;
-  flex-grow: 1; /* Permitir que el contenido del cuerpo ocupe el espacio disponible */
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-radius: 0 0 18px 18px;
+  padding-bottom: 12px;
 }
 
 .btn-primary {
-  background-color: #32735B; /* Cambiar el color de fondo */
-  border-color: #32735B; /* Cambiar el color del borde */
-  align-self: center; /* Centrar el botón dentro de la tarjeta */
-  padding: 8px 16px; /* Ajustar el tamaño del botón */
-  border-radius: 6px; /* Bordes redondeados */
-  transition: background-color 0.3s ease; /* Transición suave */
+  background: linear-gradient(90deg, #32735B 60%, #43a047 100%);
+  border: none;
+  color: #fff;
+  align-self: center;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  transition: background 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 8px rgba(50, 115, 91, 0.10);
+  margin-top: 10px;
 }
 
 .btn-primary:hover {
-  background-color: #285f4a; /* Cambiar el color al pasar el cursor */
+  background: linear-gradient(90deg, #285f4a 60%, #388e3c 100%);
+  box-shadow: 0 4px 16px rgba(50, 115, 91, 0.18);
 }
 
 .btn-primary:disabled {
-  background-color: #ccc; /* Color para botones deshabilitados */
-  cursor: not-allowed; /* Cambiar el cursor para botones deshabilitados */
+  background-color: #ccc;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* Carrusel fijo */
+/* Carrusel */
 #carouselFerreteria,
 #carouselFerreteria .carousel-inner,
 #carouselFerreteria .carousel-item,
 #carouselFerreteria .carousel-overlay-wrapper {
-  height: 500px;
+  height: 420px;
   max-width: 100%;
   overflow: hidden;
+
+  box-shadow: 0 8px 32px rgba(50, 115, 91, 0.10);
+  margin-bottom: 32px;
 }
 
 .imagen-carrusel {
@@ -89,14 +147,14 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(1, 1, 1, 0.658); 
+  background-color: rgba(1, 1, 1, 0.45); 
   z-index: 1;
 }
 
 .carousel-caption {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(50, 115, 91, 0.75);
   border-radius: 0.75rem;
-  padding: 1rem 1.5rem;
+  padding: 1.2rem 2rem;
   max-width: 80%;
   margin: 0 auto;
   text-align: center;
@@ -104,39 +162,128 @@ body {
   left: 50%;
   transform: translate(-50%, -50%); 
   z-index: 2;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(50, 115, 91, 0.12);
+}
+
+.carousel-caption h5 {
+  font-size: 1.7rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.carousel-caption p {
+  font-size: 1.1rem;
+  color: #e8f5e9;
 }
 
 .carousel-control-prev,
 .carousel-control-next {
-  width: 5%; /* Reducir el ancho de los botones */
-  height: 100%; /* Asegurar que cubran toda la altura del carrusel */
+  width: 5%;
+  height: 100%;
   display: flex;
-  align-items: center; /* Centrar verticalmente el icono */
-  justify-content: center; /* Centrar horizontalmente el icono */
-  background-color: rgba(0, 0, 0, 0.1); /* Fondo semitransparente */
-  border: none; /* Eliminar bordes */
-  z-index: 3; /* Asegurar que estén por encima del carrusel pero no de las tarjetas */
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(50, 115, 91, 0.10);
+  border: none;
+  z-index: 3;
+  border-radius: 0 12px 12px 0;
 }
 
 .carousel-control-prev {
-  left: -4rem; /* Mover el botón más hacia fuera del carrusel */
+  left: -2rem;
 }
 
 .carousel-control-next {
-  right: -4rem; /* Mover el botón más hacia fuera del carrusel */
+  right: -2rem;
 }
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-  width: 2rem; /* Ajustar el tamaño del icono */
+  width: 2rem;
   height: 2rem;
 }
 
 .carousel-control-prev:hover,
 .carousel-control-next:hover {
-  background-color: rgba(0, 0, 0, 0.2); /* Fondo más oscuro al pasar el cursor */
+  background-color: rgba(50, 115, 91, 0.18);
 }
 
+/* Contenedor de productos */
+#productContainer.row {
+  margin-top: 0;
+  margin-bottom: 40px;
+  padding: 18px 0;
+  background: #f5f7fa;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(50, 115, 91, 0.08);
+}
+
+/* Paginación */
+#paginationContainer {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+#paginationContainer button {
+  padding: 6px 12px;
+  border: 1.5px solid #32735B;
+  background-color: white;
+  color: #32735B;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#paginationContainer button.active {
+  background-color: #32735B;
+  color: white;
+  font-weight: bold;
+}
+
+#paginationContainer button:hover {
+  background-color: #285f4a;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  #carouselFerreteria,
+  #carouselFerreteria .carousel-inner,
+  #carouselFerreteria .carousel-item,
+  #carouselFerreteria .carousel-overlay-wrapper {
+    height: 260px;
+  }
+  .card-img-top {
+    height: 120px;
+  }
+  .container > h2.text-center {
+    font-size: 1.5rem;
+    padding: 10px 0 8px 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .container > h2.text-center {
+    font-size: 1.1rem;
+    padding: 8px 0 6px 0;
+  }
+  .card {
+    min-height: 260px;
+    padding: 0 2px;
+  }
+  .card-img-top {
+    height: 80px;
+  }
+}
+
+/* Carrito contador */
 .contador_carrito {
   position: absolute;
   top: 0;
