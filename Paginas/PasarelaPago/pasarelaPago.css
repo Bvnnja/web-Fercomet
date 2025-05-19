@@ -7,6 +7,7 @@ body {
 
 .pago-container {
   max-width: 420px;
+  width: 100%;
   margin: 50px auto;
   background: #fff;
   border-radius: 16px;
@@ -182,15 +183,21 @@ body {
 .metodos-pago-btns-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 22px;
+  gap: 22px; /* Aumenta el espacio vertical entre filas */
+  margin-bottom: 32px; /* Más espacio debajo de los botones */
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .metodos-row {
   display: flex;
-  gap: 18px;
+  gap: 28px; /* Aumenta el espacio horizontal entre botones */
   justify-content: center;
+  margin-bottom: 0; /* Elimina margen inferior extra si lo hubiera */
+  width: 100%;
+  flex-wrap: wrap;
+  box-sizing: border-box;
 }
 
 .metodo-btn {
@@ -207,9 +214,14 @@ body {
   transition: background 0.2s, border 0.2s, color 0.2s;
   font-weight: 500;
   outline: none;
-  min-width: 220px;
+  min-width: 0;
+  max-width: 200px;
+  width: 100%;
+  flex: 1 1 0;
+  box-sizing: border-box;
   justify-content: center;
   box-shadow: 0 2px 8px rgba(50,115,91,0.04);
+  margin-bottom: 0; /* Elimina margen inferior individual */
 }
 
 .metodo-btn.active,
@@ -251,6 +263,7 @@ body {
   .metodo-btn {
     min-width: 0;
     width: 100%;
+    max-width: 100%;
     justify-content: flex-start;
   }
 }
