@@ -193,22 +193,80 @@ document.getElementById('cancelarPago').addEventListener('click', function() {
 const paymentForm = document.getElementById('paymentForm');
 const paymentResult = document.getElementById('paymentResult');
 const metodoBtns = document.querySelectorAll('.metodo-btn');
+const paypalBtnContainer = document.getElementById('paypal-button-container');
 
 metodoBtns.forEach(btn => {
   btn.addEventListener('click', function() {
     metodoBtns.forEach(b => b.classList.remove('active'));
     this.classList.add('active');
     const metodo = this.getAttribute('data-metodo');
+    // Oculta el botón de PayPal por defecto
+    if (paypalBtnContainer) paypalBtnContainer.style.display = "none";
     if (metodo === "tarjeta") {
       paymentForm.style.display = "";
       paymentResult.innerHTML = "";
-    } else {
+    } else if (metodo === "mercadopago") {
       paymentForm.style.display = "none";
-      let msg = "";
+      paymentResult.innerHTML = `
+        <div class="alert alert-info" style="margin-top:20px;">
+          <b>Mercado Pago:</b> Haz clic en el botón para pagar con Mercado Pago.<br>
+          <button id="btnMercadoPago" class="pago-btn" style="margin-top:12px;">Pagar con Mercado Pago</button>
+        </div>
+      `;
+      setTimeout(() => {
+        const btnMP = document.getElementById('btnMercadoPago');
+        if (btnMP) {
+          btnMP.onclick = function() {
+            // Usa tu link real de Mercado Pago
+            window.location.href = "https://link.mercadopago.cl/fercomet";
+          };
+        }
+      }, 100);
+    } else if (metodo === "paypal") {
+      paymentForm.style.display = "none";
+      paymentResult.innerHTML = "";
+      if (paypalBtnContainer) {
+        paypalBtnContainer.style.display = "block";
+        // Renderiza el botón solo si no está ya renderizado
+        if (!paypalBtnContainer.hasChildNodes()) {
+          paypal.Buttons({
+            createOrder: function(data, actions) {
+              // Puedes calcular el total dinámicamente si lo deseas
+              let cart = JSON.parse(localStorage.getItem("cart")) || [];
+              let total = cart.reduce((sum, item) => sum + (item.price * item.cantidad), 0);
+              // Si el carrito está vacío, muestra mensaje y no crea la orden
+              if (total === 0) {
+                paymentResult.innerHTML = "<div class='alert alert-danger'>El carrito está vacío.</div>";
+                return;
+              }
+              return actions.order.create({
+                purchase_units: [{
+                  amount: {
+                    value: total.toFixed(2) // Monto total del carrito
+                  }
+                }]
+              });
+            },
+            onApprove: function(data, actions) {
+              return actions.order.capture().then(function(details) {
+                // Aquí puedes registrar la compra en Firestore si lo deseas
+                // Vacía el carrito y muestra mensaje de éxito
+                localStorage.setItem("cart", JSON.stringify([]));
+                paypalBtnContainer.style.display = "none";
+                document.getElementById('successMessage').style.display = "flex";
+                setTimeout(() => {
+                  window.location.href = "/Paginas/Inicio/index.html";
+                }, 3000);
+              });
+            }
+          }).render('#paypal-button-container');
+        }
+      }
+    } else {
       if (metodo === "bancoestado") {
-        msg = "<b>Banco Estado:</b> Realiza tu pago a la cuenta 123456789, rut 11.111.111-1, a nombre de Fercomet. Luego envía el comprobante a pagos@fercomet.cl";
+        paymentResult.innerHTML = "<b>Banco Estado:</b> Realiza tu pago a la cuenta 123456789, rut 11.111.111-1, a nombre de Fercomet. Luego envía el comprobante a pagos@fercomet.cl";
       } else if (metodo === "transferencia") {
-        msg = `
+        paymentResult.innerHTML = `
           <div style="text-align:left;">
             <b>Datos para Transferencia Bancaria:</b>
             <table style="width:100%;margin:10px 0 10px 0;">
@@ -227,15 +285,13 @@ metodoBtns.forEach(btn => {
           </div>
         `;
       } else if (metodo === "debito") {
-        msg = "<b>Débito:</b> Puedes pagar con tu tarjeta de débito en nuestra tienda física.";
+        paymentResult.innerHTML = "<b>Débito:</b> Puedes pagar con tu tarjeta de débito en nuestra tienda física.";
       } else if (metodo === "credito") {
-        msg = "<b>Crédito:</b> Puedes pagar con tu tarjeta de crédito en nuestra tienda física.";
+        paymentResult.innerHTML = "<b>Crédito:</b> Puedes pagar con tu tarjeta de crédito en nuestra tienda física.";
       } else {
-        msg = "<b>Otro método:</b> Consulta con nuestro equipo para coordinar el pago.";
+        paymentResult.innerHTML = "<b>Otro método:</b> Consulta con nuestro equipo para coordinar el pago.";
       }
-      paymentResult.innerHTML = `<div class="alert alert-info" style="margin-top:20px;">${msg}</div>`;
 
-      // Lógica para confirmar compra por transferencia
       if (metodo === "transferencia") {
         setTimeout(() => { // Espera a que el botón esté en el DOM
           const btnTransfer = document.getElementById('confirmarTransferenciaBtn');

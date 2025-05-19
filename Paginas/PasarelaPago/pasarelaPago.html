@@ -25,7 +25,15 @@
           </button>
         </div>
         <div class="metodos-row">
-          <button type="button" class="metodo-btn" data-metodo="otro">
+          <button type="button" class="metodo-btn" data-metodo="mercadopago">
+            <img src="https://img.icons8.com/color/48/000000/mercado-pago.png" alt="Mercado Pago" class="icon-metodo">
+            <span>Mercado Pago</span>
+          </button>
+          <button type="button" class="metodo-btn" data-metodo="paypal">
+            <img src="https://img.icons8.com/color/48/000000/paypal.png" alt="PayPal" class="icon-metodo">
+            <span>PayPal</span>
+          </button>
+          <button type="button" class="metodo-btn" data-metodo="otro" style="display:none;">
             <img src="https://img.icons8.com/color/48/000000/help.png" alt="Otro" class="icon-metodo"> 
             <span>Otro</span>
           </button>
@@ -63,12 +71,16 @@
       <input type="file" id="comprobanteTransferencia" accept="image/*,.pdf">
       <div id="comprobantePreview" style="margin-top:8px;"></div>
     </div>
+    <!-- Contenedor para el botón de PayPal -->
+    <div id="paypal-button-container" style="display:none; margin-top:18px;"></div>
     <div id="successMessage" class="success-message" style="display:none;">
       <img src="/imagenes/Captura de pantalla 2025-04-07 193041.png" alt="Fercomet" style="width:180px; margin-bottom:30px; filter:drop-shadow(0 0 10px #fff);">
       <h2 style="font-size:2.2rem; margin-bottom:10px; text-shadow:0 2px 10px #000;">¡Tu compra fue realizada con éxito!</h2>
       <p style="font-size:1.1rem; color:#b0e57c; margin-bottom:0;">Serás redirigido al inicio...</p>
     </div>
   </div>
+  <!-- SDK de PayPal, pon tu client-id real -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AU8nRAIoDMrbinAE4_MUlc1oZSVtp4OzFflNiSC9-dVTcSSY9UXJd7ysV2XBJuwZk_MeyrZ6wDKSAXga&currency=USD"></script>
   <script type="module" src="pasarelaPago.js"></script>
 </body>
 </html>
