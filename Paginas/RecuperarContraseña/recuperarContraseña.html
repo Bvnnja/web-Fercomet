@@ -21,8 +21,10 @@
     <p>Ingresa tu correo electrónico y te enviaremos un enlace para restablecerla.</p>
 
     <input type="email" id="email" placeholder="Correo electrónico" required>
-    <button id="btnEnviar">Enviar enlace</button>
-
+    <div class="botones-recuperar">
+      <button class="btn-volver" onclick="history.back()">Volver atrás</button>
+      <button id="btnEnviar">Enviar enlace</button>
+    </div>
     <p id="mensaje"></p>
   </div>
 </div>
