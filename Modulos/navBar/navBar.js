@@ -60,6 +60,7 @@ fetch('../../Modulos/navBar/navbar.html')
           <ul class="dropdown-menu" aria-labelledby="adminDropdown">
             <li><a class="dropdown-item" href="/Paginas/AgregarProducto/agregarProducto.html">Agregar Producto</a></li>
             <li><a class="dropdown-item" href="/Paginas/AdminCompras/adminCompras.html">Gestionar Compras</a></li>
+            <li><a class="dropdown-item" href="/Paginas/Dashboard/dashboard.html">Dashboard</a></li>
           </ul>
         `;
         navbar.prepend(adminItem);
