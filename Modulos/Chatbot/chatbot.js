@@ -1,3 +1,6 @@
+import { db, auth } from "../../Servicios/firebaseConfig.js";
+import { collection, addDoc, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 // Agrupa las opciones en categorías para reducir la cantidad de números
 const OPCIONES_CATEGORIAS = [
   {
@@ -16,7 +19,7 @@ const OPCIONES_CATEGORIAS = [
     opciones: [
       "Buscar productos por nombre o categoría.",
       "Consultar disponibilidad de stock.",
-      "Solicitar ficha técnica o detalles de un producto."
+      "Consultar estado de mis compras" // Mover esta opción aquí
     ]
   },
   {
@@ -28,20 +31,9 @@ const OPCIONES_CATEGORIAS = [
     ]
   },
   {
-    titulo: "Asistencia y seguimiento",
+    titulo: "Hablar con un ejecutivo", // Nueva categoría
     opciones: [
-      "Contacto directo con un asesor humano.",
-      "Consultar estado de una compra ingresando el número de pedido.",
-      "Ver historial de compras."
-    ]
-  },
-  {
-    titulo: "Otros",
-    opciones: [
-      "Informar sobre ofertas actuales.",
-      "Dejar sugerencias o comentarios sobre la tienda.",
-      "Ayuda con problemas de acceso, errores en la web.",
-      "Mostrar el carrito actual."
+      "Conectar con un ejecutivo para asistencia personalizada."
     ]
   }
 ];
@@ -69,34 +61,44 @@ const RESPUESTAS_CAT_SUB = [
   // Ayuda sobre productos
   { cat: 2, sub: 1, respuesta: "¿Qué producto buscas? Escribe el nombre o la categoría y te ayudo a encontrarlo." },
   { cat: 2, sub: 2, respuesta: "Puedes consultar el stock actualizado en cada producto. Si tienes dudas, dime el nombre del producto y reviso su disponibilidad." },
-  { cat: 2, sub: 3, respuesta: "Indícame el nombre del producto y te envío su ficha técnica o detalles." },
+  { cat: 2, sub: 3, respuesta: "Déjame revisar el estado de tus compras. Por favor, espera un momento." }, // Actualizar categoría
 
   // Soporte de cuenta
   { cat: 3, sub: 1, respuesta: "Puedes recuperar tu contraseña desde la opción '¿Olvidaste tu contraseña?' en la página de inicio de sesión." },
   { cat: 3, sub: 2, respuesta: "Puedes actualizar tus datos personales en la sección 'Datos personales' de tu cuenta." },
   { cat: 3, sub: 3, respuesta: "Para eliminar tu cuenta, ve a 'Datos personales' y selecciona 'Eliminar cuenta'. Si necesitas ayuda, escríbenos." },
-
-  // Asistencia y seguimiento
-  { cat: 4, sub: 1, respuesta: "¿Quieres que un asesor te contacte? Déjanos tu correo o teléfono y te llamaremos. También puedes escribirnos a contacto@fercomet.cl o al WhatsApp +56 9 1234 5678." },
-  { cat: 4, sub: 2, respuesta: "Si tienes el número de tu compra, escríbelo aquí y te ayudo a revisar el estado. Los estados pueden ser: pendiente, despachado, entregado, listo para retiro, cancelado, en preparación." },
-  { cat: 4, sub: 3, respuesta: () => {
-      const usuario = JSON.parse(localStorage.getItem("Usuario") || "null");
-      if (!usuario) return "Debes iniciar sesión para ver tu historial de compras.";
-      return "Puedes ver tu historial de compras en la sección 'Mis compras' de tu cuenta.";
-    }
-  },
-
-  // Otros
-  { cat: 5, sub: 1, respuesta: "¡Tenemos ofertas y novedades! Visita la sección de productos destacados o pregunta por una categoría para ver promociones actuales." },
-  { cat: 5, sub: 2, respuesta: "¡Tu opinión es importante! Escribe aquí tu sugerencia o comentario y lo enviaremos a nuestro equipo." },
-  { cat: 5, sub: 3, respuesta: "¿Tienes problemas técnicos? Describe el error y nuestro equipo técnico te ayudará lo antes posible." },
-  { cat: 5, sub: 4, respuesta: () => {
-      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-      if (!cart.length) return "Tu carrito está vacío.";
-      return "Tienes " + cart.length + " producto(s) en tu carrito.";
-    }
+  
+  // Hablar con un ejecutivo
+  { 
+    cat: 4, 
+    sub: 1, 
+    respuesta: `Un ejecutivo estará disponible para ayudarte pronto.<br>
+                <button id="abrir-chat-ejecutivo" class="btn btn-primary mt-2">Abrir chat con ejecutivo</button>` 
   }
 ];
+
+// Función para enviar mensajes al sistema administrativo de asistencia
+async function enviarMensajeAdministrativo(mensaje) {
+  const usuario = auth.currentUser;
+  if (!usuario) {
+    console.error("Usuario no autenticado. No se puede enviar el mensaje.");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "asistenciaChatbot"), {
+      uid: usuario.uid,
+      mensaje,
+      tipo: "user",
+      fecha: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Error al enviar el mensaje administrativo:", error);
+  }
+}
+
+// Estado global del chatbot para manejar selección de categorías y subopciones
+let estadoChatbot = { esperandoSubopcion: false, categoriaSeleccionada: null };
 
 // Mostrar menú agrupado
 function mostrarOpcionesChatbot() {
@@ -118,8 +120,7 @@ function mostrarSubopciones(catNum) {
   });
   lista += "</ol><span style='font-size:0.97rem;color:#888;'>O escribe tu pregunta directamente.</span>";
   agregarMensaje(lista, "bot");
-  // Mostrar el botón volver solo en la subcategoría
-  setTimeout(agregarBotonVolverMenu, 100);
+  estadoChatbot.subopcionSeleccionada = null; // Resetear subopción seleccionada
 }
 
 // Buscar respuesta por categoría y subopción
@@ -144,7 +145,6 @@ const OPCIONES = [
   "¿Tienen garantía los productos?",
   "Buscar productos por nombre o categoría.",
   "Consultar disponibilidad de stock.",
-  "Solicitar ficha técnica o detalles de un producto.",
   "¿Cómo recupero mi contraseña?",
   "¿Cómo actualizo mis datos personales?",
   "¿Cómo elimino mi cuenta?",
@@ -166,11 +166,174 @@ function agregarMensaje(texto, tipo = "bot") {
   mensajes.scrollTop = mensajes.scrollHeight;
 }
 
+// Función para normalizar texto (eliminar acentos y convertir a minúsculas)
+function normalizarTexto(texto) {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, ""); // Eliminar acentos
+}
 
-// Modifica la función responder para soportar categorías y subopciones
-// Estado global del chatbot para manejar selección de categorías y subopciones
-let estadoChatbot = { esperandoSubopcion: false, categoriaSeleccionada: null };
+async function consultarDisponibilidadProducto(nombreProducto) {
+  const normalizedQuery = normalizarTexto(nombreProducto);
+  const categorias = ["automotriz", "construccion", "electricidad", "gasfiteria", "griferia", "herramientas", "jardineria", "pinturas", "seguridad"];
+  let encontrado = false;
+  let mensaje = `<b>Resultados para "${nombreProducto}":</b><br>`;
 
+  try {
+    for (const categoria of categorias) {
+      const productosRef = collection(db, "Products", categoria, "items"); // Subcolección 'items' dentro de cada categoría
+      const querySnapshot = await getDocs(productosRef);
+
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const normalizedProductName = normalizarTexto(data.nombre);
+
+        if (normalizedProductName.includes(normalizedQuery)) {
+          encontrado = true;
+          mensaje += data.cantidad > 0
+            ? `El producto "<strong>${data.nombre}</strong>" está disponible con <strong>${data.cantidad}</strong> unidades en stock en la categoría "<strong>${categoria}</strong>".<br>`
+            : `El producto "<strong>${data.nombre}</strong>" no tiene stock disponible actualmente en la categoría "<strong>${categoria}</strong>".<br>`;
+        }
+      });
+    }
+
+    if (encontrado) {
+      agregarMensaje(mensaje, "bot");
+    } else {
+      agregarMensaje(`Lo siento, no encontré ningún producto con el nombre "<strong>${nombreProducto}</strong>".`, "bot");
+    }
+  } catch (error) {
+    console.error("Error al consultar disponibilidad en Firebase:", error);
+    agregarMensaje("Lo siento, hubo un problema al consultar la disponibilidad del producto.", "bot");
+  }
+}
+
+async function buscarProductoPorNombreOCategoria(nombreProducto) {
+  const normalizedQuery = normalizarTexto(nombreProducto);
+  const categorias = ["automotriz", "construccion", "electricidad", "gasfiteria", "griferia", "herramientas", "jardineria", "pinturas", "seguridad"];
+  let encontrado = false;
+  let mensaje = `<b>Resultados para "${nombreProducto}":</b><br>`;
+
+  try {
+    for (const categoria of categorias) {
+      const productosRef = collection(db, "Products", categoria, "items"); // Subcolección 'items' dentro de cada categoría
+      const querySnapshot = await getDocs(productosRef);
+
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const normalizedProductName = normalizarTexto(data.nombre);
+
+        if (normalizedProductName.includes(normalizedQuery)) {
+          encontrado = true;
+          const link = `/Paginas/Productos/productos.html?category=${categoria}&search=${encodeURIComponent(nombreProducto)}`;
+          mensaje += `Producto "<strong>${data.nombre}</strong>" encontrado. <a href="${link}" target="_blank">Haz clic aquí para buscar</a>.<br>`;
+        }
+      });
+    }
+
+    if (encontrado) {
+      agregarMensaje(mensaje, "bot");
+    } else {
+      agregarMensaje(`Lo siento, no encontré ningún producto con el nombre "<strong>${nombreProducto}</strong>".`, "bot");
+    }
+  } catch (error) {
+    console.error("Error al buscar productos en Firebase:", error);
+    agregarMensaje("Lo siento, hubo un problema al buscar el producto.", "bot");
+  }
+}
+
+// Nueva función para consultar el estado de las compras del usuario logueado
+async function consultarEstadoCompras() {
+  const usuario = auth.currentUser;
+
+  if (!usuario) {
+    agregarMensaje("Debes iniciar sesión para consultar el estado de tus compras.", "bot");
+    return;
+  }
+
+  try {
+    const comprasRef = collection(db, "compras");
+    const comprasSnapshot = await getDocs(comprasRef);
+
+    const comprasUsuario = [];
+    comprasSnapshot.forEach(doc => {
+      const compra = doc.data();
+      if (compra.usuario && compra.usuario.uid === usuario.uid) {
+        compra.numeroCompra = "#" + doc.id.slice(-6).toUpperCase(); // Adjuntar número de compra
+        comprasUsuario.push(compra);
+      }
+    });
+
+    if (comprasUsuario.length === 0) {
+      agregarMensaje("No tienes compras registradas.", "bot");
+      return;
+    }
+
+    let mensaje = "<b>Estado de tus compras:</b><br><ul>";
+    comprasUsuario.forEach(compra => {
+      const estados = {
+        pendiente: "Pendiente",
+        pendiente_transferencia: "Pendiente Transferencia",
+        transferencia_recibida: "Transferencia Recibida",
+        despachado: "Despachado",
+        entregado: "Entregado",
+        listo_retiro: "Listo para el Retiro",
+        en_preparacion: "En preparación",
+        cancelado: "Cancelado",
+        otro: "Otro"
+      };
+      const estado = estados[compra.estado] || compra.estado || "Pendiente";
+      mensaje += `<li><strong>Compra ${compra.numeroCompra}:</strong> Estado: ${estado}</li>`;
+    });
+    mensaje += "</ul>";
+
+    agregarMensaje(mensaje, "bot");
+  } catch (error) {
+    console.error("Error al consultar el estado de las compras:", error);
+    agregarMensaje("Lo siento, hubo un problema al consultar el estado de tus compras.", "bot");
+  }
+}
+
+// Función para abrir el segundo chatbot para hablar con un ejecutivo
+function abrirChatEjecutivo() {
+  const mensajes = document.getElementById("chatbot-messages");
+  mensajes.innerHTML = ""; // Limpiar mensajes del chatbot original
+  agregarMensaje("<b>¡Bienvenido al chat con un ejecutivo!</b><br>Escribe tu consulta y un ejecutivo te responderá.", "bot");
+
+  const form = document.getElementById("chatbot-form");
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const input = document.getElementById("chatbot-input");
+    const mensaje = input.value.trim();
+    if (!mensaje) return;
+
+    agregarMensaje(mensaje, "user");
+    input.value = "";
+
+    const usuario = JSON.parse(localStorage.getItem("Usuario")); // Obtener datos del usuario desde localStorage
+    if (!usuario || !usuario.uid) {
+      agregarMensaje("Debes iniciar sesión para enviar mensajes al ejecutivo.", "bot");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "asistenciaChatbot"), {
+        uid: usuario.uid,
+        nombre: usuario.nombre || "Usuario",
+        mensaje,
+        tipo: "user",
+        fecha: new Date().toISOString(),
+      });
+      agregarMensaje("Tu mensaje ha sido enviado al ejecutivo. Por favor, espera una respuesta.", "bot");
+    } catch (error) {
+      console.error("Error al enviar el mensaje al ejecutivo:", error);
+      agregarMensaje("Hubo un problema al enviar tu mensaje. Inténtalo nuevamente.", "bot");
+    }
+  };
+}
+
+// Modifica la función responder para manejar el botón de abrir el chat con el ejecutivo
 function responder(pregunta) {
   const lower = pregunta.toLowerCase().trim();
 
@@ -180,51 +343,50 @@ function responder(pregunta) {
     const cat = OPCIONES_CATEGORIAS[estadoChatbot.categoriaSeleccionada - 1];
     if (!isNaN(subNum)) {
       if (cat && subNum >= 1 && subNum <= cat.opciones.length) {
-        const respuesta = buscarRespuestaPorCatSub(estadoChatbot.categoriaSeleccionada, subNum);
-        // Mostrar respuesta y botón para reiniciar el chat
-        agregarMensaje(respuesta || "Opción no válida. Por favor, selecciona un número de la lista.", "bot");
-        agregarBotonVolverMenu();
-        estadoChatbot.esperandoSubopcion = false;
-        estadoChatbot.categoriaSeleccionada = null;
-        return null;
-      } else if (subNum >= 1 && subNum <= OPCIONES_CATEGORIAS.length) {
-        // Si el usuario ingresa otro número de categoría, mostrar subopciones de esa categoría
-        mostrarSubopciones(subNum);
-        estadoChatbot.esperandoSubopcion = true;
-        estadoChatbot.categoriaSeleccionada = subNum;
+        if (estadoChatbot.categoriaSeleccionada === 4 && subNum === 1) {
+          agregarMensaje(RESPUESTAS_CAT_SUB.find(r => r.cat === 4 && r.sub === 1).respuesta, "bot");
+          enviarMensajeAdministrativo("El usuario ha solicitado hablar con un ejecutivo."); // Enviar mensaje administrativo
+          setTimeout(() => {
+            const btnAbrirChatEjecutivo = document.getElementById("abrir-chat-ejecutivo");
+            if (btnAbrirChatEjecutivo) {
+              btnAbrirChatEjecutivo.onclick = abrirChatEjecutivo; // Abrir el segundo chatbot
+            }
+          }, 100); // Asignar evento al botón después de renderizar
+          estadoChatbot.esperandoSubopcion = false;
+          estadoChatbot.categoriaSeleccionada = null;
+          return;
+        }
+        agregarMensaje("Déjame revisar eso para ti...", "bot"); // Mensaje intermedio
+        setTimeout(() => {
+          const respuesta = buscarRespuestaPorCatSub(estadoChatbot.categoriaSeleccionada, subNum);
+          agregarMensaje(respuesta || "Lo siento, no encontré información sobre esa opción.", "bot");
+          estadoChatbot.esperandoSubopcion = false;
+          estadoChatbot.categoriaSeleccionada = null;
+        }, 1000); // Simular tiempo de "pensar"
         return null;
       } else {
-        estadoChatbot.esperandoSubopcion = false;
-        estadoChatbot.categoriaSeleccionada = null;
-        agregarBotonVolverMenu();
-        return "Opción no válida. Por favor, selecciona un número de la lista.";
+        agregarMensaje("Hmm, parece que esa opción no es válida. ¿Puedes intentarlo de nuevo?", "bot");
+        return null;
       }
-    } else {
-      estadoChatbot.esperandoSubopcion = false;
-      estadoChatbot.categoriaSeleccionada = null;
-      agregarBotonVolverMenu();
-      return responder(lower);
     }
+    agregarMensaje("Por favor, ingresa un número válido o describe mejor lo que buscas.", "bot");
+    return null;
   }
 
   // Si el usuario escribe un número de categoría
   const catNum = parseInt(lower, 10);
   if (!isNaN(catNum) && catNum >= 1 && catNum <= OPCIONES_CATEGORIAS.length) {
-    mostrarSubopciones(catNum);
-    estadoChatbot.esperandoSubopcion = true;
-    estadoChatbot.categoriaSeleccionada = catNum;
+    agregarMensaje("¡Entendido! Aquí están las opciones disponibles:", "bot"); // Mensaje intermedio
+    setTimeout(() => {
+      mostrarSubopciones(catNum);
+      estadoChatbot.esperandoSubopcion = true;
+      estadoChatbot.categoriaSeleccionada = catNum;
+    }, 800); // Simular tiempo de "pensar"
     return null;
   }
 
-  // Si el usuario escribe un número global (opción directa)
-  for (const { pregunta: regex, respuesta } of RESPUESTAS) {
-    if (regex instanceof RegExp && regex.test(lower)) {
-      if (typeof respuesta === "function") return respuesta();
-      return respuesta;
-    }
-  }
-
-  return "¡Gracias por tu mensaje! Un asesor te responderá pronto o puedes escribir tu consulta más detallada.";
+  agregarMensaje("¡Gracias por tu mensaje! Un asesor te responderá pronto o puedes escribir tu consulta más detallada.", "bot");
+  return null; // No llamar a mostrarOpcionesChatbot automáticamente
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -249,6 +411,7 @@ function inicializarChatbot() {
   const form = document.getElementById("chatbot-form");
   const input = document.getElementById("chatbot-input");
   const mensajes = document.getElementById("chatbot-messages");
+  const resetBtn = document.getElementById("chatbot-reset-btn"); // Nuevo botón de reinicio
 
   // Mostrar/ocultar ventana
   toggleBtn.onclick = () => {
@@ -262,27 +425,6 @@ function inicializarChatbot() {
     windowDiv.style.display = "none";
   };
 
-  // Botón para volver al menú principal
-  function agregarBotonVolverMenu() {
-    // Evita duplicados
-    if (document.getElementById("chatbot-volver-menu-btn")) return;
-    const mensajesDiv = document.getElementById("chatbot-messages");
-    const volverDiv = document.createElement("div");
-    volverDiv.style.textAlign = "center";
-    volverDiv.style.margin = "10px 0";
-    volverDiv.innerHTML = `
-      <button id="chatbot-volver-menu-btn" style="background:#32735B;color:#fff;border:none;padding:8px 18px;border-radius:8px;font-weight:600;cursor:pointer;margin-top:8px;">
-        <i class="bi bi-arrow-repeat"></i> Volver al menú principal
-      </button>
-    `;
-    mensajesDiv.appendChild(volverDiv);
-    mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
-    document.getElementById("chatbot-volver-menu-btn").onclick = () => {
-      mensajesDiv.innerHTML = "";
-      mostrarOpcionesChatbot();
-    };
-  }
-
   form.onsubmit = (e) => {
     e.preventDefault();
     const pregunta = input.value.trim();
@@ -291,13 +433,16 @@ function inicializarChatbot() {
     setTimeout(() => {
       const respuesta = responder(pregunta);
       if (respuesta) agregarMensaje(respuesta, "bot");
-      // Solo agregar el botón si NO estamos esperando subopción (es decir, después de una respuesta final o menú principal)
-      // Ya no se agrega aquí, sino en mostrarSubopciones
     }, 600);
     input.value = "";
   };
+
+  resetBtn.onclick = () => {
+    mensajes.innerHTML = ""; // Limpiar mensajes
+    mostrarOpcionesChatbot(); // Mostrar mensaje inicial del chatbot
+  };
+
   if (mensajes.childElementCount === 0) {
     mostrarOpcionesChatbot();
-    // No agregar el botón aquí
   }
 }

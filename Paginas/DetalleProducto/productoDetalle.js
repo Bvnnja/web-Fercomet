@@ -24,26 +24,14 @@ async function loadProductDetail() {
     return;
   }
 
-  // Intentar obtener el producto desde sessionStorage (si viene del index)
-  let product = null;
-  const productoSession = sessionStorage.getItem("productoDetalle");
-  if (productoSession) {
-    const prod = JSON.parse(productoSession);
-    if (prod && prod.id === productId && prod.category === category) {
-      product = prod;
-    }
-  }
-
   try {
-    if (!product) {
-      // Si no está en sessionStorage, cargar desde Firestore
-      const productDoc = await getDoc(doc(db, "Products", category, "items", productId));
-      if (!productDoc.exists()) {
-        alert("Producto no encontrado.");
-        return;
-      }
-      product = productDoc.data();
+    // Cargar el producto desde Firestore
+    const productDoc = await getDoc(doc(db, "Products", category, "items", productId));
+    if (!productDoc.exists()) {
+      alert("Producto no encontrado.");
+      return;
     }
+    const product = productDoc.data();
 
     const productDetailContainer = document.getElementById("productDetail");
     const descriptionTab = document.getElementById("description");
@@ -53,7 +41,7 @@ async function loadProductDetail() {
 
     productDetailContainer.innerHTML = `
       <div class="col-md-6">
-        <img src="${product.imagenUrl}" alt="${product.nombre}" class="img-fluid">
+        <img src="${product.imagenUrl || '/imagenes/default.png'}" alt="${product.nombre}" class="img-fluid">
       </div>
       <div class="col-md-6">
         <h1>${product.nombre}</h1>
