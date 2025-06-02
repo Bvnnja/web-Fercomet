@@ -1,6 +1,5 @@
 import { db } from "../../Servicios/firebaseConfig.js";
-import { doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getAuth, deleteUser, signOut, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const container = document.getElementById("datosPersonalesContainer");
 
@@ -68,16 +67,18 @@ function limpiarErrorInput(input) {
 }
 
 async function cargarDatos() {
+  // Usa el usuario de localStorage para obtener el UID
   const usuario = JSON.parse(localStorage.getItem("Usuario"));
-  if (!usuario || !usuario.uid) {
+  const uid = usuario && usuario.uid ? usuario.uid : sessionStorage.getItem("UID");
+  if (!uid) {
     container.innerHTML = `<div class="alert alert-warning text-center">Debes iniciar sesión para ver tus datos.</div>`;
     return;
   }
 
   try {
-    const userDocRef = doc(db, "usuarios", usuario.uid);
+    const userDocRef = doc(db, "usuarios", uid);
     const userDoc = await getDoc(userDocRef);
-    const datos = userDoc.exists() ? userDoc.data() : usuario;
+    const datos = userDoc.exists() ? userDoc.data() : {};
 
     container.innerHTML = `
       <form id="formDatosPersonales" class="datos-form">
@@ -304,7 +305,7 @@ async function cargarDatos() {
       const email = emailInput.value.trim();
 
       try {
-        await updateDoc(doc(db, "usuarios", usuario.uid), {
+        await updateDoc(doc(db, "usuarios", uid), {
           nombre, apellido, rut, email
         });
         // Actualizar localStorage

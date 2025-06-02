@@ -49,26 +49,54 @@ fetch('../../Modulos/navBar/navbar.html')
       `;
       navbar.prepend(usuarioItem);
 
-      // Mostrar botón de administración si el usuario es admin
-      if (usuario.email === "adminFercomet@gmail.com") {
-        const adminItem = document.createElement('li');
-        adminItem.className = 'nav-item dropdown';
-        adminItem.innerHTML = `
-          <a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Administración
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-            <li><a class="dropdown-item" href="/Paginas/AgregarProducto/agregarProducto.html">Agregar Producto</a></li>
-            <li><a class="dropdown-item" href="/Paginas/AdminCompras/adminCompras.html">Gestionar Compras</a></li>
-            <li><a class="dropdown-item" href="/Paginas/Dashboard/dashboard.html">Dashboard</a></li>
-          </ul>
-        `;
-        navbar.prepend(adminItem);
-      }
+      // Validar el rol del usuario directamente desde Firestore
+      import("../../Servicios/firebaseConfig.js").then(({ db }) => {
+        import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js").then(({ doc, getDoc }) => {
+          const userDocRef = doc(db, "usuarios", usuario.uid);
+          getDoc(userDocRef).then(docSnapshot => {
+            if (docSnapshot.exists()) {
+              const userData = docSnapshot.data();
+              const rolUsuario = userData.rol;
+
+              // Mostrar opciones de administración según el rol del usuario
+              if (rolUsuario === "administrativo") {
+                const adminItem = document.createElement('li');
+                adminItem.className = 'nav-item dropdown';
+                adminItem.innerHTML = `
+                  <a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Administración
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                    <li><a class="dropdown-item" href="/Paginas/AgregarProducto/agregarProducto.html">Agregar Producto</a></li>
+                    <li><a class="dropdown-item" href="/Paginas/AdminCompras/adminCompras.html">Gestionar Compras</a></li>
+                    <li><a class="dropdown-item" href="/Paginas/Dashboard/dashboard.html">Dashboard</a></li>
+                    <li><a class="dropdown-item" href="/Paginas/GestionRoles/GestionRoles.html">Gestion Roles</a></li>
+                  </ul>
+                `;
+                navbar.prepend(adminItem);
+              } else if (rolUsuario === "vendedor") {
+                const vendedorItem = document.createElement('li');
+                vendedorItem.className = 'nav-item dropdown';
+                vendedorItem.innerHTML = `
+                  <a class="nav-link dropdown-toggle text-dark" href="#" id="vendedorDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Administración
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="vendedorDropdown">
+                    <li><a class="dropdown-item" href="/Paginas/AgregarProducto/agregarProducto.html">Agregar Producto</a></li>
+                    <li><a class="dropdown-item" href="/Paginas/AdminCompras/adminCompras.html">Gestionar Compras</a></li>
+                  </ul>
+                `;
+                navbar.prepend(vendedorItem);
+              }
+            }
+          });
+        });
+      });
 
       // Cerrar sesión
       document.getElementById('logoutBtn').addEventListener('click', function () {
         localStorage.removeItem('Usuario');
+        localStorage.removeItem('NotificacionesFercomet'); // Limpiar notificaciones al cerrar sesión
         window.location.href = '/Paginas/Inicio/index.html';
       });
     }

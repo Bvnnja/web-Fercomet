@@ -51,56 +51,54 @@ function mostrarMensajePersonalizado(mensaje) {
 // Manejar el formulario de inicio de sesión
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const errorMessage = document.getElementById("errorMessage");
+  if (!email || !password) {
+    alert("Por favor, ingresa tu correo y contraseña.");
+    return;
+  }
 
   try {
     // Autenticar al usuario
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Obtener referencia al documento del usuario en Firestore
-    const userDocRef = doc(db, "usuarios", user.uid);
-    const userDoc = await getDoc(userDocRef);
+    if (user && user.uid) {
+      // Obtener datos del usuario desde Firestore
+      const userDocRef = doc(db, "usuarios", user.uid);
+      const userDoc = await getDoc(userDocRef);
 
-    if (!userDoc.exists()) {
-      // Si no existe, guardar los datos del usuario en Firestore
-      const userData = {
-        uid: user.uid,
-        email: user.email,
-        nombre: "Nombre por defecto", // Cambiar por un valor real si lo tienes
-        apellido: "Apellido por defecto", // Cambiar por un valor real si lo tienes
-        rut: "RUT por defecto" // Cambiar por un valor real si lo tienes
-      };
-      await setDoc(userDocRef, userData);
-      console.log("Datos del usuario guardados en Firestore:", userData);
-      // Guardar en localStorage
-      localStorage.setItem("Usuario", JSON.stringify(userData));
-      localStorage.setItem("cart", JSON.stringify([])); // Carrito vacío para nuevo usuario
-    } else {
+      if (!userDoc.exists()) {
+        alert("El usuario no está registrado en la base de datos.");
+        return;
+      }
+
       const userData = userDoc.data();
-      console.log("Datos del usuario ya existen en Firestore:", userData);
-      // Guardar en localStorage
-      localStorage.setItem("Usuario", JSON.stringify(userData));
-      // Sincronizar carrito del usuario
-      if (Array.isArray(userData.carrito)) {
-        localStorage.setItem("cart", JSON.stringify(userData.carrito));
-      } else {
-        localStorage.setItem("cart", JSON.stringify([]));
-      } 
-    }
 
-    mostrarMensajePersonalizado("Inicio de sesión exitoso. Bienvenido, " + (userDoc.data()?.nombre || "Usuario"));
-    // Set flag para mostrar la notificación de estado de compra SOLO después de login
-    sessionStorage.setItem("mostrarNotiEstadoCompra", "1");
-    // Redirigir al usuario a la página principal o dashboard
-    setTimeout(() => {
-      window.location.href = "/Paginas/Inicio/index.html";
-    }, 5000);
+      // Guardar UID y datos del usuario en localStorage
+      localStorage.setItem("Usuario", JSON.stringify({ uid: user.uid, ...userData }));
+
+      mostrarMensajePersonalizado("Inicio de sesión exitoso. Bienvenido, " + (userData.nombre || "Usuario"));
+      // Set flag para mostrar la notificación de estado de compra SOLO después de login
+      sessionStorage.setItem("mostrarNotiEstadoCompra", "1");
+      // Redirigir al usuario a la página principal o dashboard
+      setTimeout(() => {
+        window.location.href = "/Paginas/Inicio/index.html";
+      }, 5000);
+    } else {
+      alert("No se pudo obtener el UID del usuario.");
+    }
   } catch (error) {
-    console.error("Error al iniciar sesión:", error.message);
-    errorMessage.textContent = "Correo o contraseña incorrectos.";
+    console.error("Error al iniciar sesión:", error);
+    let errorMessage = "Correo o contraseña incorrectos.";
+    if (error.code === "auth/user-not-found") {
+      errorMessage = "Usuario no encontrado.";
+    } else if (error.code === "auth/wrong-password") {
+      errorMessage = "Contraseña incorrecta.";
+    } else if (error.code === "auth/too-many-requests") {
+      errorMessage = "Demasiados intentos. Intenta más tarde.";
+    }
+    alert(errorMessage);
   }
 });

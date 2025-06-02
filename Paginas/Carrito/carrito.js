@@ -26,10 +26,35 @@ function carritoTieneDatos() {
 
 // Guardar carrito en Firestore cuando se modifica
 async function guardarCarritoUsuario() {
-  const usuario = JSON.parse(localStorage.getItem("Usuario"));
-  if (usuario && usuario.uid) {
-    const userDocRef = doc(db, "usuarios", usuario.uid);
+  const uid = sessionStorage.getItem("UID");
+  if (!uid) return;
+
+  try {
+    const userDocRef = doc(db, "usuarios", uid);
     await updateDoc(userDocRef, { carrito: cart });
+  } catch (error) {
+    console.error("Error al guardar el carrito:", error);
+  }
+}
+
+// Cargar el carrito del usuario desde Firestore
+async function cargarCarrito() {
+  const uid = sessionStorage.getItem("UID");
+  if (!uid) {
+    cart = [];
+    updateCartUI();
+    return;
+  }
+
+  try {
+    const userDocRef = doc(db, "usuarios", uid);
+    const userDoc = await getDoc(userDocRef);
+    cart = userDoc.exists() && userDoc.data().carrito ? userDoc.data().carrito : [];
+    updateCartUI();
+  } catch (error) {
+    console.error("Error al cargar el carrito:", error);
+    cart = [];
+    updateCartUI();
   }
 }
 
@@ -234,10 +259,18 @@ document.addEventListener("click", (e) => {
 
 // Redirigir a la pasarela de pago al hacer clic en "Ir a pagar"
 window.checkout = function () {
+  const uid = sessionStorage.getItem("UID");
+  if (!uid) {
+    alert("Debes iniciar sesión para proceder al pago.");
+    window.location.href = "/Paginas/Login/login.html";
+    return; // Detener ejecución
+  }
+
   if (cart.length === 0) {
     alert("El carrito está vacío.");
-    return;
+    return; // Detener ejecución
   }
+
   // Redirige a la pasarela de pago
   window.location.href = "/Paginas/PasarelaPago/pasarelaPago.html";
 }
@@ -270,4 +303,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // Cargar el carrito al inicio
-document.addEventListener("DOMContentLoaded", actualizarCarritoGlobal);
+document.addEventListener("DOMContentLoaded", () => {
+  cargarCarrito();
+  actualizarCarritoGlobal();
+});

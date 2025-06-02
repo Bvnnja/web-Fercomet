@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { db, verificarAutenticacion } from "../../Servicios/firebaseConfig.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -81,5 +82,9 @@ document.getElementById("editProductForm").addEventListener("submit", async (e) 
   }
 });
 
-// Cargar datos al inicio
-loadProductData();
+// Verificar autenticación al cargar la página
+document.addEventListener("DOMContentLoaded", () => {
+  verificarAutenticacion();
+  // Cargar datos del producto
+  loadProductData();
+});

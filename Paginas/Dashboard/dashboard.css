@@ -47,6 +47,33 @@ h1 {
 
 .card-body {
   padding: 20px;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Igualar altura y anchura de las tarjetas del dashboard */
+.row > .col-md-6 {
+  display: flex;
+}
+
+.row > .col-md-6 > .card {
+  min-height: 430px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  /* Fuerza el ancho a ocupar todo el espacio disponible */
+  width: 100%;
+  min-width: 0;
+}
+
+.row > .col-md-6 > .card > .card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Gráficos */
@@ -57,19 +84,28 @@ canvas {
 
 #ventasTotalesChart, #categoriasChart {
   margin: 20px auto;
+  /* Elimina padding-bottom extra en el contenedor de productos más vendidos */
+  padding-bottom: 0 !important;
+}
+
+/* Si hay un padding-bottom específico en el card-body de productos más vendidos, elimínalo */
+.col-md-6 .card-body {
+  padding-bottom: 20px !important;
 }
 
 /* Tablas */
 .table {
   margin-top: 20px;
-  border: 1px solid #b2dfdb;
+  border: none; /* Quitar borde azul de Bootstrap */
   border-radius: 8px;
   overflow: hidden;
+  background: #fff;
+  color: #285f4a; /* Color de texto oscuro para toda la tabla */
 }
 
 .table th {
   background: #32735B;
-  color: #fff;
+  color: #fff !important; /* Letras blancas en encabezado */
   text-align: center;
   font-weight: bold;
 }
@@ -77,14 +113,16 @@ canvas {
 .table td {
   text-align: center;
   padding: 10px;
+  color: #111 !important; /* Letras negras en celdas */
+  background: #fff !important; /* Fondo blanco para contraste */
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-  background: #f8f9fa;
+  background: #fff; /* Quitar franja azul de filas impares */
 }
 
 .table-striped tbody tr:nth-of-type(even) {
-  background: #ffffff;
+  background: #fff;
 }
 
 /* Paginación */
@@ -124,6 +162,139 @@ button {
 
 button:hover {
   background: #43a047;
+}
+
+/* Ventas Realizadas */
+.ventas-realizadas-card {
+  margin-top: 32px;
+  margin-bottom: 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(50, 115, 91, 0.10);
+  background: #f8fafb;
+  border: 1.5px solid #b2dfdb;
+}
+
+.ventas-realizadas-header {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #32735B;
+  background: #e8f5e9;
+  border-radius: 8px;
+  padding: 10px 0 10px 0;
+  text-align: center;
+  letter-spacing: 0.5px;
+  margin-bottom: 18px;
+  margin-top: 0;
+  box-shadow: 0 2px 8px rgba(50, 115, 91, 0.06);
+}
+
+.ventas-realizadas-header-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  padding: 0 0 0 0;
+  min-height: 38px;
+  border-bottom: 1.5px solid #b2dfdb;
+}
+
+.ventas-th {
+  padding: 8px 6px;
+  font-size: 1.01rem;
+  font-weight: 700;
+  text-align: center;
+  border-right: 1px solid #d0e5db;
+}
+
+.ventas-th:last-child {
+  border-right: none;
+}
+
+.ventas-realizadas-table-wrapper {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(50, 115, 91, 0.04);
+  padding: 0;
+}
+
+.ventas-realizadas-table {
+  margin-bottom: 0;
+  min-width: 540px;
+  font-size: 0.98rem;
+  border-radius: 10px;
+}
+
+/* Forzar color de texto y fondo en la tabla de ventas realizadas estilo Fercomet */
+.ventas-realizadas-table th {
+  background: linear-gradient(90deg, #32735B 100%, #43a047 0%);
+  color: #fff !important;
+  text-align: center;
+  font-weight: bold;
+  border-color: #b2dfdb !important;
+}
+
+.ventas-realizadas-table td {
+  color: #285f4a !important;
+  background: #f8fafb !important;
+  border-color: #b2dfdb !important;
+}
+
+/* Mejorar visibilidad de los bordes de las filas */
+.ventas-realizadas-table tr {
+  border-bottom: 1px solid #b2dfdb !important;
+}
+
+.ventas-realizadas-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Ajusta el ancho de columnas de la tabla */
+.ventas-realizadas-table th,
+.ventas-realizadas-table td {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 0.98rem;
+  padding: 10px 6px;
+  /* Asegura que los anchos sean iguales */
+}
+
+.ventas-realizadas-table th:nth-child(1),
+.ventas-realizadas-table td:nth-child(1) { width: 40px; }
+.ventas-realizadas-table th:nth-child(2),
+.ventas-realizadas-table td:nth-child(2) { min-width: 180px; }
+.ventas-realizadas-table th:nth-child(3),
+.ventas-realizadas-table td:nth-child(3) { min-width: 140px; }
+.ventas-realizadas-table th:nth-child(4),
+.ventas-realizadas-table td:nth-child(4) { min-width: 100px; }
+.ventas-realizadas-table th:nth-child(5),
+.ventas-realizadas-table td:nth-child(5) { min-width: 120px; }
+
+@media (max-width: 900px) {
+  .ventas-realizadas-header {
+    font-size: 0.98rem;
+    padding: 7px 0;
+  }
+  .ventas-realizadas-table {
+    font-size: 0.93rem;
+    min-width: 420px;
+  }
+  .ventas-realizadas-table td {
+    padding: 7px 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .ventas-realizadas-header {
+    font-size: 0.89rem;
+    padding: 5px 0;
+  }
+  .ventas-realizadas-table {
+    font-size: 0.89rem;
+    min-width: 320px;
+  }
+  .ventas-realizadas-table td {
+    padding: 4px 2px;
+  }
 }
 
 /* Responsive */

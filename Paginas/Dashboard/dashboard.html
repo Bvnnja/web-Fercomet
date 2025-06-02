@@ -41,23 +41,25 @@
         </div>
       </div>
       <div class="col-md-12">
-        <div class="card">
+        <div class="card ventas-realizadas-card">
           <div class="card-body">
             <h5 class="card-title">Ventas Realizadas</h5>
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Cliente</th>
-                  <th>Fecha</th>
-                  <th>Total</th>
-                  <th>Estado</th>
-                </tr>
-              </thead>
-              <tbody id="ventasTableBody">
-                <!-- Las filas se generarán dinámicamente con JavaScript -->
-              </tbody>
-            </table>
+            <div class="ventas-realizadas-table-wrapper">
+              <table class="table table-striped ventas-realizadas-table mb-0">
+                <thead>
+                  <tr>
+                    <th style="width:40px;">#</th>
+                    <th style="min-width:180px;">Nombre completo</th>
+                    <th style="min-width:140px;">Fecha</th>
+                    <th style="min-width:100px;">Pago</th>
+                    <th style="min-width:120px;">Estado de venta</th>
+                  </tr>
+                </thead>
+                <tbody id="ventasTableBody">
+                  <!-- Las filas se generarán dinámicamente con JavaScript -->
+                </tbody>
+              </table>
+            </div>
             <div id="ventasPagination" class="mt-3"></div>
           </div>
         </div>
