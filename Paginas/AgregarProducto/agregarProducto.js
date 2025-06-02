@@ -2,6 +2,11 @@
 import { db } from "../../Servicios/firebaseConfig.js";
 import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+// Verificar autenticación al cargar la página
+document.addEventListener("DOMContentLoaded", () => {
+  loadProducts();
+});
+
 // Agregar producto
 document.getElementById('productForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -239,6 +244,3 @@ function editProduct(category, id) {
 
 // Hacer que editProduct esté disponible globalmente
 window.editProduct = editProduct;
-
-// Cargar productos al inicio
-loadProducts();

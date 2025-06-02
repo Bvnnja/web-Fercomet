@@ -75,83 +75,101 @@ function renderPaginatedList(items, containerId, itemsPerPage = 10) {
 
 function renderCharts(chartData) {
   const ventasTotalesContainer = document.getElementById("ventasTotalesChart");
+  const categoriasChartContainer = document.getElementById("categoriasChart");
 
   // Calcular la suma total de las ventas
   const totalVentas = Object.values(chartData.ventasPorDia).reduce((acc, val) => acc + val, 0);
 
-  // Mostrar el número grande en lugar del gráfico
-  ventasTotalesContainer.parentElement.innerHTML = `
+  // Ordenar fechas de ventasPorDia de forma ascendente (formato: "12 abr 2024")
+  const meses = {
+    ene: 0, feb: 1, mar: 2, abr: 3, may: 4, jun: 5,
+    jul: 6, ago: 7, sep: 8, oct: 9, nov: 10, dic: 11
+  };
+  const fechasOrdenadas = Object.keys(chartData.ventasPorDia)
+    .map(fechaStr => {
+      // Soporta tanto "12 abr 2024" como "12-abr-2024"
+      let partes = fechaStr.includes("-") ? fechaStr.split("-") : fechaStr.split(" ");
+      let [dia, mesStr, anio] = partes;
+      dia = Number(dia);
+      mesStr = mesStr.toLowerCase();
+      anio = Number(anio);
+      return {
+        original: fechaStr,
+        date: new Date(anio, meses[mesStr], dia)
+      };
+    })
+    .sort((a, b) => a.date - b.date)
+    .map(obj => obj.original);
+
+  // Top 5 productos más vendidos
+  const productosTop5 = Object.entries(chartData.productos)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  ventasTotalesContainer.innerHTML = `
     <div class="text-center">
       <h2 class="display-4 text-success">Total Ventas</h2>
       <p class="display-1 fw-bold text-primary">$${totalVentas.toLocaleString("es-CL")}</p>
-      <canvas id="ventasPorDiaChart" style="margin-top: 20px;"></canvas>
+      <canvas id="topProductosChart" style="margin-top: 30px; min-height: 260px;"></canvas>
     </div>
   `;
 
-  // Renderizar gráfico de ventas por día
-  const ventasPorDiaCtx = document.getElementById("ventasPorDiaChart").getContext("2d");
-  new Chart(ventasPorDiaCtx, {
+  // Gráfico horizontal Top 5 productos más vendidos
+  const topProductosCtx = document.getElementById("topProductosChart").getContext("2d");
+  new Chart(topProductosCtx, {
     type: "bar",
     data: {
-      labels: Object.keys(chartData.ventasPorDia),
+      labels: productosTop5.map(([nombre]) => nombre),
       datasets: [{
-        label: "Ventas por Día",
-        data: Object.values(chartData.ventasPorDia),
-        backgroundColor: "#43a047"
+        label: "Cantidad vendida",
+        data: productosTop5.map(([, cantidad]) => cantidad),
+        backgroundColor: "#32735B"
       }]
     },
     options: {
+      indexAxis: 'y',
       responsive: true,
       plugins: {
-        legend: {
-          display: false
-        },
+        legend: { display: false },
         datalabels: {
-          anchor: 'center',
-          align: 'center',
-          color: '#fff',
-          font: {
-            weight: 'bold',
-            size: 12
-          },
-          formatter: (value, context) => {
-            const dia = context.chart.data.labels[context.dataIndex];
-            return `${chartData.productosPorDia[dia] || 0} productos`;
-          }
+          anchor: 'end',
+          align: 'right',
+          color: '#32735B',
+          font: { weight: 'bold', size: 14 },
+          formatter: value => value
         }
       },
       scales: {
         x: {
-          title: {
-            display: true,
-            text: "Fecha"
-          }
-        },
-        y: {
-          ticks: {
-            display: false // Ocultar los números en el eje Y
-          },
-          title: {
-            display: true,
-          },
+          title: { display: true, text: "Cantidad vendida" },
           beginAtZero: true
-        }
+        },
+        y: { title: { display: false } }
       }
     },
     plugins: [ChartDataLabels]
   });
 
-  // Renderizar gráfico de rendimiento diario con áreas sombreadas
+  // Mostrar productos más vendidos con paginación (sin título aquí)
+  categoriasChartContainer.innerHTML = `
+    <div id="productosMasVendidosLista"></div>
+  `;
+  renderPaginatedList(
+    Object.entries(chartData.productos).sort((a, b) => b[1] - a[1]),
+    "productosMasVendidosLista"
+  );
+
+  // Renderizar gráfico de rendimiento diario (ordenado)
   const rendimientoDiarioContainer = document.getElementById("rendimientoChart");
   const rendimientoDiarioCtx = rendimientoDiarioContainer.getContext("2d");
   new Chart(rendimientoDiarioCtx, {
     type: "line",
     data: {
-      labels: Object.keys(chartData.ventasPorDia),
+      labels: fechasOrdenadas,
       datasets: [
         {
           label: "Ventas Totales ($)",
-          data: Object.values(chartData.ventasPorDia),
+          data: fechasOrdenadas.map(f => chartData.ventasPorDia[f]),
           borderColor: "#32735B",
           backgroundColor: "rgba(50, 115, 91, 0.2)",
           fill: true,
@@ -194,12 +212,6 @@ function renderCharts(chartData) {
       }
     }
   });
-
-  // Mostrar productos más vendidos con paginación
-  const productosOrdenados = Object.entries(chartData.productos)
-    .sort((a, b) => b[1] - a[1]);
-
-  renderPaginatedList(productosOrdenados, "categoriasChart");
 }
 
 async function fetchVentasRealizadas() {
@@ -207,11 +219,18 @@ async function fetchVentasRealizadas() {
   const ventas = [];
   comprasSnapshot.forEach(doc => {
     const data = doc.data();
+    // Asegura que el nombre completo siempre esté presente
+    const nombreCompleto = `${data.usuario?.nombre || ""} ${data.usuario?.apellido || ""}`.trim() || "N/A";
+    // Asegura que el total sea un número
+    let total = data.total;
+    if (typeof total === "string") {
+      total = Number(total.replace(/[^\d]/g, "")) || 0;
+    }
     ventas.push({
       id: doc.id,
-      cliente: `${data.usuario?.nombre || "N/A"} ${data.usuario?.apellido || ""}`,
+      cliente: nombreCompleto,
       fecha: data.fecha ? new Date(data.fecha).toLocaleString("es-CL") : "Sin fecha",
-      total: data.total || 0,
+      total: total,
       estado: data.estado || "Pendiente"
     });
   });

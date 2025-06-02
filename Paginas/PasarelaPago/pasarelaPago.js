@@ -1,5 +1,15 @@
-import { db } from "../../Servicios/firebaseConfig.js";
+import { db, verificarAutenticacion } from "../../Servicios/firebaseConfig.js";
 import { doc, getDoc, updateDoc, arrayUnion, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  verificarAutenticacion();
+  const uid = sessionStorage.getItem("UID");
+  if (!uid) {
+    alert("No puedes acceder a esta página sin estar registrado o logueado.");
+    document.body.innerHTML = ""; // Vaciar el contenido de la página
+    return; // Detener ejecución
+  }
+});
 
 // --- Validadores y helpers ---
 const cardNumberInput = document.getElementById('cardNumber');
