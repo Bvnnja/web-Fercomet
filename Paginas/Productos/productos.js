@@ -70,7 +70,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   displayFilteredProducts(filteredProducts); // Mostrar productos filtrados
 });
 
-// Nueva función para buscar productos por nombre
+// Nueva función para normalizar texto (eliminar acentos y convertir a minúsculas)
+function normalizarTexto(texto) {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, ""); // Eliminar acentos
+}
+
+// Nueva función para buscar productos por nombre con coincidencias flexibles
 async function searchProductsByName(query) {
   const productContainer = document.getElementById("productContainer");
   productContainer.innerHTML = "<p>Cargando productos...</p>";
@@ -80,9 +88,16 @@ async function searchProductsByName(query) {
     await loadProductsForPurchase();
   }
 
-  const filteredProducts = allProductsCache.filter(product =>
-    product.nombre.toLowerCase().includes(query.toLowerCase())
-  );
+  const normalizedQuery = normalizarTexto(query);
+
+  const filteredProducts = allProductsCache.filter(product => {
+    const normalizedProductName = normalizarTexto(product.nombre);
+    return (
+      normalizedProductName.includes(normalizedQuery) || // Coincidencia parcial
+      normalizedProductName.startsWith(normalizedQuery) || // Coincidencia al inicio
+      normalizedProductName.endsWith(normalizedQuery) // Coincidencia al final
+    );
+  });
 
   if (filteredProducts.length === 0) {
     productContainer.innerHTML = "<p>No se encontraron productos.</p>";
@@ -288,7 +303,7 @@ function assignAddToCartEvents() {
   });
 }
 
-// Mostrar productos filtrados con paginación
+// Mostrar productos filtrados with paginación
 function displayFilteredProducts(products, page = 1) {
   currentPage = page;
   const productContainer = document.getElementById("productContainer");
@@ -322,7 +337,7 @@ function displayFilteredProducts(products, page = 1) {
 
 // Buscar productos por nombre al presionar el botón
 document.getElementById("searchButton").addEventListener("click", async () => {
-  const searchInput = document.getElementById("searchInput").value.toLowerCase();
+  const searchInput = document.getElementById("searchInput").value.trim();
   const productContainer = document.getElementById("productContainer");
   productContainer.innerHTML = "";
 
@@ -331,17 +346,7 @@ document.getElementById("searchButton").addEventListener("click", async () => {
     return;
   }
 
-  const filteredProducts = allProductsCache.filter(product =>
-    product.nombre.toLowerCase().includes(searchInput)
-  );
-
-  if (filteredProducts.length === 0) {
-    productContainer.innerHTML = "<p>No se encontraron productos.</p>";
-    document.getElementById("paginationContainer").innerHTML = ""; // Limpiar paginación
-    return;
-  }
-
-  displayFilteredProducts(filteredProducts); // Mostrar productos filtrados
+  await searchProductsByName(searchInput); // Usar la nueva función de búsqueda
 });
 
 // Aplicar filtros
