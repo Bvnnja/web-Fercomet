@@ -1,4 +1,4 @@
-import { db } from "../../Servicios/firebaseConfig.js";
+import { db } from "/Servicios/firebaseConfig.js";
 import { collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let usuariosCache = [];

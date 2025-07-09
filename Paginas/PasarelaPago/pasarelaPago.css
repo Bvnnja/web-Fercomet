@@ -97,21 +97,36 @@ body {
 
 .pago-btn {
   width: 100%;
-  padding: 12px;
-  background: linear-gradient(90deg, #007bff 60%, #1a3e5c 100%);
+  padding: 14px;
+  background: linear-gradient(90deg, #43a047 60%, #32735B 100%);
   color: #fff;
   border: none;
-  border-radius: 6px;
-  font-size: 1.1rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
   font-weight: bold;
   margin-top: 18px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  transition: background 0.2s;
+  box-shadow: 0 4px 12px rgba(50, 115, 91, 0.2);
+  transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
 }
 
 .pago-btn:hover {
-  background: linear-gradient(90deg, #0056b3 60%, #1a3e5c 100%);
+  background: linear-gradient(90deg, #388e3c 60%, #285f4a 100%);
+  box-shadow: 0 6px 16px rgba(50, 115, 91, 0.3);
+  transform: translateY(-2px);
+}
+
+.pago-btn:active {
+  background: linear-gradient(90deg, #2e7d32 60%, #1b4d3a 100%);
+  box-shadow: 0 2px 8px rgba(50, 115, 91, 0.2);
+  transform: translateY(0);
+}
+
+.pago-btn:disabled {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .cancelar-btn {
@@ -139,6 +154,56 @@ body {
   color: #007bff;
   font-weight: bold;
   font-size: 1.1rem;
+}
+
+.alert.alert-info {
+  background: #e3f6ec;
+  color: #32735B;
+  border: 1px solid #43a047;
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(50, 115, 91, 0.1);
+  text-align: left;
+  line-height: 1.6;
+}
+
+.alert.alert-info strong {
+  font-size: 1.2rem;
+  color: #1a3e5c;
+}
+
+#comprobanteTransferenciaContainer {
+  background: #f8fafc;
+  border: 1px solid #b0bec5;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+#comprobanteTransferenciaContainer label {
+  font-weight: bold;
+  color: #1a3e5c;
+  margin-bottom: 8px;
+  display: block;
+}
+
+#comprobanteTransferenciaContainer input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #b0bec5;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#comprobantePreview {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #555;
+  text-align: center;
 }
 
 .success-message {
@@ -245,25 +310,121 @@ body {
 
 @media (max-width: 600px) {
   .pago-container {
-    max-width: 98vw;
-    padding: 16px 4vw 16px 4vw;
+    max-width: 98%; /* Ajustar el ancho del contenedor */
+    padding: 20px; /* Incrementar el padding */
+    margin: 30px auto; /* Ajustar el margen */
   }
+
   .pago-header h1 {
-    font-size: 1.3rem;
+    font-size: 1.8rem; /* Incrementar el tamaño del título */
+    margin-bottom: 20px; /* Ajustar el espacio inferior */
   }
+
   .metodos-pago-btns-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 20px; /* Incrementar el espacio entre filas */
   }
-  .metodos-row {
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-  }
+
   .metodo-btn {
-    min-width: 0;
-    width: 100%;
-    max-width: 100%;
-    justify-content: flex-start;
+    font-size: 1rem; /* Incrementar el tamaño de fuente */
+    padding: 12px; /* Ajustar el padding */
+    max-width: 100%; /* Asegurar que ocupe todo el ancho */
+  }
+
+  .pago-form label {
+    font-size: 1rem; /* Incrementar el tamaño de fuente */
+  }
+
+  .pago-form input {
+    font-size: 1rem; /* Incrementar el tamaño de fuente */
+    padding: 10px; /* Ajustar el padding */
+  }
+
+  .pago-row {
+    gap: 16px; /* Incrementar el espacio entre columnas */
+  }
+
+  .pago-btn {
+    font-size: 1.2rem; /* Incrementar el tamaño de fuente */
+    padding: 14px; /* Ajustar el padding */
+  }
+
+  .cancelar-btn {
+    font-size: 1rem; /* Incrementar el tamaño de fuente */
+    padding: 12px; /* Ajustar el padding */
+  }
+
+  #paymentResult {
+    font-size: 1rem; /* Incrementar el tamaño de fuente */
+  }
+
+  .success-message h2 {
+    font-size: 2rem; /* Incrementar el tamaño del mensaje de éxito */
+  }
+
+  .success-message p {
+    font-size: 1.2rem; /* Incrementar el tamaño del texto */
+  }
+}
+
+@media (max-width: 412px) {
+.pago-container {
+  max-width: 1420px;
+  width: 100%;
+  margin: 50px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  padding: 32px 28px 24px 28px;
+  position: relative;
+}
+
+  .pago-header h1 {
+    font-size: 2rem; /* Incrementar el tamaño del título */
+    margin-bottom: 24px; /* Ajustar el espacio inferior */
+  }
+
+  .metodos-pago-btns-grid {
+    gap: 24px; /* Incrementar el espacio entre filas */
+  }
+
+  .metodo-btn {
+    font-size: 1.2rem; /* Incrementar el tamaño de fuente */
+    padding: 14px; /* Ajustar el padding */
+    max-width: 100%; /* Asegurar que ocupe todo el ancho */
+  }
+
+  .pago-form label {
+    font-size: 1.1rem; /* Incrementar el tamaño de fuente */
+  }
+
+  .pago-form input {
+    font-size: 1.1rem; /* Incrementar el tamaño de fuente */
+    padding: 12px; /* Ajustar el padding */
+  }
+
+  .pago-row {
+    gap: 20px; /* Incrementar el espacio entre columnas */
+  }
+
+  .pago-btn {
+    font-size: 1.4rem; /* Incrementar el tamaño de fuente */
+    padding: 16px; /* Ajustar el padding */
+  }
+
+  .cancelar-btn {
+    font-size: 1.2rem; /* Incrementar el tamaño de fuente */
+    padding: 14px; /* Ajustar el padding */
+  }
+
+  #paymentResult {
+    font-size: 1.2rem; /* Incrementar el tamaño de fuente */
+  }
+
+  .success-message h2 {
+    font-size: 2.4rem; /* Incrementar el tamaño del mensaje de éxito */
+  }
+
+  .success-message p {
+    font-size: 1.4rem; /* Incrementar el tamaño del texto */
   }
 }

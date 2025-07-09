@@ -1,4 +1,6 @@
-/* Título principal */
+/* =======================
+   Título principal
+   ======================= */
 h1 {
   text-align: center;
   margin-bottom: 36px;
@@ -12,7 +14,6 @@ h1 {
   box-shadow: 0 8px 32px rgba(50, 115, 91, 0.08), 0 2px 8px #e8f5e9;
   padding: 24px 0 18px 0;
   text-shadow: none;
-
   border-top: none;
   position: relative;
   z-index: 2;
@@ -30,15 +31,17 @@ h1::after {
   box-shadow: 0 2px 8px #b2dfdb;
 }
 
-/* Botones de categoría */
+/* =======================
+   Botones de categoría
+   ======================= */
 #categoryButtons {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
   justify-content: center;
   margin-bottom: 20px;
   margin-top: 8px;
-  padding: 8px 0;
+  padding: 10px 0;
   background: #f5f7fa;
   border-radius: 18px;
   box-shadow: 0 2px 12px rgba(50, 115, 91, 0.08);
@@ -48,9 +51,9 @@ h1::after {
   background: linear-gradient(90deg, #43a047 0%, #32735B 100%);
   color: #fff;
   border: none;
-  padding: 7px 16px;
+  padding: 10px 20px;
   border-radius: 8px;
-  font-size: 0.98rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.2px;
   box-shadow: 0 1px 4px rgba(50, 115, 91, 0.08);
@@ -75,7 +78,9 @@ h1::after {
   box-shadow: 0 4px 16px rgba(50, 115, 91, 0.18);
 }
 
-/* Búsqueda */
+/* =======================
+   Búsqueda
+   ======================= */
 #searchInput {
   padding: 8px;
   width: 250px;
@@ -97,7 +102,9 @@ h1::after {
   background-color: #285f4a;
 }
 
-/* Contenedor de productos */
+/* =======================
+   Contenedor de productos
+   ======================= */
 #productContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -110,7 +117,9 @@ h1::after {
   box-shadow: 0 4px 24px rgba(50, 115, 91, 0.08);
 }
 
-/* Tarjetas */
+/* =======================
+   Tarjetas
+   ======================= */
 .card {
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -248,7 +257,9 @@ h1::after {
   box-shadow: 0 4px 16px rgba(50, 115, 91, 0.18);
 }
 
-/* Carrito */
+/* =======================
+   Carrito
+   ======================= */
 #cartList {
   list-style: none;
   padding: 0;
@@ -284,7 +295,9 @@ button[onclick="checkout()"]:hover {
   background-color: #285f4a;
 }
 
-/* Paginación */
+/* =======================
+   Paginación
+   ======================= */
 #paginationContainer {
   display: flex;
   justify-content: center;
@@ -313,7 +326,9 @@ button[onclick="checkout()"]:hover {
   color: white;
 }
 
-/* Mensaje de éxito y error */
+/* =======================
+   Mensajes
+   ======================= */
 .mensaje-exito {
   animation: fadeInOut 4s ease-in-out;
   background-color: green;
@@ -349,13 +364,24 @@ button[onclick="checkout()"]:hover {
   }
 }
 
-/* Contenedor de filtros */
+/* =======================
+   Layout principal
+   ======================= */
+.productos-layout {
+  display: flex;
+  width: 100%;
+}
+
+/* =======================
+   Filtros
+   ======================= */
 #filtersContainer {
+  width: 20%;
+  padding: 10px;
+  border-right: 1px solid #ccc;
   background: linear-gradient(135deg, #f9f9f9 80%, #e8f5e9 100%);
   border-radius: 18px;
-  padding: 22px 18px 18px 18px;
   box-shadow: 0 6px 24px rgba(50, 115, 91, 0.10);
-  border: 1.5px solid #e0e0e0;
   margin-right: 18px;
   min-width: 220px;
 }
@@ -456,18 +482,444 @@ button[onclick="checkout()"]:hover {
   border-color: #285f4a;
 }
 
-/* Responsive para móviles */
-@media (max-width: 700px) {
+/* =======================
+   Responsividad
+   ======================= */
+@media (max-width: 900px) {
+  body > div[style*="display: flex"] {
+    flex-direction: column !important;
+  }
+  #filtersContainer {
+    width: 100% !important;
+    margin-right: 0 !important;
+    margin-bottom: 18px;
+    min-width: unset;
+    max-width: 100vw;
+    box-sizing: border-box;
+    border-right: none !important;
+    border-bottom: 1px solid #ccc !important;
+  }
   #productContainer {
-    grid-template-columns: 1fr;
-    gap: 18px;
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+    margin-top: 10px;
+    margin-bottom: 30px;
     padding: 0;
   }
-  .product-card {
-    min-height: 340px;
-    padding: 14px 8px 12px 8px;
-  }
-  .product-card img {
-    height: 120px;
+  body > div[style*="display: flex"] > div:not(#filtersContainer) {
+    width: 100% !important;
+    padding: 0 0 10px 0 !important;
   }
 }
+
+@media (max-width: 600px) {
+  #filtersContainer {
+    padding: 8px 2px 8px 2px;
+    font-size: 0.97rem;
+  }
+  #categoryButtons {
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px 0;
+  }
+  #productContainer {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 0 !important;
+  }
+  .product-card {
+    min-height: 160px;
+    padding: 10px !important;
+    font-size: 0.9rem !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 6px rgba(50, 115, 91, 0.1) !important;
+  }
+  .product-card img {
+    height: 100px !important;
+    margin-bottom: 10px !important;
+    border-radius: 6px !important;
+  }
+  .product-card h3 {
+    font-size: 1rem !important;
+    margin-bottom: 6px !important;
+  }
+  .product-card p {
+    font-size: 0.85rem !important;
+    margin-bottom: 4px !important;
+  }
+  .product-card .price {
+    font-size: 0.95rem !important;
+    font-weight: bold !important;
+    margin-bottom: 6px !important;
+  }
+  .product-card .stock {
+    font-size: 0.8rem !important;
+    margin-bottom: 8px !important;
+  }
+  .product-card button {
+    font-size: 0.85rem !important;
+    padding: 6px !important;
+    border-radius: 5px !important;
+  }
+  h1 {
+    font-size: 1.1rem;
+    padding: 8px 0 4px 0;
+    margin-bottom: 10px;
+    margin-top: 8px;
+  }
+  h1::after {
+    width: 90px;
+    height: 2px;
+    margin: 3px auto 0 auto;
+  }
+}
+
+@media (max-width: 500px) {
+  #filtersContainer {
+    padding: 6px 2px 4px 2px;
+    font-size: 0.93rem;
+  }
+  #categoryButtons button {
+    font-size: 0.93rem;
+    padding: 5px 8px;
+  }
+  .product-card {
+    min-height: 180px;
+    padding: 6px 2px 6px 2px;
+    font-size: 0.93rem;
+  }
+  .product-card img {
+    height: 60px;
+  }
+  h1 {
+    font-size: 1.05rem;
+    padding: 7px 0 4px 0;
+    margin-bottom: 10px;
+    margin-top: 8px;
+  }
+  h1::after {
+    width: 90px;
+    height: 2px;
+    margin: 3px auto 0 auto;
+  }
+}
+
+/* --- Panel de filtros tipo drawer para móviles --- */
+@media (max-width: 900px) {
+  #filtersContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 92vw;
+    max-width: 380px;
+    height: 100vh;
+    background: #fff;
+    z-index: 2000;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.18);
+    transform: translateX(-105%);
+    transition: transform 0.3s cubic-bezier(.4,2,.6,1);
+    overflow-y: auto;
+    border-radius: 0 12px 12px 0;
+    border-right: 1.5px solid #e0e0e0;
+    margin: 0 !important;
+    padding-top: 0 !important;
+  }
+  #filtersContainer.filtros-open {
+    transform: translateX(0);
+  }
+  /* Botón de cerrar dentro del panel */
+  #filtersContainer .close-filtros-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    background: none;
+    border: none;
+    color: #32735B;
+    padding: 18px 18px 8px 18px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+  }
+  /* Overlay oscuro detrás del panel */
+  #filtrosOverlay {
+    display: none;
+    position: fixed;
+    z-index: 1999;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.18);
+  }
+  #filtrosOverlay.active {
+    display: block;
+  }
+  /* Botón flotante para abrir filtros */
+  #abrirFiltrosBtn {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    color: #32735B;
+    border: 1.5px solid #32735B;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 8px 18px;
+    margin: 0 0 16px 0;
+    box-shadow: 0 2px 8px rgba(50, 115, 91, 0.08);
+    cursor: pointer;
+    width: fit-content;
+  }
+  /* Ocultar el panel lateral fijo y mostrar el botón */
+  body > div[style*="display: flex"] {
+    flex-direction: column !important;
+  }
+  body > div[style*="display: flex"] > #filtersContainer {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 92vw;
+    max-width: 380px;
+    height: 100vh;
+    z-index: 2000;
+    margin: 0 !important;
+    border-radius: 0 12px 12px 0;
+    border-right: 1.5px solid #e0e0e0;
+    background: #fff;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.18);
+    transform: translateX(-105%);
+    transition: transform 0.3s cubic-bezier(.4,2,.6,1);
+    overflow-y: auto;
+    padding-top: 0 !important;
+  }
+  body > div[style*="display: flex"] > #filtersContainer.filtros-open {
+    transform: translateX(0);
+  }
+  /* El contenedor de productos ocupa todo el ancho */
+  body > div[style*="display: flex"] > div:not(#filtersContainer) {
+    width: 100% !important;
+    padding: 0 0 10px 0 !important;
+  }
+}
+
+/* Ocultar el botón en escritorio */
+#abrirFiltrosBtn {
+  display: none;
+}
+@media (max-width: 900px) {
+  #abrirFiltrosBtn {
+    display: flex !important;
+  }
+}
+
+/* Botones de categoría en columna y full width en móvil */
+@media (max-width: 900px) {
+  #categoryButtons {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    padding: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin-bottom: 18px !important;
+    margin-top: 0 !important;
+  }
+  #categoryButtons button {
+    width: 100% !important;
+    border-radius: 10px !important;
+    margin: 0 !important;
+    padding: 10px 0 !important;
+    font-size: 1.08rem !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+    text-align: center !important;
+    display: block !important;
+  }
+}
+
+/* Botones de categoría en dos columnas, más pequeños en móvil */
+@media (max-width: 900px) {
+  #categoryButtons {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+    margin-bottom: 12px !important;
+  }
+  #categoryButtons button {
+    padding: 6px 0 !important;
+    font-size: 0.95rem !important;
+    border-radius: 7px !important;
+  }
+}
+
+/* Botones de categoría en dos filas de hasta 5 botones por fila en móvil */
+@media (max-width: 900px) {
+  #categoryButtons {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    grid-auto-rows: auto;
+    gap: 6px !important;
+    margin-bottom: 12px !important;
+    width: 100%;
+    justify-items: stretch;
+    align-items: stretch;
+  }
+  #categoryButtons button {
+    width: 100% !important;
+    border-radius: 7px !important;
+    margin: 0 !important;
+    padding: 6px 0 !important;
+    font-size: 0.95rem !important;
+    box-shadow: none !important;
+    text-align: center !important;
+    display: block !important;
+  }
+}
+
+/* Si hay menos de 6 botones, que ocupen una sola fila */
+@media (max-width: 900px) {
+  #categoryButtons:has(button:nth-child(-n+5)) {
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr)) !important;
+  }
+}
+
+/* En pantallas muy pequeñas, una sola columna */
+@media (max-width: 500px) {
+  #categoryButtons {
+    grid-template-columns: 1fr !important;
+    gap: 5px !important;
+  }
+  #categoryButtons button {
+    padding: 5px 0 !important;
+    font-size: 0.91rem !important;
+    border-radius: 6px !important;
+  }
+}
+
+/* Botones de categoría verticales y compactos dentro de filtros */
+#filtersContainer #categoryButtons {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin: 10px 0 18px 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+#filtersContainer #categoryButtons button {
+  width: 100% !important;
+  border-radius: 7px !important;
+  margin: 0 !important;
+  padding: 6px 0 !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+  text-align: center !important;
+  display: block !important;
+}
+
+/* Botón cerrar filtros */
+.close-filtros-btn {
+  display: none;
+}
+
+/* Botón abrir filtros */
+#abrirFiltrosBtn {
+  display: none;
+  margin-bottom: 16px;
+}
+
+/* Panel principal de productos */
+.productos-main {
+  width: 80%;
+  padding: 10px;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 900px) {
+  .productos-layout {
+    flex-direction: column !important;
+  }
+  #filtersContainer {
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid #ccc !important;
+    margin-bottom: 18px;
+    padding: 10px 0 10px 0;
+  }
+  .productos-main {
+    width: 100% !important;
+    padding: 0 0 10px 0 !important;
+  }
+  #abrirFiltrosBtn {
+    display: flex !important;
+  }
+  .close-filtros-btn {
+    display: flex !important;
+  }
+}
+
+/* Ajustar diseño de tarjetas en dispositivos móviles */
+@media (max-width: 600px) {
+  #productContainer {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 0 !important;
+  }
+
+  .product-card {
+    padding: 10px !important;
+    font-size: 0.9rem !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 6px rgba(50, 115, 91, 0.1) !important;
+  }
+
+  .product-card img {
+    height: 100px !important;
+    margin-bottom: 10px !important;
+    border-radius: 6px !important;
+  }
+
+  .product-card h3 {
+    font-size: 1rem !important;
+    margin-bottom: 6px !important;
+  }
+
+  .product-card p {
+    font-size: 0.85rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  .product-card .price {
+    font-size: 0.95rem !important;
+    font-weight: bold !important;
+    margin-bottom: 6px !important;
+  }
+
+  .product-card .stock {
+    font-size: 0.8rem !important;
+    margin-bottom: 8px !important;
+  }
+
+  .product-card button {
+    font-size: 0.85rem !important;
+    padding: 6px !important;
+    border-radius: 5px !important;
+  }
+
+  /* Botón de filtro que cubre toda la pantalla en móviles */
+  #abrirFiltrosBtn {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 1.2rem !important;
+    text-align: center !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+
+

@@ -9,6 +9,13 @@
   <link rel="stylesheet" href="/Modulos/navBar/navBar.css">
   <link rel="stylesheet" href="/Modulos/Footer/footer.css">
   <link rel="stylesheet" href="carrito.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+  </style>
 </head>
 <body>
   <div id="navbar-placeholder"></div>
@@ -28,7 +35,7 @@
         <span>Total del pedido</span>
         <span id="total">$0.00</span>
       </div>
-      <button id="checkoutButton" onclick="checkout()" disabled>Ir a pagar</button>
+      <button id="checkoutButton" onclick="window.location.href='/Paginas/FormularioPago/formularioPago.html'" disabled>Ir a pagar</button>
     </div>
   </div>
   <div id="stockMessage" class="stock-message text-center bg-dark text-white py-2" style="display:none;">

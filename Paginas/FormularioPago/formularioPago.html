@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Pago | Fercomet</title>
+  <link rel="stylesheet" href="formularioPago.css">
+</head>
+<body>
+  <div class="formulario-container">
+    <!-- Encabezado -->
+
+
+    <!-- Formulario de entrega -->
+    <form id="paymentForm" class="formulario">
+      <section class="formulario-entrega">
+        <h2>Entrega</h2>
+        <div class="radio-group">
+          <input type="radio" id="envio" name="entrega" value="envio" checked>
+          <label for="envio">Envío</label>
+          <input type="radio" id="retiro" name="entrega" value="retiro">
+          <label for="retiro">Retiro en tienda</label>
+        </div>
+
+        <!-- Sección de Envío -->
+        <div id="envioSection">
+          <label for="nombreEnvio">Nombre</label>
+          <input type="text" id="nombreEnvio" name="nombreEnvio" placeholder="Tu nombre" minlength="2" maxlength="50" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo letras y espacios (mínimo 2 caracteres)" required>
+          <label for="apellidoEnvio">Apellidos</label>
+          <input type="text" id="apellidoEnvio" name="apellidoEnvio" placeholder="Tus apellidos" minlength="2" maxlength="50" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo letras y espacios (mínimo 2 caracteres)" required>
+          <label for="rutEnvio">RUT</label>
+          <input type="text" id="rutEnvio" name="rutEnvio" placeholder="Ej: 11.111.111-1" maxlength="12" pattern="\d{1,2}\.\d{3}\.\d{3}-[\dkK]" title="Formato válido: 11.111.111-1 (el dígito verificador puede ser un número o K)" required>
+          <label for="telefonoEnvio">Teléfono</label>
+          <input type="tel" id="telefonoEnvio" name="telefonoEnvio" placeholder="Ej: +56912345678" maxlength="12" pattern="\+569\d{8}" title="Debe incluir el prefijo +569 seguido de 8 dígitos" required>
+          <label for="direccion">Dirección</label>
+          <input type="text" id="direccion" name="direccion" placeholder="Calle y número" maxlength="100" required>
+          <label for="comuna">Comuna</label>
+          <input type="text" id="comuna" name="comuna" placeholder="Tu comuna" maxlength="50" required>
+          <label for="region">Región</label>
+          <select id="region" name="region" required>
+            <option value="" disabled selected>Selecciona tu región</option>
+            <option value="Arica y Parinacota">Arica y Parinacota</option>
+            <option value="Tarapacá">Tarapacá</option>
+            <option value="Antofagasta">Antofagasta</option>
+            <option value="Atacama">Atacama</option>
+            <option value="Coquimbo">Coquimbo</option>
+            <option value="Valparaíso">Valparaíso</option>
+            <option value="Metropolitana de Santiago">Metropolitana de Santiago</option>
+            <option value="O'Higgins">O'Higgins</option>
+            <option value="Maule">Maule</option>
+            <option value="Ñuble">Ñuble</option>
+            <option value="Biobío">Biobío</option>
+            <option value="La Araucanía">La Araucanía</option>
+            <option value="Los Ríos">Los Ríos</option>
+            <option value="Los Lagos">Los Lagos</option>
+            <option value="Aysén">Aysén</option>
+            <option value="Magallanes y la Antártica Chilena">Magallanes y la Antártica Chilena</option>
+          </select>
+        </div>
+
+        <!-- Sección de Retiro en tienda -->
+        <div id="retiroSection" style="display: none;">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" minlength="2" maxlength="50" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo letras y espacios (mínimo 2 caracteres)" required>
+          <label for="apellido">Apellidos</label>
+          <input type="text" id="apellido" name="apellido" placeholder="Tus apellidos" minlength="2" maxlength="50" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo letras y espacios (mínimo 2 caracteres)" required>
+          <label for="rut">RUT</label>
+          <input type="text" id="rut" name="rut" placeholder="Ej: 11.111.111-1" maxlength="12" pattern="\d{1,2}\.\d{3}\.\d{3}-[\dkK]" title="Formato válido: 11.111.111-1 (el dígito verificador puede ser un número o K)" required>
+          <label for="telefono">Teléfono</label>
+          <input type="tel" id="telefono" name="telefono" placeholder="Ej: +56912345678" maxlength="12" pattern="\+569\d{8}" title="Debe incluir el prefijo +569 seguido de 8 dígitos" required>
+          <label for="retira">¿Quién retira?</label>
+          <select id="retira" name="retira" required>
+            <option value="" disabled selected>Selecciona una opción</option>
+            <option value="yo">Yo</option>
+            <option value="otraPersona">Otra persona</option>
+          </select>
+          <div id="otraPersonaSection" style="display: none;">
+            <label for="rutOtraPersona">RUT de la persona que retira</label>
+            <input type="text" id="rutOtraPersona" name="rutOtraPersona" placeholder="Ej: 11.111.111-1" maxlength="12" pattern="\d{1,2}\.\d{3}\.\d{3}-[\dkK]" title="Formato válido: 11.111.111-1">
+            <label for="nombreOtraPersona">Nombre completo de la persona que retira</label>
+            <input type="text" id="nombreOtraPersona" name="nombreOtraPersona" placeholder="Nombre completo" maxlength="100" pattern="[A-Za-z\s]+" title="Solo letras y espacios">
+          </div>
+        </div>
+      </section>
+
+      <!-- Botones -->
+      <button type="submit" class="formulario-btn">Continuar al Pago</button>
+      <button type="button" id="cancelarFormulario" class="cancelar-btn">Cancelar</button>
+    </form>
+
+    <!-- Resumen del pedido -->
+    <aside class="resumen-pedido">
+      <h2>Resumen del pedido</h2>
+      <ul id="resumenLista">
+        <!-- Productos se insertarán dinámicamente -->
+      </ul>
+      <div class="resumen-total">
+        <span>Subtotal</span>
+        <span id="subtotal">$0.00</span>
+      </div>
+      <div class="resumen-total">
+        <span>Envío</span>
+        <span id="envioCosto">Por calcular</span>
+      </div>
+      <div class="resumen-total resumen-final">
+        <span>Total</span>
+        <span id="total">$0.00</span>
+      </div>
+    </aside>
+  </div>
+  <script type="module" src="formularioPago.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const envioRadio = document.getElementById("envio");
+      const retiroRadio = document.getElementById("retiro");
+      const envioSection = document.getElementById("envioSection");
+      const retiroSection = document.getElementById("retiroSection");
+      const retiraSelect = document.getElementById("retira");
+      const otraPersonaSection = document.getElementById("otraPersonaSection");
+      const rutOtraPersona = document.getElementById("rutOtraPersona");
+      const nombreOtraPersona = document.getElementById("nombreOtraPersona");
+
+      const toggleFieldAttributes = () => {
+        const envioInputs = envioSection.querySelectorAll("input, select");
+        const retiroInputs = retiroSection.querySelectorAll("input, select");
+
+        if (envioRadio.checked) {
+          envioInputs.forEach(input => {
+            input.removeAttribute("disabled");
+            input.setAttribute("required", "true");
+          });
+          retiroInputs.forEach(input => {
+            input.setAttribute("disabled", "true");
+            input.removeAttribute("required");
+          });
+        } else if (retiroRadio.checked) {
+          retiroInputs.forEach(input => {
+            input.removeAttribute("disabled");
+            input.setAttribute("required", "true");
+          });
+          envioInputs.forEach(input => {
+            input.setAttribute("disabled", "true");
+            input.removeAttribute("required");
+          });
+          // Al cambiar a retiro, también actualizar los campos de otra persona
+          toggleOtraPersonaFields();
+        }
+      };
+
+      function toggleOtraPersonaFields() {
+        if (retiraSelect.value === "otraPersona") {
+          otraPersonaSection.style.display = "block";
+          if (rutOtraPersona) {
+            rutOtraPersona.removeAttribute("disabled");
+            rutOtraPersona.setAttribute("required", "true");
+          }
+          if (nombreOtraPersona) {
+            nombreOtraPersona.removeAttribute("disabled");
+            nombreOtraPersona.setAttribute("required", "true");
+          }
+        } else {
+          otraPersonaSection.style.display = "none";
+          if (rutOtraPersona) {
+            rutOtraPersona.setAttribute("disabled", "true");
+            rutOtraPersona.removeAttribute("required");
+          }
+          if (nombreOtraPersona) {
+            nombreOtraPersona.setAttribute("disabled", "true");
+            nombreOtraPersona.removeAttribute("required");
+          }
+        }
+      }
+
+      envioRadio.addEventListener("change", () => {
+        envioSection.style.display = "block";
+        retiroSection.style.display = "none";
+        toggleFieldAttributes();
+      });
+
+      retiroRadio.addEventListener("change", () => {
+        envioSection.style.display = "none";
+        retiroSection.style.display = "block";
+        toggleFieldAttributes();
+      });
+
+      retiraSelect.addEventListener("change", () => {
+        toggleOtraPersonaFields();
+      });
+
+      // Inicializar atributos según la selección inicial
+      toggleFieldAttributes();
+      toggleOtraPersonaFields();
+    });
+  </script>
+</body>
+</html>

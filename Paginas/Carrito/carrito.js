@@ -295,10 +295,30 @@ function actualizarCarritoGlobal() {
   validarCarrito();
 }
 
-// Limpiar carrito al cerrar sesión
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
+// Sincroniza el UID de Firebase Auth con sessionStorage y localStorage
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    sessionStorage.setItem("UID", user.uid);
+    // Guarda el objeto completo del usuario en localStorage
+    try {
+      const userDocRef = doc(db, "usuarios", user.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        localStorage.setItem("Usuario", JSON.stringify({
+          uid: user.uid,
+          ...userDoc.data()
+        }));
+      } else {
+        // Si no existe, guarda solo el UID
+        localStorage.setItem("Usuario", JSON.stringify({ uid: user.uid }));
+      }
+    } catch (e) {
+      localStorage.setItem("Usuario", JSON.stringify({ uid: user.uid }));
+    }
+  } else {
+    sessionStorage.removeItem("UID");
     localStorage.removeItem("cart");
+    localStorage.removeItem("Usuario");
   }
 });
 

@@ -378,5 +378,39 @@ document.getElementById("resetFiltersButton").addEventListener("click", () => {
   loadProductsForPurchase(); // Recargar todos los productos
 });
 
+// Drawer de filtros para móvil
+document.addEventListener("DOMContentLoaded", () => {
+  const abrirBtn = document.getElementById("abrirFiltrosBtn");
+  const filtros = document.getElementById("filtersContainer");
+  const overlay = document.getElementById("filtrosOverlay");
+  const cerrarBtn = filtros.querySelector(".close-filtros-btn");
+
+  // Mostrar botón cerrar solo en móvil
+  function toggleCloseBtn() {
+    if (window.innerWidth <= 900) {
+      cerrarBtn.style.display = "flex";
+    } else {
+      cerrarBtn.style.display = "none";
+      filtros.classList.remove("filtros-open");
+      overlay.classList.remove("active");
+    }
+  }
+  toggleCloseBtn();
+  window.addEventListener("resize", toggleCloseBtn);
+
+  abrirBtn?.addEventListener("click", () => {
+    filtros.classList.add("filtros-open");
+    overlay.classList.add("active");
+  });
+  cerrarBtn?.addEventListener("click", () => {
+    filtros.classList.remove("filtros-open");
+    overlay.classList.remove("active");
+  });
+  overlay?.addEventListener("click", () => {
+    filtros.classList.remove("filtros-open");
+    overlay.classList.remove("active");
+  });
+});
+
 // Cargar productos al inicio
 loadProductsForPurchase();

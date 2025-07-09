@@ -19,7 +19,7 @@ const OPCIONES_CATEGORIAS = [
     opciones: [
       "Buscar productos por nombre o categoría.",
       "Consultar disponibilidad de stock.",
-      "Consultar estado de mis compras" // Mover esta opción aquí
+      "Consultar estado de mis compras" // Restaurar esta opción aquí
     ]
   },
   {
@@ -61,7 +61,12 @@ const RESPUESTAS_CAT_SUB = [
   // Ayuda sobre productos
   { cat: 2, sub: 1, respuesta: "¿Qué producto buscas? Escribe el nombre o la categoría y te ayudo a encontrarlo." },
   { cat: 2, sub: 2, respuesta: "Puedes consultar el stock actualizado en cada producto. Si tienes dudas, dime el nombre del producto y reviso su disponibilidad." },
-  { cat: 2, sub: 3, respuesta: "Déjame revisar el estado de tus compras. Por favor, espera un momento." }, // Actualizar categoría
+  { 
+    cat: 2, 
+    sub: 3, 
+    respuesta: "Déjame revisar el estado de tus compras. Por favor, espera un momento.", 
+    accion: consultarEstadoCompras // Vincular la acción de consultar estado de compras
+  },
 
   // Soporte de cuenta
   { cat: 3, sub: 1, respuesta: "Puedes recuperar tu contraseña desde la opción '¿Olvidaste tu contraseña?' en la página de inicio de sesión." },
@@ -343,15 +348,12 @@ function responder(pregunta) {
     const cat = OPCIONES_CATEGORIAS[estadoChatbot.categoriaSeleccionada - 1];
     if (!isNaN(subNum)) {
       if (cat && subNum >= 1 && subNum <= cat.opciones.length) {
-        if (estadoChatbot.categoriaSeleccionada === 4 && subNum === 1) {
-          agregarMensaje(RESPUESTAS_CAT_SUB.find(r => r.cat === 4 && r.sub === 1).respuesta, "bot");
-          enviarMensajeAdministrativo("El usuario ha solicitado hablar con un ejecutivo."); // Enviar mensaje administrativo
-          setTimeout(() => {
-            const btnAbrirChatEjecutivo = document.getElementById("abrir-chat-ejecutivo");
-            if (btnAbrirChatEjecutivo) {
-              btnAbrirChatEjecutivo.onclick = abrirChatEjecutivo; // Abrir el segundo chatbot
-            }
-          }, 100); // Asignar evento al botón después de renderizar
+        const respuestaObj = RESPUESTAS_CAT_SUB.find(r => r.cat === estadoChatbot.categoriaSeleccionada && r.sub === subNum);
+        if (respuestaObj) {
+          agregarMensaje(respuestaObj.respuesta, "bot");
+          if (respuestaObj.accion) {
+            respuestaObj.accion(); // Ejecutar la acción vinculada
+          }
           estadoChatbot.esperandoSubopcion = false;
           estadoChatbot.categoriaSeleccionada = null;
           return;

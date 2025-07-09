@@ -1,0 +1,303 @@
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 24px;
+  padding: 0;
+  list-style: none;
+  max-width: 100vw;
+  box-sizing: border-box;
+  justify-items: center; /* Centra las tarjetas horizontalmente */
+}
+
+.product-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(70, 122, 106, 0.10), 0 1.5px 4px rgba(0,0,0,0.04);
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  position: relative;
+  width: 100%;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.product-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(70, 122, 106, 0.18), 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.product-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background: #f4f4f4;
+}
+
+.card-body {
+  padding: 18px 16px 14px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-body h5 {
+  font-size: 1.2rem;
+  color: #467a6a;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.card-body p {
+  margin: 0 0 6px 0;
+  color: #444;
+  font-size: 1rem;
+}
+
+.card-body .price {
+  color: #1b6b4b;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+
+.card-body .cantidad {
+  color: #888;
+  font-size: 0.98rem;
+  margin-bottom: 10px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.card-actions button {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.card-actions .edit {
+  background: #e9f7f2;
+  color: #467a6a;
+}
+
+.card-actions .edit:hover {
+  background: #c7e7db;
+}
+
+.card-actions .delete {
+  background: #ffeaea;
+  color: #dc3545;
+}
+
+.card-actions .delete:hover {
+  background: #ffd6d6;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 28px 0 10px 0;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  background: #f4f4f4;
+  color: #467a6a;
+  border: 1.5px solid #467a6a;
+  border-radius: 5px;
+  padding: 7px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pagination-btn.active,
+.pagination-btn:hover:not(:disabled) {
+  background: #467a6a;
+  color: #fff;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.product-list-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.product-list-title {
+  font-size: 2rem;
+  color: #223;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-bottom: 0.2rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.product-list-title i {
+  color: #467a6a;
+  font-size: 2.2rem;
+  vertical-align: middle;
+}
+
+.product-list-title span {
+  color: #467a6a;
+  font-size: 2.1rem;
+  font-weight: 700;
+  margin-left: 10px;
+}
+
+.product-list-underline {
+  width: 320px;
+  max-width: 90vw;
+  height: 5px;
+  background: #2e7d6a;
+  border-radius: 3px;
+  margin: 0 auto 0.5rem auto;
+  margin-top: 0;
+  box-shadow: 0 1px 6px #e0f2ef inset;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .product-list {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .product-list-underline {
+    width: 180px;
+  }
+}
+
+@media (max-width: 600px) {
+  html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  .agregar-producto-container {
+    max-width: 100vw;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  .product-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 0 2vw;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+  /* Si usas Bootstrap .container, fuerza el ancho */
+  .container, .container-fluid {
+    max-width: 100vw !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+  }
+  .product-list-header {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0;
+  }
+  .product-list-title {
+    font-size: 1.1rem !important;
+    padding: 0 4px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .product-list-title i {
+    font-size: 1.5rem !important;
+    margin-bottom: 2px;
+    display: block;
+  }
+  .product-list-title span {
+    font-size: 1.1rem !important;
+    margin-left: 0 !important;
+    font-weight: 700;
+    color: #467a6a;
+    display: block;
+    line-height: 1.1;
+  }
+  .product-list-underline {
+    width: 60px;
+    height: 3px;
+    margin-bottom: 10px;
+  }
+  /* 1. Unifica el alto de las tarjetas en móviles */
+  .product-card {
+    min-height: auto;
+    max-width: 98vw;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* 2. Optimiza la tipografía para móviles */
+  .card-body h5 {
+    font-size: 1rem;
+  }
+  .card-body p,
+  .card-body .price,
+  .card-body .cantidad {
+    font-size: 0.9rem;
+  }
+  .card-actions button {
+    font-size: 0.9rem;
+    padding: 6px 0;
+  }
+  /* 4. Mejor espaciado en paginación en móviles */
+  .pagination-container {
+    margin: 20px 0 5px 0;
+    gap: 6px;
+  }
+  .pagination-btn {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+/* 5. Asegura que .card-actions no se rompa en pantallas muy estrechas */
+@media (max-width: 400px) {
+  .card-actions {
+    flex-direction: column;
+  }
+}
+
+/* Mejora el espacio entre los filtros en todas las resoluciones */
+.filters-row > * {
+  margin-bottom: 0 !important;
+}
+
+/* Asegura que el body nunca desborde y tenga fondo blanco */
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: #fff;
+}

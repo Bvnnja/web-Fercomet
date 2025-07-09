@@ -1,5 +1,5 @@
 // Cargar el Navbar
-fetch('../../Modulos/navBar/navbar.html')
+fetch('/Modulos/navBar/navBar.html')
   .then(response => response.text())
   .then(data => {
     document.getElementById('navbar-placeholder').innerHTML = data;
@@ -11,6 +11,7 @@ fetch('../../Modulos/navBar/navbar.html')
     let currentMessageIndex = 0;
 
     function showNextMessage() {
+      if (!messages || messages.length === 0) return; // <-- Previene el error
       messages.forEach((message) => {
         message.classList.remove('active');
       });
@@ -68,6 +69,7 @@ fetch('../../Modulos/navBar/navbar.html')
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="adminDropdown">
                     <li><a class="dropdown-item" href="/Paginas/AgregarProducto/agregarProducto.html">Agregar Producto</a></li>
+                    <li><a class="dropdown-item" href="/Paginas/ListaProductos/listaProductos.html">Lista Productos</a></li>
                     <li><a class="dropdown-item" href="/Paginas/AdminCompras/adminCompras.html">Gestionar Compras</a></li>
                     <li><a class="dropdown-item" href="/Paginas/Dashboard/dashboard.html">Dashboard</a></li>
                     <li><a class="dropdown-item" href="/Paginas/GestionRoles/GestionRoles.html">Gestion Roles</a></li>
@@ -83,6 +85,7 @@ fetch('../../Modulos/navBar/navbar.html')
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="vendedorDropdown">
                     <li><a class="dropdown-item" href="/Paginas/AgregarProducto/agregarProducto.html">Agregar Producto</a></li>
+                    <li><a class="dropdown-item" href="/Paginas/ListaProductos/listaProductos.html">Lista Productos</a></li>
                     <li><a class="dropdown-item" href="/Paginas/AdminCompras/adminCompras.html">Gestionar Compras</a></li>
                   </ul>
                 `;
@@ -463,4 +466,74 @@ document.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("pageshow", () => {
   actualizarContadorCarrito();
   renderizarCarrito();
+});
+
+// --- Código movido desde <script type="module"> de navBar.html ---
+
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+const renderizarCarritoBasico = () => {
+  const contenedor = document.getElementById("contenido-carrito");
+  const contador = document.querySelector(".contador_carrito");
+  const botonIrAPagar = document.getElementById("botonIrAPagar");
+
+  if (!contenedor || !contador || !botonIrAPagar) return;
+
+  contenedor.innerHTML = "";
+  contador.textContent = carrito.length;
+
+  if (carrito.length === 0) {
+    contenedor.innerHTML = "<p class='text-center'>Tu carrito está vacío 🛒</p>";
+    botonIrAPagar.setAttribute("disabled", "true");
+    return;
+  }
+
+  botonIrAPagar.removeAttribute("disabled");
+
+  let total = 0;
+  carrito.forEach((producto, index) => {
+    total += parseFloat(producto.precio) || 0;
+
+    const item = document.createElement("div");
+    item.classList.add("d-flex", "justify-content-between", "align-items-center", "mb-3");
+    item.innerHTML = `
+      <div>
+        <h6 class="mb-1">${producto.nombre}</h6>
+        <small>${producto.descripcion || ""}</small>
+      </div>
+      <div>
+        <span class="fw-bold me-3">$${producto.precio}</span>
+        <button class="btn btn-sm btn-danger eliminar-item" data-index="${index}">X</button>
+      </div>
+    `;
+    contenedor.appendChild(item);
+  });
+
+  const totalHTML = document.createElement("div");
+  totalHTML.classList.add("mt-4", "text-end");
+  totalHTML.innerHTML = `<h5>Total: $${total.toFixed(0)}</h5>`;
+  contenedor.appendChild(totalHTML);
+};
+
+const actualizarCarritoGlobal = () => {
+  carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  renderizarCarritoBasico();
+};
+
+// Actualizar carrito al cargar la página
+document.addEventListener("DOMContentLoaded", () => {
+  actualizarCarritoGlobal();
+  renderizarCarritoBasico();
+});
+
+// Escuchar cambios en el localStorage para sincronizar entre pestañas o recargas
+window.addEventListener("storage", () => {
+  actualizarCarritoGlobal();
+  renderizarCarritoBasico();
+});
+
+// Actualizar carrito al cambiar de página
+window.addEventListener("pageshow", () => {
+  actualizarCarritoGlobal();
+  renderizarCarritoBasico();
 });

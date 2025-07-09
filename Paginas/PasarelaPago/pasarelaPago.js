@@ -1,15 +1,5 @@
-import { db, verificarAutenticacion } from "../../Servicios/firebaseConfig.js";
+import { db } from "../../Servicios/firebaseConfig.js";
 import { doc, getDoc, updateDoc, arrayUnion, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-document.addEventListener("DOMContentLoaded", () => {
-  verificarAutenticacion();
-  const uid = sessionStorage.getItem("UID");
-  if (!uid) {
-    alert("No puedes acceder a esta página sin estar registrado o logueado.");
-    document.body.innerHTML = ""; // Vaciar el contenido de la página
-    return; // Detener ejecución
-  }
-});
 
 // --- Validadores y helpers ---
 const cardNumberInput = document.getElementById('cardNumber');
@@ -69,7 +59,142 @@ toggleCvv.addEventListener('keydown', function(e) {
   if (e.key === "Enter" || e.key === " ") toggleCvv.click();
 });
 
-// --- Lógica de pago ---
+// Inicializa Mercado Pago con la Public Key
+const mp = new window.MercadoPago('APP_USR-49168db0-73aa-48ce-918c-7b6aed07bec1', { locale: 'es-CL' });
+
+const metodoBtns = document.querySelectorAll('.metodo-btn');
+const paypalBtnContainer = document.getElementById('paypal-button-container');
+const mpBtnContainer = document.getElementById('mp-btn-container');
+const paymentForm = document.getElementById('paymentForm'); // Formulario de tarjeta de crédito/débito
+const paymentResult = document.getElementById('paymentResult');
+
+metodoBtns.forEach(btn => {
+  btn.addEventListener('click', async function () {
+    metodoBtns.forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const metodo = this.getAttribute('data-metodo');
+
+    // Ocultar todos los contenedores
+    if (paypalBtnContainer) paypalBtnContainer.style.display = "none";
+    if (mpBtnContainer) mpBtnContainer.style.display = "none";
+    if (paymentForm) paymentForm.style.display = "none";
+
+    if (metodo === "tarjeta") {
+      // Mostrar el formulario de tarjeta de crédito/débito
+      paymentForm.style.display = "block";
+      paymentResult.innerHTML = "";
+    } else if (metodo === "mercadopago") {
+      // Mostrar el botón de Mercado Pago
+      mpBtnContainer.style.display = "block";
+
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      if (cart.length === 0) {
+        mpBtnContainer.innerHTML = "<div class='alert alert-danger'>El carrito está vacío.</div>";
+        return;
+      }
+
+      const preference = {
+        items: cart.map(item => ({
+          title: item.name,
+          quantity: item.cantidad,
+          currency_id: "CLP",
+          unit_price: Number(item.price)
+        })),
+        auto_return: "approved",
+        back_urls: {
+          success: "https://www.tu-dominio.com/paginas/exito.html",
+          failure: "https://www.tu-dominio.com/paginas/error.html",
+          pending: "https://www.tu-dominio.com/paginas/pendiente.html"
+        }
+      };
+
+      try {
+        const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer APP_USR-7394783910348918-061002-5aa33507e541c444be6f45a28a9ed465-392440340"
+          },
+          body: JSON.stringify(preference)
+        });
+
+        const data = await response.json();
+
+        if (!data.id) {
+          mpBtnContainer.innerHTML = `<div class='alert alert-danger'>Error Mercado Pago: ${data.message || JSON.stringify(data)}</div>`;
+          return;
+        }
+
+        mp.bricks().create("wallet", "mp-btn-container", {
+          initialization: { preferenceId: data.id },
+          customization: { texts: { valueProp: 'Paga con Mercado Pago' } }
+        });
+      } catch (e) {
+        mpBtnContainer.innerHTML = `<div class='alert alert-danger'>No se pudo cargar Mercado Pago.<br>${e.message}</div>`;
+      }
+    } else if (metodo === "paypal") {
+      // Mostrar el botón de PayPal
+      paypalBtnContainer.style.display = "block";
+      paymentResult.innerHTML = "";
+      if (!paypalBtnContainer.hasChildNodes()) {
+        paypal.Buttons({
+          createOrder: function (data, actions) {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let total = cart.reduce((sum, item) => sum + (item.price * item.cantidad), 0);
+            if (total === 0) {
+              paymentResult.innerHTML = "<div class='alert alert-danger'>El carrito está vacío.</div>";
+              return;
+            }
+            return actions.order.create({
+              purchase_units: [{
+                amount: {
+                  value: total.toFixed(2)
+                }
+              }]
+            });
+          },
+          onApprove: function (data, actions) {
+            return actions.order.capture().then(function (details) {
+              localStorage.setItem("cart", JSON.stringify([]));
+              paypalBtnContainer.style.display = "none";
+              document.getElementById('successMessage').style.display = "flex";
+              setTimeout(() => {
+                window.location.href = "/Paginas/Inicio/index.html";
+              }, 3000);
+            });
+          }
+        }).render('#paypal-button-container');
+      }
+    } else if (metodo === "transferencia") {
+      // Mostrar los datos de transferencia bancaria directamente en el resultado
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const total = cart.reduce((sum, item) => sum + (item.price * item.cantidad), 0);
+
+      paymentResult.innerHTML = `
+        <div class="alert alert-info">
+          <strong>Datos para Transferencia Bancaria:</strong>
+          <ul style="list-style:none; padding:0; margin:10px 0;">
+            <li><strong>RUT:</strong> 11.111.111-1</li>
+            <li><strong>N° Cuenta:</strong> 123456789</li>
+            <li><strong>Nombre:</strong> FercometSPA</li>
+            <li><strong>Monto:</strong> $${total.toLocaleString('es-CL')}</li>
+          </ul>
+          Realiza tu pago y confirma la transferencia.
+        </div>
+        <button id="confirmTransferButton" class="pago-btn">Confirmar Transferencia</button>
+      `;
+
+      // Agregar evento al botón de confirmar transferencia
+      const confirmTransferButton = document.getElementById("confirmTransferButton");
+      confirmTransferButton.addEventListener("click", () => {
+        alert("Transferencia confirmada. Gracias por tu compra.");
+        window.location.href = "/Paginas/Inicio/index.html";
+      });
+    }
+  });
+});
+
+// Validar formulario de tarjeta de crédito/débito
 document.getElementById('paymentForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
@@ -143,6 +268,8 @@ document.getElementById('paymentForm').addEventListener('submit', async function
   // Guardar compra en Firestore
   try {
     const usuario = JSON.parse(localStorage.getItem("Usuario"));
+    const userDetails = JSON.parse(localStorage.getItem("userDetails")) || {}; // Obtener userDetails desde localStorage
+
     if (usuario && usuario.uid) {
       const userDocRef = doc(db, "usuarios", usuario.uid);
 
@@ -166,12 +293,16 @@ document.getElementById('paymentForm').addEventListener('submit', async function
           apellido: usuario.apellido,
           rut: usuario.rut,
           email: usuario.email
+        },
+        retiro: {
+          ...userDetails // Agregar los detalles del usuario desde localStorage en el apartado "retiro"
         }
       };
 
       // Agregar la compra al array "compras" en Firestore (usuario)
       await updateDoc(userDocRef, {
-        compras: arrayUnion(compra)
+        compras: arrayUnion(compra),
+        userDetails // Actualizar también los detalles del usuario en Firestore
       });
 
       // Guardar la compra en la colección global "compras"
@@ -198,164 +329,4 @@ document.getElementById('paymentForm').addEventListener('submit', async function
 
 document.getElementById('cancelarPago').addEventListener('click', function() {
   window.location.href = "/Paginas/Carrito/carrito.html";
-});
-
-const paymentForm = document.getElementById('paymentForm');
-const paymentResult = document.getElementById('paymentResult');
-const metodoBtns = document.querySelectorAll('.metodo-btn');
-const paypalBtnContainer = document.getElementById('paypal-button-container');
-
-metodoBtns.forEach(btn => {
-  btn.addEventListener('click', function() {
-    metodoBtns.forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    const metodo = this.getAttribute('data-metodo');
-    // Oculta el botón de PayPal por defecto
-    if (paypalBtnContainer) paypalBtnContainer.style.display = "none";
-    if (metodo === "tarjeta") {
-      paymentForm.style.display = "";
-      paymentResult.innerHTML = "";
-    } else if (metodo === "mercadopago") {
-      paymentForm.style.display = "none";
-      paymentResult.innerHTML = `
-        <div class="alert alert-info" style="margin-top:20px;">
-          <b>Mercado Pago:</b> Haz clic en el botón para pagar con Mercado Pago.<br>
-          <button id="btnMercadoPago" class="pago-btn" style="margin-top:12px;">Pagar con Mercado Pago</button>
-        </div>
-      `;
-      setTimeout(() => {
-        const btnMP = document.getElementById('btnMercadoPago');
-        if (btnMP) {
-          btnMP.onclick = function() {
-            // Usa tu link real de Mercado Pago
-            window.location.href = "https://link.mercadopago.cl/fercomet";
-          };
-        }
-      }, 100);
-    } else if (metodo === "paypal") {
-      paymentForm.style.display = "none";
-      paymentResult.innerHTML = "";
-      if (paypalBtnContainer) {
-        paypalBtnContainer.style.display = "block";
-        // Renderiza el botón solo si no está ya renderizado
-        if (!paypalBtnContainer.hasChildNodes()) {
-          paypal.Buttons({
-            createOrder: function(data, actions) {
-              // Puedes calcular el total dinámicamente si lo deseas
-              let cart = JSON.parse(localStorage.getItem("cart")) || [];
-              let total = cart.reduce((sum, item) => sum + (item.price * item.cantidad), 0);
-              // Si el carrito está vacío, muestra mensaje y no crea la orden
-              if (total === 0) {
-                paymentResult.innerHTML = "<div class='alert alert-danger'>El carrito está vacío.</div>";
-                return;
-              }
-              return actions.order.create({
-                purchase_units: [{
-                  amount: {
-                    value: total.toFixed(2) // Monto total del carrito
-                  }
-                }]
-              });
-            },
-            onApprove: function(data, actions) {
-              return actions.order.capture().then(function(details) {
-                // Aquí puedes registrar la compra en Firestore si lo deseas
-                // Vacía el carrito y muestra mensaje de éxito
-                localStorage.setItem("cart", JSON.stringify([]));
-                paypalBtnContainer.style.display = "none";
-                document.getElementById('successMessage').style.display = "flex";
-                setTimeout(() => {
-                  window.location.href = "/Paginas/Inicio/index.html";
-                }, 3000);
-              });
-            }
-          }).render('#paypal-button-container');
-        }
-      }
-    } else {
-      if (metodo === "bancoestado") {
-        paymentResult.innerHTML = "<b>Banco Estado:</b> Realiza tu pago a la cuenta 123456789, rut 11.111.111-1, a nombre de Fercomet. Luego envía el comprobante a pagos@fercomet.cl";
-      } else if (metodo === "transferencia") {
-        paymentResult.innerHTML = `
-          <div style="text-align:left;">
-            <b>Datos para Transferencia Bancaria:</b>
-            <table style="width:100%;margin:10px 0 10px 0;">
-              <tr><td><b>Banco:</b></td><td>Banco Estado</td></tr>
-              <tr><td><b>Tipo de cuenta:</b></td><td>Cuenta Corriente</td></tr>
-              <tr><td><b>N° Cuenta:</b></td><td>123456789</td></tr>
-              <tr><td><b>RUT:</b></td><td>11.111.111-1</td></tr>
-              <tr><td><b>Nombre:</b></td><td>Fercomet</td></tr>
-              <tr><td><b>Email:</b></td><td>pagos@fercomet.cl</td></tr>
-            </table>
-            <div class="alert alert-warning" style="font-size:0.98rem;">
-              Realiza la transferencia y luego envía el comprobante a <b>pagos@fercomet.cl</b>.<br>
-              <b>Importante:</b> Debes confirmar tu compra para que quede registrada.
-            </div>
-            <button id="confirmarTransferenciaBtn" class="pago-btn" style="margin-top:10px;width:100%;">Confirmar compra por transferencia</button>
-          </div>
-        `;
-      } else if (metodo === "debito") {
-        paymentResult.innerHTML = "<b>Débito:</b> Puedes pagar con tu tarjeta de débito en nuestra tienda física.";
-      } else if (metodo === "credito") {
-        paymentResult.innerHTML = "<b>Crédito:</b> Puedes pagar con tu tarjeta de crédito en nuestra tienda física.";
-      } else {
-        paymentResult.innerHTML = "<b>Otro método:</b> Consulta con nuestro equipo para coordinar el pago.";
-      }
-
-      if (metodo === "transferencia") {
-        setTimeout(() => { // Espera a que el botón esté en el DOM
-          const btnTransfer = document.getElementById('confirmarTransferenciaBtn');
-          if (btnTransfer) {
-            btnTransfer.onclick = async function() {
-              // Obtener carrito
-              let cart = JSON.parse(localStorage.getItem("cart")) || [];
-              if (cart.length === 0) {
-                paymentResult.innerHTML = `<div class="alert alert-danger">El carrito está vacío.</div>`;
-                return;
-              }
-              try {
-                const usuario = JSON.parse(localStorage.getItem("Usuario"));
-                if (usuario && usuario.uid) {
-                  const userDocRef = doc(db, "usuarios", usuario.uid);
-                  const total = cart.reduce((sum, item) => sum + (item.price * item.cantidad), 0);
-                  const compra = {
-                    fecha: new Date().toISOString(),
-                    total,
-                    estado: "pendiente_transferencia",
-                    productos: cart.map(item => ({
-                      id: item.productId || item.id,
-                      nombre: item.name,
-                      cantidad: item.cantidad,
-                      precio: item.price
-                    })),
-                    usuario: {
-                      uid: usuario.uid,
-                      nombre: usuario.nombre,
-                      apellido: usuario.apellido,
-                      rut: usuario.rut,
-                      email: usuario.email
-                    }
-                  };
-                  await updateDoc(userDocRef, {
-                    compras: arrayUnion(compra)
-                  });
-                  await addDoc(collection(db, "compras"), compra);
-                }
-                // Vaciar carrito
-                localStorage.setItem("cart", JSON.stringify([]));
-                paymentForm.style.display = "none";
-                paymentResult.style.display = "none";
-                document.getElementById('successMessage').style.display = "flex";
-                setTimeout(() => {
-                  window.location.href = "/Paginas/Inicio/index.html";
-                }, 3000);
-              } catch (err) {
-                paymentResult.innerHTML = `<div class="alert alert-danger">Error al registrar la compra. Intenta nuevamente.</div>`;
-              }
-            };
-          }
-        }, 100);
-      }
-    }
-  });
 });

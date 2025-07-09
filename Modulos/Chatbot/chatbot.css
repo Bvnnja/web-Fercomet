@@ -146,3 +146,81 @@
 #chatbot-form button#chatbot-reset-btn {
   margin-left: 8px;
 }
+
+@media (max-width: 600px) {
+  #chatbot-window {
+    width: 90%;
+    height: 70%;
+    bottom: 10px;
+    right: 5%;
+  }
+
+  #chatbot-header {
+    font-size: 1rem;
+    padding: 10px 14px;
+  }
+
+  #chatbot-messages {
+    font-size: 0.95rem;
+    padding: 8px;
+  }
+
+  .chatbot-msg .msg-bubble {
+    font-size: 0.9rem;
+    padding: 6px;
+  }
+
+  #chatbot-form {
+    padding: 8px;
+  }
+
+  #chatbot-input {
+    font-size: 0.9rem;
+    padding: 6px;
+  }
+
+  #chatbot-form button[type="submit"],
+  #chatbot-form button#chatbot-reset-btn {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 412px) {
+  #chatbot-window {
+    width: 95%;
+    height: 60%;
+    bottom: 5px;
+    right: 2.5%;
+  }
+
+  #chatbot-header {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+
+  #chatbot-messages {
+    font-size: 0.85rem;
+    padding: 6px;
+  }
+
+  .chatbot-msg .msg-bubble {
+    font-size: 0.85rem;
+    padding: 5px;
+  }
+
+  #chatbot-form {
+    padding: 6px;
+  }
+
+  #chatbot-input {
+    font-size: 0.85rem;
+    padding: 5px;
+  }
+
+  #chatbot-form button[type="submit"],
+  #chatbot-form button#chatbot-reset-btn {
+    font-size: 0.85rem;
+    padding: 5px 8px;
+  }
+}

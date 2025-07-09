@@ -3,26 +3,21 @@
   <div class="messages">
     <p>Compra Ahora y Retira en nuestra Tienda <a href="https://maps.app.goo.gl/oRcJcBEnWKF4pKnK6" class="mensage-link">¡AQUÍ!</a></p>
     <p>Conoce Nuestra Tienda <a href="https://maps.app.goo.gl/oRcJcBEnWKF4pKnK6" class="mensage-link">¡AQUÍ!</a></p>
-    <p>Haz seguimiento de tu Compra <a href="https://maps.app.goo.gl/oRcJcBEnWKF4pKnK6" class="mensage-link">¡AQUÍ!</a></p>
+    <p>Haz seguimiento de tu Compra <a href="/Paginas/MisCompras/misCompras.html" class="mensage-link">¡AQUÍ!</a></p>
   </div>
 </nav>
 
 <!-- Navbar Principal -->
-<nav class="navbar navbar-expand-lg navbar-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/Paginas/Inicio/index.html">
-      <img src="/imagenes/Proyecto nuevo.png" alt="Ferretería Fercomet" class="logo-navbar">
+    <a class="navbar-brand d-flex align-items-center" href="/Paginas/Inicio/index.html">
+      <img src="/imagenes/Proyecto nuevo.png" alt="Ferretería Fercomet" class="logo-navbar me-2">
     </a>
-    <!-- Mas adelante se puede agregar un buscador 
-    <form class="d-flex ms-auto w-50" action="#" method="get">
-      <input class="form-control me-2" type="search" placeholder="¿Qué estás buscando?" aria-label="Buscar">
-      <button class="btn btn-outline-dark" type="submit">Buscar</button>
-    </form> -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
+      <span class="navbar-toggler-icon d-lg-none"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
         <!-- Botón de administración (se muestra dinámicamente si el usuario es admin) -->
         <li class="nav-item" id="admin-button" style="display: none;">
           <a class="nav-link text-dark" href="/Paginas/Administracion/administracion.html">Administración</a>
@@ -59,14 +54,14 @@
   </div>
 </nav>
 
-
-
-
 <!-- Navbar Inferior: Categorías -->
-<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
   <div class="container-fluid">
-    <div class="collapse navbar-collapse justify-content-center">
-      <ul class="navbar-nav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCategorias">
+      <span class="navbar-toggler-icon d-lg-none"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-center" id="navbarCategorias">
+      <ul class="navbar-nav flex-wrap">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="/Paginas/Productos/productos.html?category=construccion" role="button">Herramientas de Construcción</a>
           <ul class="dropdown-menu">
@@ -124,77 +119,8 @@
   </div>
 </div>
 
-
-<script type="module">
-  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-  const renderizarCarrito = () => {
-    const contenedor = document.getElementById("contenido-carrito");
-    const contador = document.querySelector(".contador_carrito");
-    const botonIrAPagar = document.getElementById("botonIrAPagar");
-
-    if (!contenedor || !contador || !botonIrAPagar) return;
-
-    contenedor.innerHTML = "";
-    contador.textContent = carrito.length;
-
-    if (carrito.length === 0) {
-      contenedor.innerHTML = "<p class='text-center'>Tu carrito está vacío 🛒</p>";
-      botonIrAPagar.setAttribute("disabled", "true");
-      return;
-    }
-
-    botonIrAPagar.removeAttribute("disabled");
-
-    let total = 0;
-    carrito.forEach((producto, index) => {
-      total += parseFloat(producto.precio) || 0;
-
-      const item = document.createElement("div");
-      item.classList.add("d-flex", "justify-content-between", "align-items-center", "mb-3");
-      item.innerHTML = `
-        <div>
-          <h6 class="mb-1">${producto.nombre}</h6>
-          <small>${producto.descripcion || ""}</small>
-        </div>
-        <div>
-          <span class="fw-bold me-3">$${producto.precio}</span>
-          <button class="btn btn-sm btn-danger eliminar-item" data-index="${index}">X</button>
-        </div>
-      `;
-      contenedor.appendChild(item);
-    });
-
-    const totalHTML = document.createElement("div");
-    totalHTML.classList.add("mt-4", "text-end");
-    totalHTML.innerHTML = `<h5>Total: $${total.toFixed(0)}</h5>`;
-    contenedor.appendChild(totalHTML);
-  };
-
-  const actualizarCarritoGlobal = () => {
-    carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-    renderizarCarrito();
-  };
-
-  // Actualizar carrito al cargar la página
-  document.addEventListener("DOMContentLoaded", () => {
-    actualizarCarritoGlobal();
-    renderizarCarrito();
-  });
-
-  // Escuchar cambios en el localStorage para sincronizar entre pestañas o recargas
-  window.addEventListener("storage", () => {
-    actualizarCarritoGlobal();
-    renderizarCarrito();
-  });
-
-  // Actualizar carrito al cambiar de página
-  window.addEventListener("pageshow", () => {
-    actualizarCarritoGlobal();
-    renderizarCarrito();
-  });
-</script>
-
-
 <script type="module" src="/Servicios/firebase.js"></script>
 <script type="module" src="/Servicios/iniciarSesion.js"></script>
+<script type="module" src="/Modulos/navBar/navBar.js"></script>
+<!-- Si usas navBar.js como módulo, puedes agregar: -->
+<!-- <script type="module" src="/Modulos/navBar/navBar.js"></script> -->

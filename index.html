@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cargando Fercomet...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #f6faf7;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .splash-loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border-radius: 32px;
+      box-shadow: 0 8px 40px rgba(50,115,91,0.13);
+      padding: 56px 36px 48px 36px;
+      max-width: 350px;
+      width: 95vw;
+      text-align: center;
+      animation: fadeInSplash 1.2s;
+      position: relative;
+    }
+
+    @keyframes fadeInSplash {
+      from { opacity: 0; transform: scale(0.95);}
+      to { opacity: 1; transform: scale(1);}
+    }
+
+    .splash-logo {
+      width: 100px;
+      height: auto;
+      margin-bottom: 24px;
+      border-radius: 18px;
+      background: #f8fafb;
+      padding: 8px;
+      box-shadow: 0 2px 8px #43a04733;
+      animation: logoPop 1.2s cubic-bezier(.4,2,.6,1);
+    }
+
+    @keyframes logoPop {
+      0% { transform: scale(0.7) rotate(-10deg);}
+      60% { transform: scale(1.1) rotate(3deg);}
+      100% { transform: scale(1) rotate(0);}
+    }
+
+    .splash-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #32735B;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+      animation: fadeInText 1.2s 0.2s backwards;
+    }
+
+    @keyframes fadeInText {
+      from { opacity: 0; transform: translateY(20px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    .custom-spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid #e0f2ef;
+      border-top: 6px solid #43a047;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 22px;
+      margin-top: 8px;
+      box-shadow: 0 2px 8px #43a04722;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+
+    .splash-loading-text {
+      color: #285f4a;
+      font-size: 1.08rem;
+      font-weight: 500;
+      margin-bottom: 0;
+      letter-spacing: 0.5px;
+      animation: fadeInText 1.2s 0.4s backwards;
+    }
+
+    .splash-footer {
+      font-size: 0.95rem;
+      color: #b2b2b2;
+      margin-top: 28px;
+      letter-spacing: 0.5px;
+      animation: fadeInText 1.2s 0.7s backwards;
+    }
+
+    @media (max-width: 500px) {
+      .splash-loading-container {
+        padding: 28px 8px 22px 8px;
+        max-width: 98vw;
+      }
+
+      .splash-logo { width: 60px; }
+
+      .splash-title { font-size: 1.1rem;}
+
+      .custom-spinner { width: 38px; height: 38px; border-width: 4px;}
+
+      .splash-loading-text { font-size: 0.98rem;}
+    }
+  </style>
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.location.href = "/Paginas/Inicio/index.html";
+      }, 5000);
+    };
+  </script>
+</head>
+<body>
+  <div class="splash-loading-container">
+    <img src="/imagenes/Proyecto nuevo.png" alt="Fercomet Logo" class="splash-logo">
+    <div class="splash-title">Cargando Tienda Fercomet...</div>
+    <div class="custom-spinner"></div>
+    <div class="splash-loading-text">Estamos preparando tu experiencia</div>
+    <div class="splash-footer">© 2024 Fercomet</div>
+  </div>
+</body>
+</html>

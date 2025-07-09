@@ -1,275 +1,567 @@
-/* Navbar Superior: Mensajes */
+/* =======================
+   Navbar Superior: Mensajes
+   ======================= */
 .er-navbar {
-    background-color: #467a6a;
-    color: white;
-    text-align: center;
-    padding-top: 2px;
-    padding-bottom: 5px;
-  }
-  
-  .er-navbar .messages p {
-    margin: 5px 0;
-    font-size: 1rem;
-    display: none; /* Todos los mensajes estarán ocultos inicialmente */
-  }
-  
-  .er-navbar .messages p.active {
-    display: block; /* Solo se muestra el mensaje con la clase 'active' */
-  }
-  
-  .mensage-link {
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-    text-decoration: none;
-  }
-  
-  /* Navbar Principal */
-  .logo-navbar {
-    width: 200px;
-    height: auto;
-    object-fit: contain;
-    margin-left: 220px;
-  }
-  
-  .navbar-nav {
-    display: flex;
-    align-items: center;
-  }
-  
-  .navbar-nav .nav-item {
-    margin-right: 10px;
-  }
-  
-  .navbar-nav.ms-auto {
-    margin-left: auto;
-  }
-  
-  .nav-link {
-    position: relative;
-  }
-  
-  .nav-link:hover::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    background-color: #000;
-    bottom: 0;
-    left: 0;
-  }
-  
-  .contador_carrito {
-    position: absolute;
-    top: 0;
-    left: 100%;
-    transform: translate(-100%, -50%);
-    background-color: #dc3545;
-    padding: 0.25em 0.4em;
-    border-radius: 50rem;
-    color: white;
-    font-size: 1rem;
-  }
-  
-  /* Navbar Inferior: Categorías */
+  background-color: #467a6a;
+  color: white;
+  text-align: center;
+  padding-top: 2px;
+  padding-bottom: 5px;
+}
+
+
+
+.er-navbar .messages p {
+  margin: 5px 0;
+  font-size: 1rem;
+  display: none; /* Todos los mensajes estarán ocultos inicialmente */
+}
+
+.er-navbar .messages p.active {
+  display: block; /* Solo se muestra el mensaje con la clase 'active' */
+}
+
+.mensage-link {
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* =======================
+   Navbar Principal
+   ======================= */
+.logo-navbar {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: 120px;
+  display: block;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-nav .nav-item {
+  margin-right: 10px;
+}
+
+.navbar-nav.ms-auto {
+  margin-left: auto;
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link:hover::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: #000;
+  bottom: 0;
+  left: 0;
+}
+
+.contador_carrito {
+  position: absolute;
+  top: 50%; /* Centrar verticalmente */
+  left: 100%;
+  transform: translate(-100%, -50%);
+  background-color: #dc3545;
+  padding: 0.25em 0.4em;
+  border-radius: 50rem;
+  color: white;
+  font-size: 1rem;
+}
+
+/* =======================
+   Navbar Inferior: Categorías
+   ======================= */
+.custom-navbar {
+  background-color: black;
+  padding: 10px 0;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center;
+  align-items: center;
+  /* Evita el colapso en responsive */
+}
+
+.custom-navbar .navbar-nav {
+  display: flex !important;
+  flex-direction: row !important;
+  width: auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.custom-navbar .nav-item {
+  margin-right: 10px;
+  margin-bottom: 0 !important;
+}
+
+.custom-navbar .nav-item .nav-link {
+  padding: 10px 15px;
+  color: #fff;
+  transition: background-color 0.3s ease;
+  display: block;
+}
+
+.custom-navbar .nav-item:hover .nav-link {
+  background-color: #133127;
+  border-radius: 5px;
+}
+
+.custom-navbar .nav-item:hover .dropdown-menu {
+  display: block;
+}
+
+.custom-navbar .dropdown-menu {
+  display: none;
+  background-color: #F2F2F2;
+  border-radius: 5px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: max-content;
+  min-width: 200px;
+}
+
+.custom-navbar .dropdown-item {
+  padding: 10px 20px;
+  color: #333;
+}
+
+.custom-navbar .dropdown-item:hover {
+  background-color: #5A8C7A;
+  color: #fff;
+}
+
+/* --- Eliminar responsividad tipo hamburguesa para el navbar inferior --- */
+@media (max-width: 991px) {
   .custom-navbar {
-    background-color: black;
     padding: 10px 0;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
-  
+  .custom-navbar .navbar-nav {
+    flex-direction: row !important;
+    width: auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .custom-navbar .nav-item {
+    margin-right: 10px;
+    margin-bottom: 0 !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .custom-navbar {
+    padding: 4px 0;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  .custom-navbar .navbar-nav {
+    flex-direction: row !important;
+    width: auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .custom-navbar .nav-item {
+    margin-right: 6px;
+    margin-bottom: 0 !important;
+  }
   .custom-navbar .nav-item .nav-link {
-    padding: 10px 15px;
-    color: #fff;
-    transition: background-color 0.3s ease;
+    padding: 6px 4px;
+    font-size: 0.93rem;
   }
-  
-  .custom-navbar .nav-item:hover .nav-link {
-    background-color: #133127;
-    border-radius: 5px;
-  }
-  
-  .custom-navbar .nav-item:hover .dropdown-menu {
-    display: block;
-  }
-  
   .custom-navbar .dropdown-menu {
-    display: none;
-    background-color: #F2F2F2;
-    border-radius: 5px;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: max-content;
-    min-width: 200px;
+    min-width: 90px;
+    font-size: 0.92rem;
   }
-  
-  .custom-navbar .dropdown-item {
-    padding: 10px 20px;
-    color: #333;
-  }
-  
-  .custom-navbar .dropdown-item:hover {
-    background-color: #5A8C7A;
-    color: #fff;
-  }
+}
 
-  /* Modal Carrito - Tamaño reducido */
-  #modalCarrito .modal-dialog {
-    max-width: 500px; /* Reducir el ancho del modal */
-    margin: 1.75rem auto;
+@media (max-width: 412px) {
+  .custom-navbar {
+    padding: 2px 0;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
+  .custom-navbar .navbar-nav {
+    flex-direction: row !important;
+    width: auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .custom-navbar .nav-item {
+    margin-right: 4px;
+    margin-bottom: 0 !important;
+  }
+  .custom-navbar .nav-item .nav-link {
+    padding: 5px 2px;
+    font-size: 0.89rem;
+  }
+  .custom-navbar .dropdown-menu {
+    min-width: 70px;
+    font-size: 0.89rem;
+  }
+}
 
-  #modalCarrito .modal-content {
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    background-color: #f9f9f9;
-    border: none;
-  }
-  
-  #modalCarrito .modal-header {
-    background-color: #467a6a;
-    color: white;
-    border-bottom: none;
-    border-radius: 12px 12px 0 0;
-    padding: 15px;
-  }
-  
-  #modalCarrito .modal-title {
-    font-size: 1.3rem;
-    font-weight: bold;
-  }
-  
-  #modalCarrito .btn-close {
-    color: white;
-    opacity: 1;
-    font-size: 1rem;
-  }
-  
-  /* Modal Carrito - Scroll limitado a 5 productos */
-  #modalCarrito .modal-body {
-    padding: 15px;
-    max-height: calc(5 * 80px + 30px); /* Altura para 5 productos (80px cada uno) más padding */
-    overflow-y: auto;
-  }
-  
-  #modalCarrito .productos-carrito {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  #modalCarrito .productos-carrito .d-flex {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 80px; /* Altura fija para cada producto */
-  }
-  
-  #modalCarrito .productos-carrito img {
-    border-radius: 5px;
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-  }
-  
-  #modalCarrito .productos-carrito h6 {
-    font-size: 0.9rem;
-    margin: 0;
-    color: #333;
-  }
-  
-  #modalCarrito .modal-footer {
-    background-color: #f9f9f9;
-    border-top: 1px solid #ddd;
-    padding: 15px;
-    position: sticky;
-    bottom: 0;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-radius: 0 0 12px 12px;
-  }
-  
-  #modalCarrito .modal-footer .btn {
-    border-radius: 8px;
-    font-size: 0.9rem;
-    padding: 8px;
-    transition: background-color 0.3s ease;
-  }
-  
-  #modalCarrito .modal-footer .btn-primary {
-    background-color: #467a6a;
-    color: white;
-    border: none;
-  }
-  
-  #modalCarrito .modal-footer .btn-primary:hover {
-    background-color: #3b6254;
-  }
-  
-  #modalCarrito .modal-footer .btn-danger {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-  }
-  
-  #modalCarrito .modal-footer .btn-danger:hover {
-    background-color: #a71d2a;
-  }
-  
-  #modalCarrito .modal-footer .total {
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: right;
-    color: #333;
-  }
+/* =======================
+   Modal Carrito
+   ======================= */
+#modalCarrito .modal-dialog {
+  max-width: 500px;
+  margin: auto; /* Centrar horizontalmente */
+  position: fixed; /* Cambiar a fixed para centrar en toda la pantalla */
+  top: 50%; /* Centrar verticalmente */
+  left: 50%; /* Centrar horizontalmente */
+  transform: translate(-50%, -50%); /* Ajustar posición */
+  z-index: 1050; /* Asegurar que esté por encima de otros elementos */
+}
 
-  /* Notificación centrada y fondo oscuro */
-  .notificacion-overlay {
-    z-index: 1060; /* Por delante del modal del carrito */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    animation: fadeIn 0.3s ease-in-out;
-  }
+#modalCarrito .modal-dialog.modal-lg {
+  max-width: 800px; /* Ajustar el ancho del modal grande */
+  margin: auto; /* Centrar horizontalmente */
+  position: fixed; /* Centrar en toda la pantalla */
+  top: 50%; /* Centrar verticalmente */
+  left: 50%; /* Centrar horizontalmente */
+  transform: translate(-50%, -50%); /* Ajustar posición */
+  z-index: 1050; /* Asegurar que esté por encima de otros elementos */
+}
 
-  .notificacion-centrada {
-    z-index: 1070; /* Por delante del overlay */
+@media (max-width: 600px) {
+  #modalCarrito .modal-dialog.modal-lg {
+    max-width: 90%; /* Ajustar el ancho en pantallas pequeñas */
+    margin: auto;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-width: 400px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    animation: slideIn 0.3s ease-in-out;
   }
+}
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
+#modalCarrito .modal-content {
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background-color: #f9f9f9;
+  border: none;
+  
+}
 
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translate(-50%, -60%);
-    }
-    to {
-      opacity: 1;
-      transform: translate(-50%, -50%);
-    }
+#modalCarrito .modal-header {
+  background-color: #467a6a;
+  color: white;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  padding: 15px;
+  
+}
+
+#modalCarrito .modal-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  
+}
+
+#modalCarrito .btn-close {
+  color: white;
+  opacity: 1;
+  font-size: 1rem;
+  
+}
+
+#modalCarrito .modal-body {
+  padding: 15px;
+  max-height: calc(5 * 80px + 30px);
+  overflow-y: auto;
+  
+}
+
+#modalCarrito .productos-carrito {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  
+}
+
+#modalCarrito .productos-carrito .d-flex {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  height: 80px;
+  
+}
+
+#modalCarrito .productos-carrito img {
+  border-radius: 5px;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  
+}
+
+#modalCarrito .productos-carrito h6 {
+  font-size: 0.9rem;
+  margin: 0;
+  color: #333;
+  
+}
+
+#modalCarrito .modal-footer {
+  background-color: #f9f9f9;
+  border-top: 1px solid #ddd;
+  padding: 15px;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 0 0 12px 12px;
+}
+
+#modalCarrito .modal-footer .btn {
+  border-radius: 8px;
+  font-size: 0.9rem;
+  padding: 8px;
+  transition: background-color 0.3s ease;
+}
+
+#modalCarrito .modal-footer .btn-primary {
+  background-color: #467a6a;
+  color: white;
+  border: none;
+}
+
+#modalCarrito .modal-footer .btn-primary:hover {
+  background-color: #3b6254;
+}
+
+#modalCarrito .modal-footer .btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+#modalCarrito .modal-footer .btn-danger:hover {
+  background-color: #a71d2a;
+}
+
+#modalCarrito .modal-footer .total {
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: right;
+  color: #333;
+}
+
+/* =======================
+   Notificación centrada y fondo oscuro
+   ======================= */
+.notificacion-overlay {
+  z-index: 1060;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.notificacion-centrada {
+  z-index: 1070;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 400px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
   }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* =======================
+   Responsive
+   ======================= */
+@media (max-width: 991px) {
+  .logo-navbar {
+    width: 90px;
+    max-width: 40vw;
+  }
+  .navbar-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .navbar-nav .nav-item {
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .logo-navbar {
+    width: 70px;
+    max-width: 50vw;
+    margin-left: 0px;
+  }
+  .navbar {
+    padding: 4px 0;
+  }
+  .navbar-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .navbar-nav .nav-item {
+    margin-right: 0;
+    margin-bottom: 6px;
+  }
+  .custom-navbar {
+    padding: 4px 0;
+  }
+  .custom-navbar .nav-item .nav-link {
+    padding: 6px 4px;
+    font-size: 0.93rem;
+  }
+  .custom-navbar .dropdown-menu {
+    min-width: 90px;
+    font-size: 0.92rem;
+  }
+  .contador_carrito {
+    font-size: 0.85rem;
+    padding: 0.12em 0.22em;
+  }
+  .navbar-toggler {
+    margin-right: 10px;
+  }
+}
+
+/* Responsive especial para Pixel 7 y móviles hasta 412px */
+@media (max-width: 412px) {
+  .logo-navbar {
+    width: 156px;
+    max-width: 38vw;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    display: block;
+  }
+  .navbar {
+    padding: 2px 0;
+  }
+  .navbar-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .navbar-nav .nav-item {
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+  .custom-navbar {
+    padding: 2px 0;
+  }
+  .custom-navbar .nav-item .nav-link {
+    padding: 5px 2px;
+    font-size: 0.89rem;
+  }
+  .custom-navbar .dropdown-menu {
+    min-width: 70px;
+    font-size: 0.89rem;
+  }
+  .contador_carrito {
+    font-size: 0.78rem;
+    padding: 0.10em 0.18em;
+  }
+  .navbar-toggler {
+    margin-right: 6px;
+    padding: 4px 7px;
+    font-size: 1rem;
+  }
+}
+
+/* =======================
+   Estilos adicionales para la hamburguesa
+   ======================= */
+.navbar .navbar-toggler,
+.navbar-toggler {
+  display: block ;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.navbar-toggler {
+  padding: 0.5rem 1rem;
+  font-size: 1.25rem;
+  color: #fff;
+  border: none;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+}
+
+/* Deshabilitar hamburguesa en pantallas de escritorio */
+@media (min-width: 992px) {
+  .navbar-toggler {
+    pointer-events: none;
+    opacity: 0.5; /* Opcional: para indicar que están deshabilitados */
+  }
+}
+
+/* Habilitar hamburguesa en dispositivos móviles */
+@media (max-width: 991px) {
+  .navbar-toggler {
+    pointer-events: auto;
+    opacity: 1;
+  }
+}
+
+/* Ocultar el icono de hamburguesa SIEMPRE por defecto */
+.navbar-toggler-icon {
+  display: none !important;
+}
+
+/* Mostrar el icono solo en móviles/tablet */
+@media (max-width: 991px) {
+  .navbar-toggler-icon {
+    display: inline-block !important;
+  }
+}
+
+
+
